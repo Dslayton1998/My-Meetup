@@ -15,4 +15,11 @@ router.get("/api/csrf/restore", (req, res) => {
   });
 });
 
+//* All the URLs of the routes in the api router will be prefixed with /api
+const apiRouter = require('./api');
+
+router.use('/api', apiRouter);
+
+
+
 module.exports = router;
