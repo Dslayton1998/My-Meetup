@@ -2,5 +2,29 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "express-validator": "^7.0.1"
-  }
+  },
+  "name": "api-project",
+  "description": "<!--!!START SILENT --> # Meetup Clone <!--!!END --> <!--!!ADD --> <!-- # `<name of application here>` --> <!--!!END_ADD -->",
+  "version": "1.0.0",
+  "main": "index.js",
+  "devDependencies": {},
+  "scripts": {
+    "install": "npm --prefix backend install backend",
+    "dev:backend": "npm install --prefix backend start",
+    "sequelize": "npm run --prefix backend sequelize",
+    "sequelize-cli": "npm run --prefix backend sequelize-cli",
+    "start": "npm start --prefix backend",
+    "build": "npm run --prefix backend build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Dslayton1998/API-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Dslayton1998/API-project/issues"
+  },
+  "homepage": "https://github.com/Dslayton1998/API-project#readme"
 }
