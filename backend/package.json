@@ -2,8 +2,8 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "SETUP-commands-notes.js",
-  "scripts": {
+  "main": "index.js",
+ "scripts": {
     "sequelize": "sequelize",
     "sequelize-cli": "sequelize-cli",
     "start": "per-env",
