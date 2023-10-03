@@ -40,7 +40,7 @@ module.exports = {
       state: "not here",
     },
 
-  ], { validate: true })
+  ], options, { validate: true })
   },
 
   async down (queryInterface, Sequelize) {
