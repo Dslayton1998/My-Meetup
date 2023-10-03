@@ -50,7 +50,7 @@ if (!isProduction) {
 
 
 //                      ? Routes ?                      \\
-app.use(routes); //* Connect all the routes
+app.use(routes); //* Connect all the routes (send to routes/index)
 
 
 //                      ! ERRORS !                      \\
