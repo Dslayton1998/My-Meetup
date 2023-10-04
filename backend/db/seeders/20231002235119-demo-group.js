@@ -26,7 +26,7 @@ module.exports = {
     {
       organizerId: 1,
       name: "Testing Group 1" ,
-      about: 'A group so I can test some stuff out ya know?',
+      about: 'A group so I can test some stuff out ya know?, HAVE TO ADD MORE CHARACTERrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrS SO THAT WE GET TO AT LEAST 50',
       type: "Online",
       private: false,
       city: "Faketown",
