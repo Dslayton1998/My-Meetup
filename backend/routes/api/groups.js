@@ -1,7 +1,7 @@
 const express = require('express')
 const { Op } = require('sequelize');
 const bcrypt = require('bcryptjs');
-const { Group, Membership, GroupImage } = require('../../db/models');
+const { Group, Membership, GroupImage, User, Venue } = require('../../db/models');
 
 //? Validating Group Request Body (& middleware)
 const { check } = require('express-validator');
@@ -62,6 +62,7 @@ router.post('/', validateGroups, requireAuth, async (req, res, next) => {
 
 
 
+
 //* GET ALL GROUPS
 router.get('/', requireAuth, async (req,res,next) => {
 
@@ -114,6 +115,7 @@ router.get('/', requireAuth, async (req,res,next) => {
 
     res.json({Groups:groups})
 });
+
 
 
 
@@ -198,12 +200,20 @@ router.get('/current', requireAuth, async (req, res, next) => {
 });
 
 
+
 //* GET GROUP DETAILS FROM ID
+//! could use a refactor, could probably get it all in one query 
 router.get('/:groupId', async (req, res, next) => {
   const { groupId } = req.params;
   const getGroup =  await Group.findByPk(groupId);
-  const groups = getGroup.toJSON()
-
+  
+  if(!getGroup) {
+      return res.status(404).json({
+          "message": "Group couldn't be found"
+        })
+    } else {
+    const groups = getGroup.toJSON();
+        
 
 //? Creates numMembers key:
 
@@ -226,6 +236,8 @@ router.get('/:groupId', async (req, res, next) => {
         //* Creates numMembers key: 'and value'
 
 
+//? Creates GroupImages key:
+
         const groupImg = await GroupImage.findAll({
             where: {
                 groupId: groupId
@@ -237,13 +249,38 @@ router.get('/:groupId', async (req, res, next) => {
             return arr
         //* Array on GroupImages objects 
         });
-        console.log(groupImg)
+        groups.GroupImages = confirmPreview;
 
+//? Creates Organizer key:
 
+        const getOrganizer = await User.findAll({
+            where: {
+                id: groups.organizerId
+            },
+            attributes: ['id', 'firstName', 'lastName']
+        });
+        const organizer = getOrganizer.map(ele => {
+            const arr = ele.toJSON();
+            return arr
+        });
+        groups.Organizer = organizer[0];
 
+//? Creates Venues key:
 
+        const getVenues = await Venue.findAll({
+            where: {
+                groupId: groups.id
+            },
+            attributes:['id', 'groupId', 'address', 'city', 'state', 'lat', 'lng']
+        });
+        const venues = getVenues.map(ele => {
+            const arr = ele.toJSON();
+            return arr;
+        })
+        groups.Venues = venues;
 
   res.json(groups)
+    }
 })
 
 
