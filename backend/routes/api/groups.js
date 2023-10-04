@@ -60,9 +60,21 @@ router.post('/', validateGroups, requireAuth, async (req, res, next) => {
 
 
 //* GET ALL GROUPS
-router.get('/', async (req,res,next) => {
+router.get('/', validateGroups, async (req,res,next) => {
     const groups = await Group.findAll()
     res.json({Groups:groups})
+})
+
+//* GET ALL GROUPS OF CURRENT USER
+router.get('/current', requireAuth, async (req, res, next) => {
+    const user = req.user;
+    const usersGroups = await Group.findAll({
+        where: {
+            organizerId: user.id
+        }
+    })
+
+    res.json(usersGroups)
 })
 
 
