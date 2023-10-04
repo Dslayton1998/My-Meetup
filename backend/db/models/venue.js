@@ -2,7 +2,6 @@
 const {
   Model
 } = require('sequelize');
-const { all } = require('../../routes/api');
 module.exports = (sequelize, DataTypes) => {
   class Venue extends Model {
     /**
@@ -19,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       })
 
       Venue.belongsTo(models.Group, {
-        foreignKey: 'groupId'
+        foreignKey: 'groupId',
       })
     }
   }

@@ -2,7 +2,6 @@
 const {
   Model
 } = require('sequelize');
-const { all } = require('../../routes/api');
 module.exports = (sequelize, DataTypes) => {
   class Event extends Model {
     /**
@@ -17,13 +16,7 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'CASCADE',
         hooks: true
       })
-
-      Event.hasMany(models.EventImage, {
-        foreignKey: 'eventId',
-        onDelete: 'CASCADE',
-        hooks: true
-      })
-
+      
       Event.belongsTo(models.Venue, {
         foreignKey: 'venueId'
       })
@@ -31,6 +24,13 @@ module.exports = (sequelize, DataTypes) => {
       Event.belongsTo(models.Group, {
         foreignKey: 'groupId'
       })
+      
+      Event.hasMany(models.EventImage, {
+        foreignKey: 'eventId',
+        onDelete: 'CASCADE',
+        hooks: true
+      })
+
     }
   }
   Event.init({

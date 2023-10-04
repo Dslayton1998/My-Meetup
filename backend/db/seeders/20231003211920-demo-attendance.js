@@ -2,6 +2,9 @@
 
 /** @type {import('sequelize-cli').Migration} */
 
+const { Attendance } = require('../models');
+const bcrypt = require("bcryptjs");
+
 let options = {};
 if (process.env.NODE_ENV === 'production') { //! FOR EVERY SEED
   options.schema = process.env.SCHEMA;  // define your schema in options object
@@ -47,7 +50,7 @@ module.exports = {
     options.tableName = 'Attendances';
     const Op = Sequelize.Op;
     return queryInterface.bulkDelete(options, {
-      userId: { [Op.in]: [1,2,3] }
+      userId: { [Op.in]: [1,2] }
     }, {});
   }
 };

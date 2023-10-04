@@ -1,8 +1,10 @@
 'use strict';
 
-const { Group } = require('../models');
 
 /** @type {import('sequelize-cli').Migration} */
+
+const { Group } = require('../models');
+const bcrypt = require("bcryptjs");
 
 let options = {};
 if (process.env.NODE_ENV === 'production') {
@@ -34,7 +36,7 @@ module.exports = {
       organizerId: 2,
       name: "Testing Group 2",
       about: "We are a group all about our love for run on sentences, boy aren't they just the most wonderful, fantastic, super duper fun way of speaking to another human, my grandpappy taught me how to talk for four days straight, but I eventually got that up to a whopping six days ",
-      type: "In person",
+      type: "In Person",
       private: true,
       city: "Not-realville",
       state: "not here",
@@ -50,7 +52,7 @@ module.exports = {
      * Example:
      * await queryInterface.bulkDelete('People', null, {});
      */
-    options.tableName = 'Users';
+    options.tableName = 'Groups';
     const Op = Sequelize.Op;
     return queryInterface.bulkDelete(options, {
       organizerId: { [Op.in]: [1, 2] }
