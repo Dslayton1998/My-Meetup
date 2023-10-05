@@ -8,7 +8,7 @@ const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const { requireAuth } = require('../../utils/auth.js');
 const { group } = require('console');//!?????!
-const validateGroups = [ //*https://express-validator.github.io/docs/api/validation-chain/
+const validateGroups = [ //*https://express-validator.github.io/docs/api/validation-chain/ (Make more validation chains during refactor)
     check('name')
       .exists({ checkFalsy: true })
       .withMessage('A name is required.')
@@ -213,7 +213,7 @@ router.post('/:groupId/images', requireAuth, async (req, res, next) => {
           })
     }
 
-    if(user.id === getGroup.organizerId) {
+    if(user.id == getGroup.organizerId) {
         const newImage = await GroupImage.create({ 
             groupId: groupId,
             url,
@@ -228,15 +228,19 @@ router.post('/:groupId/images', requireAuth, async (req, res, next) => {
         })
     
         res.json(details[0])
+    } else {
+        return res.json({
+            "error": "Authentication required",
+            "message": "Only group organizer is Authorized to do that"
+        })
     }
 });
 
 
-
+router.put('/:groupId', requireAuth, validateGroups)
 
 //* GET GROUP DETAILS FROM ID
 //! could use a refactor, could probably get it all in one query 
-//! NEEDS TO GO LAST
 router.get('/:groupId', async (req, res, next) => {
   const { groupId } = req.params;
   const getGroup =  await Group.findByPk(groupId);
