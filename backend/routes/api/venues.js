@@ -1,7 +1,7 @@
 const express = require('express')
 const { Op } = require('sequelize');
 const bcrypt = require('bcryptjs');
-const { Venue } = require('../../db/models');
+const { Venue, Group, Membership } = require('../../db/models');
 
 //? Validating Venue Request Body (& middleware)
 const { requireAuth } = require('../../utils/auth.js');
@@ -33,7 +33,50 @@ const validateVenue = [
 const router = express.Router();
 
 // CODE GOES HERE
+router.put('/:venueId', requireAuth, validateVenue, async (req, res, next) => {
+    const user = req.user;
 
+        const { venueId } = req.params;
+        const venues = await Venue.findByPk(venueId)
+    
+    //? Confirm the requested Venue exists
+        if(!venues) {
+            return res.status(404).json({                                   
+                "message": "Venue couldn't be found"
+            })
+        }
+    
+//? GET the Group 
+    const { groupId } = req.params;
+    const group = await Group.findByPk(venues.groupId)
+    console.log(group)
+
+    //? Check which members of the group have permission
+        const validUser = [];
+        const getMembers = await Membership.findAll({
+            where: {
+                groupId: groupId
+            }
+        });
+
+        const members = getMembers.map((member) => {
+            const arr = member.toJSON();
+            return arr
+            //* Array of Memberships objects
+        });
+        members.forEach(member => {
+            if(member.status === 'co-host' && user.id === member.userId) {
+                validUser.push(member)
+            }
+        })
+    
+    
+    //? Check if user has Authorization('co-host', 'organizer'):
+        if(user.id === group.organizerId || validUser.length) {
+                
+        }
+    res.json(venues)
+})
 
 
 
