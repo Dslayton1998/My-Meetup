@@ -202,6 +202,7 @@ router.get('/current', requireAuth, async (req, res, next) => {
 
 //* ADD IMAGE TO GROUP BASED ON GROUP ID
 router.post('/:groupId/images', requireAuth, async (req, res, next) => {
+    const user = req.user
     const { groupId }= req.params;
     const { url, preview } = req.body;
     const getGroup = await Group.findByPk(groupId);
@@ -212,21 +213,22 @@ router.post('/:groupId/images', requireAuth, async (req, res, next) => {
           })
     }
 
-
-    const newImage = await GroupImage.create({ 
-        groupId: groupId,
-        url,
-        preview})
-    
-    const details = await GroupImage.findAll({
-        where: {
+    if(user.id === getGroup.organizerId) {
+        const newImage = await GroupImage.create({ 
             groupId: groupId,
-            id: newImage.id
-        },
-        attributes: ["id", "url", "preview"]
-    })
-
-    res.json(details[0])
+            url,
+            preview})
+        
+        const details = await GroupImage.findAll({
+            where: {
+                groupId: groupId,
+                id: newImage.id
+            },
+            attributes: ["id", "url", "preview"]
+        })
+    
+        res.json(details[0])
+    }
 });
 
 
