@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Event.hasMany(models. Attendance, {
+      Event.hasMany(models.Attendance, {
         foreignKey: 'eventId',
         onDelete: 'CASCADE',
         hooks: true
@@ -46,7 +46,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        len: [5, 60]
+        min: 5
       }
     }, 
     description: {

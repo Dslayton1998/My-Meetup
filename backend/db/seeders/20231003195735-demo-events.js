@@ -3,7 +3,6 @@
 /** @type {import('sequelize-cli').Migration} */
 
 const { Event } = require('../models');
-const bcrypt = require("bcryptjs");
 
 let options = {};
 if (process.env.NODE_ENV === 'production') { //! FOR EVERY SEED
@@ -26,7 +25,7 @@ module.exports = {
       venueId: 1,
       groupId: 1,
       name: 'Fake Event',
-      description: "We are a group who gets together and acts nice to everyone, EVEN if you actually hate them.",
+      description: "We are a group who gets together and acts nice EVEN if you actually hate them.",
       type: 'In Person',
       capacity: 20,
       price: 15,
