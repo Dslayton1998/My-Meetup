@@ -35,7 +35,7 @@ module.exports = {
     {
       organizerId: 2,
       name: "Testing Group 2",
-      about: "We are a group all about our love for run on sentences, boy aren't they just the most wonderful, fantastic, super duper fun way of speaking to another human, my grandpappy taught me how to talk for four days straight, but I eventually got that up to a whopping six days ",
+      about: "We are a group all about our love for run on sentences, boy aren't they just the most wonderful, fantastic, super duper fun way of speaking to another human, my grandpappy taught me how to talk.",
       type: "In person",
       private: true,
       city: "Not-realville",
