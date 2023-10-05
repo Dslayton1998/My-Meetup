@@ -213,7 +213,7 @@ router.post('/:groupId/images', requireAuth, async (req, res, next) => {
           })
     }
 
-    if(user.id == getGroup.organizerId) {
+    if(user.id === getGroup.organizerId) {
         const newImage = await GroupImage.create({ 
             groupId: groupId,
             url,
@@ -229,15 +229,46 @@ router.post('/:groupId/images', requireAuth, async (req, res, next) => {
     
         res.json(details[0])
     } else {
-        return res.json({
-            "error": "Authentication required",
-            "message": "Only group organizer is Authorized to do that"
+        return res.status(403).json({
+            "error": "Authorization required",
+            "message": "Only group organizer is authorized to do that"
         })
     }
 });
 
 
-router.put('/:groupId', requireAuth, validateGroups)
+
+//* EDIT A GROUP
+router.put('/:groupId', requireAuth, validateGroups, async (req, res, next) => {
+    const { name, about, type, private, city, state } = req.body;
+    const user = req.user;
+
+    const { groupId } = req.params;
+    const group = await Group.findByPk(groupId)
+
+//? Confirm the requested Group exists
+    if(!group) {
+        return res.status(404).json({
+            "message": "Group couldn't be found"
+        })
+    }
+
+//? Confirm current user is Organizer:
+    if(user.id === group.organizerId) {
+        const update = await group.update({ name, about, type, private, city, state })
+        res.json(update)
+
+    } else {
+        return res.status(403).json({
+            "error": "Authorization required",
+            "message": "Only group organizer is authorized to do that"
+        })
+    }
+
+});
+
+
+
 
 //* GET GROUP DETAILS FROM ID
 //! could use a refactor, could probably get it all in one query 
