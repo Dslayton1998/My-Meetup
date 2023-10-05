@@ -300,7 +300,7 @@ router.delete('/:groupId', requireAuth, async (req, res, next) => {
 
 //* GET GROUP DETAILS FROM ID
 //! could use a refactor, could probably get it all in one query 
-router.get('/:groupId', async (req, res, next) => {
+router.get('/:groupId', requireAuth, async (req, res, next) => {
   const { groupId } = req.params;
   const getGroup =  await Group.findByPk(groupId);
   
