@@ -200,9 +200,41 @@ router.get('/current', requireAuth, async (req, res, next) => {
 });
 
 
+//* ADD IMAGE TO GROUP BASED ON GROUP ID
+router.post('/:groupId/images', requireAuth, async (req, res, next) => {
+    const { groupId }= req.params;
+    const { url, preview } = req.body;
+    const getGroup = await Group.findByPk(groupId);
+    
+    if(!getGroup) {
+        return res.status(404).json({
+            "message": "Group couldn't be found"
+          })
+    }
+
+
+    const newImage = await GroupImage.create({ 
+        groupId: groupId,
+        url,
+        preview})
+    
+    const details = await GroupImage.findAll({
+        where: {
+            groupId: groupId,
+            id: newImage.id
+        },
+        attributes: ["id", "url", "preview"]
+    })
+
+    res.json(details[0])
+});
+
+
+
 
 //* GET GROUP DETAILS FROM ID
 //! could use a refactor, could probably get it all in one query 
+//! NEEDS TO GO LAST
 router.get('/:groupId', async (req, res, next) => {
   const { groupId } = req.params;
   const getGroup =  await Group.findByPk(groupId);
@@ -281,7 +313,7 @@ router.get('/:groupId', async (req, res, next) => {
 
   res.json(groups)
     }
-})
+});
 
 
 module.exports = router;
