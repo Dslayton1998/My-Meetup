@@ -7,7 +7,6 @@ const { Group, Membership, GroupImage, User, Venue } = require('../../db/models'
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const { requireAuth } = require('../../utils/auth.js');
-const { group } = require('console');//!?????!
 const validateGroups = [ //*https://express-validator.github.io/docs/api/validation-chain/ (Make more validation chains during refactor)
     check('name')
       .exists({ checkFalsy: true })
@@ -56,8 +55,7 @@ router.post('/', validateGroups, requireAuth, async (req, res, next) => {
         city,
         private,
         state})
-    res.statusCode = 201
-    res.json(NewGroup)
+    res.status(201).json(NewGroup)
 });
 
 
@@ -274,7 +272,7 @@ router.delete('/:groupId', requireAuth, async (req, res, next) => {
     const { groupId } = req.params;
     const group = await Group.findByPk(groupId)
 
-//? Confirm the requested Group exists
+
     if(!group) {
         return res.status(404).json({
             "message": "Group couldn't be found"
