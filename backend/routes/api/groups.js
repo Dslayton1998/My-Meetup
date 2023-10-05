@@ -38,6 +38,29 @@ const validateGroups = [ //*https://express-validator.github.io/docs/api/validat
    handleValidationErrors
   ];
 
+  const validateVenue = [
+    check('address')
+        .exists({ checkFalsy: true })
+        .withMessage('Street address is required'),
+    check('city')
+        .exists({ checkFalsy: true })
+        .withMessage("City is required"),
+    check('state')
+        .exists({ checkFalsy: true })
+        .withMessage("State is required"),
+    check('lat')
+        .exists({ checkFalsy: true })
+        .withMessage('Please provide a latitude')
+        .isDecimal()
+        .withMessage("Latitude is not valid"),
+    check('lng')
+        .exists({ checkFalsy: true })
+        .withMessage('Please provide a longitude')
+        .isDecimal()
+        .withMessage("Longitude is not valid"),
+    handleValidationErrors
+    ];
+
 const router = express.Router();
 
 
@@ -176,25 +199,25 @@ router.get('/current', requireAuth, async (req, res, next) => {
     });
     groups.forEach(group => {
         console.log(group)
-            const confirmedMembers = [];                
-            const id = group.id;
-            members.forEach(member => {
-                if(member.groupId === id) {
-                    if(member.status === 'co-host' || member.status === 'member') {
-                        confirmedMembers.push(member)
-                    }   
-                }
-            });
-            group.numMembers = confirmedMembers.length
-            //* Creates numMembers key: 'and value'
-
+        const confirmedMembers = [];                
+        const id = group.id;
+        members.forEach(member => {
+            if(member.groupId === id) {
+                if(member.status === 'co-host' || member.status === 'member') {
+                    confirmedMembers.push(member)
+                }   
+            }
+        });
+        group.numMembers = confirmedMembers.length
+        //* Creates numMembers key: 'and value'
+        
         for(let i = 0; i < confirmPreview.length; i++) {
             if(confirmPreview[i].preview === true) {
                 group.previewImage = confirmPreview[i].url
             }
-        //* Provide the url if the preview status is true
+            //* Provide the url if the preview status is true
         }
-
+        
     });
     res.json({Groups:groups})
 });
@@ -210,38 +233,104 @@ router.post('/:groupId/images', requireAuth, async (req, res, next) => {
     if(!getGroup) {
         return res.status(404).json({
             "message": "Group couldn't be found"
-          })
+        })
     }
-
+    
     if(user.id === getGroup.organizerId) {
         const newImage = await GroupImage.create({ 
             groupId: groupId,
             url,
             preview})
-        
-        const details = await GroupImage.findAll({
+            
+            const details = await GroupImage.findAll({
+                where: {
+                    groupId: groupId,
+                    id: newImage.id
+                },
+                attributes: ["id", "url", "preview"]
+            })
+            
+            res.json(details[0])
+        } else {
+            return res.status(403).json({
+                "error": "Authorization required",
+                "message": "Only group organizer is authorized to do that"
+            })
+        }
+    });
+    
+    
+    //*CREATE NEW VENUE FOR A GROUP BY ID
+    router.post('/:groupId/venues', validateVenue, requireAuth, async (req, res, next) => {
+        const { address, city, state, lat, lng } = req.body
+        const user = req.user;
+
+        const { groupId } = req.params;
+        const group = await Group.findByPk(groupId)
+    
+    //? Confirm the requested Group exists
+        if(!group) {
+            return res.status(404).json({
+                "message": "Group couldn't be found"
+            })
+        }
+    
+    //? Check which members of the group have permission
+        const validUser = [];
+        const getMembers = await Membership.findAll({
             where: {
-                groupId: groupId,
-                id: newImage.id
-            },
-            attributes: ["id", "url", "preview"]
+                groupId: groupId
+            }
+        });
+        const members = getMembers.map((member) => {
+            const arr = member.toJSON();
+            return arr
+            //* Array of Memberships objects
+        });
+        members.forEach(member => {
+            if(member.status === 'co-host' && user.id === member.userId) {
+                validUser.push(member)
+            }
         })
     
-        res.json(details[0])
-    } else {
-        return res.status(403).json({
-            "error": "Authorization required",
-            "message": "Only group organizer is authorized to do that"
-        })
-    }
-});
+    
+    //? Check if user has Authorization('co-host', 'organizer'):
+        if(user.id === group.organizerId || validUser.length) {
+            const newVenue = await Venue.create({ 
+                groupId: groupId,
+                address, 
+                city, 
+                state, 
+                lat, 
+                lng 
+            });
+
+        //? To get rid of created&updated at
+        const resObj = {
+            id: newVenue.id,
+            groupId: groupId,
+            address, 
+            city,
+            state,
+            lat,
+            lng
+        };
+
+            res.json(resObj);
+        } else {
+            return res.status(403).json({
+                "error": "Authorization required",
+                "message": "Only group organizer is authorized to do that"
+            })
+        }
+    })
 
 
-
-//* EDIT A GROUP
-router.put('/:groupId', requireAuth, validateGroups, async (req, res, next) => {
-    const { name, about, type, private, city, state } = req.body;
-    const user = req.user;
+    
+    //* EDIT A GROUP
+    router.put('/:groupId', requireAuth, validateGroups, async (req, res, next) => {
+        const { name, about, type, private, city, state } = req.body;
+        const user = req.user;
 
     const { groupId } = req.params;
     const group = await Group.findByPk(groupId)
@@ -295,6 +384,62 @@ router.delete('/:groupId', requireAuth, async (req, res, next) => {
         })
     }
 })
+
+
+
+//* GET ALL VENUES FOR A GROUP BY ID
+router.get('/:groupId/venues', requireAuth, async (req, res, next) => {
+    const user = req.user;
+    const { groupId } = req.params;
+    const group = await Group.findByPk(groupId)
+
+//? Confirm the requested Group exists
+    if(!group) {
+        return res.status(404).json({
+            "message": "Group couldn't be found"
+        })
+    }
+
+//? Check which members of the group have permission
+    const validUser = [];
+    const getMembers = await Membership.findAll({
+        where: {
+            groupId: groupId
+        }
+    });
+    const members = getMembers.map((member) => {
+        const arr = member.toJSON();
+        return arr
+        //* Array of Memberships objects
+    });
+    members.forEach(member => {
+        if(member.status === 'co-host' && user.id === member.userId) {
+            validUser.push(member)
+        }
+    })
+
+
+//? Check if user has Authorization('co-host', 'organizer'):
+    if(user.id === group.organizerId || validUser.length) {
+        const venues = await Venue.findAll({
+            where: {
+                groupId: group.id
+            },
+            attributes: ['id', 'groupId', 'address', 'city', 'state', 'lat', 'lng']
+        })
+        res.json({
+            "Venues": venues
+        })
+    } else {
+        return res.status(403).json({
+            "error": "Authorization required",
+            "message": "Only group organizer (or co-host) is authorized to do that"
+        })
+    }
+});
+
+
+
 
 
 
