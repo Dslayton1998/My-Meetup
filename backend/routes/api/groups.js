@@ -7,7 +7,7 @@ const { Group, Membership, GroupImage, User, Venue } = require('../../db/models'
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const { requireAuth } = require('../../utils/auth.js');
-const { group } = require('console');//!?????!
+const { group } = require('console');//!?????! WHAT IS THIS???
 const validateGroups = [ //*https://express-validator.github.io/docs/api/validation-chain/ (Make more validation chains during refactor)
     check('name')
       .exists({ checkFalsy: true })
