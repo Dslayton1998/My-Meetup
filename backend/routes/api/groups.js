@@ -1,13 +1,14 @@
 const express = require('express')
 const { Op } = require('sequelize');
 const bcrypt = require('bcryptjs');
-const { Group, Membership, GroupImage, User, Venue } = require('../../db/models');
+const { Group, Membership, GroupImage, User, Venue, Event } = require('../../db/models');
 
 //? Validating Group Request Body (& middleware)
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const { requireAuth } = require('../../utils/auth.js');
 const { group } = require('console');//!?????! WHAT IS THIS???
+const event = require('../../db/models/event');
 const validateGroups = [ //*https://express-validator.github.io/docs/api/validation-chain/ (Make more validation chains during refactor)
     check('name')
       .exists({ checkFalsy: true })
@@ -436,6 +437,64 @@ router.get('/:groupId/venues', requireAuth, async (req, res, next) => {
             "message": "Only group organizer (or co-host) is authorized to do that"
         })
     }
+});
+
+
+
+//* GET ALL EVENTS OF GROUP BY ID
+router.get('/:groupId/events', async (req, res, next) => {
+    const { groupId } = req.params;
+    const getGroup = await Group.findByPk(groupId);
+
+//? Confirm the requested Group exists
+    if(!getGroup) {
+        return res.status(404).json({
+            "message": "Group couldn't be found"
+        })
+    ;}
+
+
+    const getEvents = await Event.findAll({
+        where: {
+            groupId: groupId
+        },
+        include: [
+            {
+                model: Group,
+                attributes: ['id', 'name', 'city', 'state']
+            },
+            {
+                model: Venue,
+                attributes: ['id', 'city', 'state']
+            }
+        ],
+        attributes:{
+            exclude: ["createdAt", "updatedAt"]
+        }
+    });
+
+
+    const event = getEvents.map((event) => {
+        const arr = event.toJSON();
+        return arr
+    });
+    
+    for(let i = 0; i < getEvents.length; i++) {
+        const image = await getEvents[i].getEventImages()
+        const attendees = await getEvents[i].getAttendances({
+            where:{
+                status: 'Attending'
+            }
+        });
+
+        event[i].numAttending = attendees.length;
+        if(image.length) {
+            event[i].previewImage = image[0].url
+        } else {event[i].previewImage = null}
+    }
+    
+
+    res.json({"Events": event})
 });
 
 

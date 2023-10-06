@@ -31,7 +31,7 @@ router.get('/', async (req, res, next) => {
             exclude: ["createdAt", "updatedAt"]
         }
     });
-    const events = getEvents.map((event) => {
+    const event = getEvents.map((event) => {
         const arr = event.toJSON();
         return arr
     });
@@ -43,23 +43,20 @@ router.get('/', async (req, res, next) => {
         const image = await getEvents[i].getEventImages()
 
 
-        const attendances = await getEvents[i].getAttendances({
+        const attendees = await getEvents[i].getAttendances({
             where:{
                 status: 'Attending'
             }
         });
 
-        events[i].numAttending = attendances.length;
-
-        if(image.length === 0){
-            events[i].previewImage = null
-        } else {
-            events[i].previewImage = image[0].url
-        }
+        event[i].numAttending = attendees.length;
+        if(image.length) {
+            event[i].previewImage = image[0].url
+        } else {event[i].previewImage = null}
     }
 //!!!! PLUS THE ORDER IN RES BUGGGGGSSSS ME
 
-    res.json({"Events": events})
+    res.json({"Events": event})
 })
 
 module.exports = router;
