@@ -9,7 +9,7 @@ const { handleValidationErrors } = require('../../utils/validation');
 const { requireAuth } = require('../../utils/auth.js');
 const { group } = require('console');//!?????! WHAT IS THIS???
 const event = require('../../db/models/event');//?????????????
-const validateGroups = [ //*https://express-validator.github.io/docs/api/validation-chain/ (Make more validation chains during refactor)
+const validateGroups = [ //*https://express-validator.github.io/docs/api/validation-chain/
     check('name')
       .exists({ checkFalsy: true })
       .withMessage('A name is required.')
@@ -61,6 +61,51 @@ const validateGroups = [ //*https://express-validator.github.io/docs/api/validat
         .withMessage("Longitude is not valid"),
     handleValidationErrors
     ];
+
+    const validateEvents = [
+        check('venueId')
+            .custom(async val => {
+                if(val === null) return true
+
+                const venue = await Venue.findByPk(val)
+                if(!venue) {
+                    throw new Error("Venue does not exist")
+                } else return true
+            }),
+        check('name')
+            .exists({ checkFalsy: true })
+            .withMessage("Please provide a name")
+            .isLength({ min: 5})
+            .withMessage("Name must be at least 5 characters"),
+        check('type')
+            .exists({ checkFalsy: true })
+            .withMessage('Please provide a type.')
+            .isIn(['Online','In person'])
+            .withMessage("Type must be 'Online' or 'In person'"),
+        check('capacity')
+            .exists({ checkFalsy: true })
+            .withMessage('Please specify a capacity')
+            .isInt()
+            .withMessage("Capacity must be an integer"),
+        check('price')
+            .exists({ checkFalsy: true })
+            .withMessage('Please include a price')
+            .isDecimal()
+            .withMessage("Price is invalid"),
+        check('description')
+            .exists({ checkFalsy: true })
+            .withMessage("Description is required"),
+        check('startDate')
+            .exists({ checkFalsy: true })
+            .withMessage("starting date is required")
+            .isAfter(new Date().toLocaleDateString())
+            .withMessage("startDate must be in the future"),
+        check('endDate')
+            .exists({ checkFalsy: true })
+            .isAfter(this.startDate)
+            .withMessage("End date is less than start date"),
+        handleValidationErrors
+    ]
 
 const router = express.Router();
 
@@ -324,7 +369,65 @@ router.post('/:groupId/images', requireAuth, async (req, res, next) => {
                 "message": "Only group organizer is authorized to do that"
             })
         }
+    });
+
+
+
+//* CREATE AN EVENT FOR GROUP BY ID
+router.post('/:groupId/events', requireAuth, validateEvents, async (req, res, next) => {
+    const { venueId, name, type, capacity, price, description, startDate, endDate }= req.body
+    const { groupId } = req.params;
+    const group = await Group.findByPk(groupId)
+    const user = req.user;
+
+//? Confirm the requested Group exists
+    if(!group) {
+        return res.status(404).json({
+            "message": "Group couldn't be found"
+        })
+    }
+
+//? Check which members of the group have permission
+    const validUser = [];
+    const getMembers = await Membership.findAll({
+        where: {
+            groupId: groupId
+        }
+    });
+    const members = getMembers.map((member) => {
+        const arr = member.toJSON();
+        return arr
+        //* Array of Memberships objects
+    });
+    members.forEach(member => {
+        if(member.status === 'co-host' && user.id === member.userId) {
+            validUser.push(member)
+        }
     })
+
+
+//? Check if user has Authorization('co-host', 'organizer'):
+    if(user.id === group.organizerId || validUser.length) {
+        const newEvent = await Event.create({ groupId: groupId, venueId, name, type, capacity, price, description, startDate, endDate})
+        const resObj = {}; //! Probs a better way to do this (don't want updatedAt OR createdAt)
+        resObj.id = newEvent.id
+        resObj.groupId = newEvent.groupId
+        resObj.venueId = newEvent.venueId
+        resObj.name = newEvent.name
+        resObj.type = newEvent.type
+        resObj.capacity = newEvent.capacity
+        resObj.price = newEvent.price
+        resObj.description = newEvent.description
+        resObj.startDate = newEvent.startDate
+        resObj.endDate = newEvent.endDate
+        res.json(resObj)
+    } else {
+        return res.status(403).json({
+            "error": "Authorization required",
+            "message": "Only group organizer, or co-host, is authorized to do that"
+        })
+    }
+})
 
 
     

@@ -108,6 +108,6 @@ router.get('/:eventId', async (req, res, next) => {
     }
 
     res.json(event[0])
-})
+});
 
 module.exports = router;
