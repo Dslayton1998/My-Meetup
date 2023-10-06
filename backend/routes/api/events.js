@@ -15,7 +15,7 @@ const router = express.Router();
 // CODE GOES HERE
 
 //* GET ALL EVENTS ********NEEDS WORK
-router.get('/', async (req, res, next) => { //!!!!!!!! THE POWER OF QUERYS!!!!!!! 
+router.get('/', async (req, res, next) => { 
     const getEvents = await Event.findAll({
         include: [
             {
@@ -48,7 +48,9 @@ router.get('/', async (req, res, next) => { //!!!!!!!! THE POWER OF QUERYS!!!!!!
                 status: 'Attending'
             }
         });
-        events[i].numAttending = attendances.length
+
+        events[i].numAttending = attendances.length;
+
         if(image.length === 0){
             events[i].previewImage = null
         } else {
