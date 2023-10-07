@@ -7,7 +7,7 @@ const { Group, Membership, GroupImage, User, Venue, Event } = require('../../db/
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const { requireAuth } = require('../../utils/auth.js');
-const { group } = require('console');//!?????! WHAT IS THIS???
+const { group, error } = require('console');//!?????! WHAT IS THIS???
 const event = require('../../db/models/event');//?????????????
 const validateGroups = [ //*https://express-validator.github.io/docs/api/validation-chain/
     check('name')
@@ -490,6 +490,115 @@ router.post('/:groupId/membership', requireAuth, async (req, res, next) => {
     res.json(resObj)
 })
     
+
+//* CHANGE MEMBERSHIP STATUS FOR GROUP
+router.put('/:groupId/membership', requireAuth, async(req, res, next) =>{
+    const { memberId, status } = req.body
+    const { groupId } = req.params;
+    const user = req.user;
+    const getGroup = await Group.findByPk(groupId);
+    if(!memberId) {
+        res.status(400).json({
+            "message": "Validation Error",
+            "errors": {
+              "memberId": "User couldn't be found"
+            }
+          })
+    }
+
+    const updateMember = await Membership.findAll({
+        where: {
+            groupId: groupId,
+            userId: memberId
+        }
+    });
+    const findUser = await User.findAll({
+        where: {
+            id: memberId
+        }
+    });
+
+
+    if(!findUser) {
+        res.status(400).json({
+            "message": "Validation Error",
+            "errors": {
+              "memberId": "User couldn't be found"
+            }
+          })
+    }
+
+    if(!updateMember) {
+        res.status(404).json({
+            "message": "Membership between the user and the group does not exist"
+          })
+    }
+
+    if(!getGroup) {
+        res.status(404).json({
+            "message": "Group couldn't be found"
+        })
+    };
+
+    if(status === 'pending') {
+        res.status(400).json({
+            "message": "Validations Error",
+            "errors": {
+              "status" : "Cannot change a membership status to pending"
+            }
+          })
+    }
+    const resObj = {};
+    const group = getGroup.toJSON()
+    if(group.organizerId === user.id) { // IF TRUE THEY ARE THE OWNER
+        const update = await updateMember[0].update({status});
+        resObj.id = update.id
+        resObj.groupId = update.groupId
+        resObj.memberId = update.userId
+        resObj.status = update.status
+        res.json(resObj)
+    }
+
+    const getMembers = await Membership.findAll({
+        where: {
+            groupId: groupId,
+            userId: user.id
+        }
+    });
+
+    if(getMembers.length) {
+        const members = getMembers.map(ele => {
+            const arr = ele.toJSON();
+            return arr
+        });
+
+        const currUser = members[0];
+        if(currUser.status === "co-host") { //* IF THEY ARE ONLY CO-HOST
+            if(status === "co-host") {
+                res.status(403).json({
+                    "message": "Only group organizer can promote member to co-host."
+                })
+            };
+            const update = await updateMember[0].update({status});
+            resObj.id = update.id
+            resObj.groupId = update.groupId
+            resObj.memberId = update.userId
+            resObj.status = update.status
+            res.json(resObj)
+        } else {
+            res.status(403).json({
+                "message": "Only group organizer, or co-host, are allowed to make changes"
+            })
+        }
+    }
+    res.status(404).json({
+        "message": "Membership between the user and the group does not exist"
+      })
+})
+
+
+
+//! SHOULD BE THE LAST FOR PUT'S
 //* EDIT A GROUP
 router.put('/:groupId', requireAuth, validateGroups, async (req, res, next) => {
     const { name, about, type, private, city, state } = req.body;
