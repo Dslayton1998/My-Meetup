@@ -601,7 +601,66 @@ router.get('/:groupId/events', async (req, res, next) => {
 });
 
 
+router.get('/:groupId/members', async (req, res, next) => {
+    const { groupId } = req.params
+    const user = req.user;
+    const group = await Group.findByPk(groupId);
+    const members = await group.getMemberships();
 
+    const resObj = {
+        Members : []
+    }
+
+    if(!group){
+        return res.status(404).json({
+            "message": "Group couldn't be found"
+        })
+    }
+
+    if(user.id === group.organizerId){
+    for (let i = 0; i < members.length; i++){
+        const member = members[i]
+        const user = await User.findByPk(member.userId)
+
+        const userObj = {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            Membership: {
+                status: members[i].status
+            }
+        }
+        resObj.Members.push(userObj)
+    }
+}  else {
+    const authorizedMember = await group.getMemberships({
+        where: {
+            status:{
+                [Op.in]:['co-host','member']
+            }
+        }
+    })
+
+    for (let i = 0; i < authorizedMember.length; i++){
+        const user = await User.findByPk(authorizedMember[i].userId)
+
+        const userObj = {
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            Membership: {
+                status: authorizedMember[i].status
+            }
+        };
+        
+        resObj.Members.push(userObj)
+    }
+}
+
+    res.json(resObj)
+
+    
+})
 
 
 

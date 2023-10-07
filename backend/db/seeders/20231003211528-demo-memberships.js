@@ -28,7 +28,7 @@ module.exports = {
       status: 'member'
     },
     {
-      userId: 2,
+      userId: 1,
       groupId: 2,
       status: 'pending'
     },
@@ -41,6 +41,11 @@ module.exports = {
       userId: 3,
       groupId: 1,
       status: 'co-host'
+    }, 
+    {
+      userId: 3,
+      groupId: 2,
+      status: "pending"
     }
    ], options, {validate: true})
   },
