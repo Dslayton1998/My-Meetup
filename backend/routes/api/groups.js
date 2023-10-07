@@ -629,6 +629,88 @@ router.put('/:groupId', requireAuth, validateGroups, async (req, res, next) => {
 });
 
 
+//* DELETE A MEMBERSHIP
+router.delete('/:groupId/membership', requireAuth, async (req, res, next) => {
+    const user = req.user;
+    const { memberId } = req.body;
+    const { groupId } = req.params;
+    const group = await Group.findByPk(groupId);
+    //? Confirm the requested Group exists
+        if(!group) {
+            return res.status(404).json({
+                "message": "Group couldn't be found"
+            })
+        }
+
+    if(!memberId) {
+        res.status(404).json({
+            "message": "Validation Error",
+            "errors": {
+              "memberId": "Please specify a memberId"
+            }
+          })
+    }
+    const currUser = await Membership.findAll({
+        where: {
+            userId: user.id,
+            groupId: group.id
+        }
+    });
+    const destroyMember = await Membership.findAll({
+        where: {
+            userId: memberId,
+            groupId: group.id
+        }
+    });
+    console.log(destroyMember)
+    const checkUser = await User.findByPk(memberId)
+
+
+    if(!checkUser) {
+        return res.status(400).json({
+            "message": "Validation Error",
+            "errors": {
+              "memberId": "User couldn't be found"
+            }
+          })
+    }
+
+    if(!destroyMember.length) {
+        return res.status(404).json({
+            "message": "Membership does not exist for this User"
+        })
+    }
+
+
+//? Confirm current user is Organizer:
+if(user.id === group.organizerId) {
+    await destroyMember[0].destroy();
+    res.json({
+        "message": "Successfully deleted membership from group"
+      })
+} 
+
+    if(currUser[0].userId === memberId) {
+        await destroyMember[0].destroy();
+        res.json({
+            "message": "Successfully deleted membership from group"
+          })
+    }
+        
+    
+    res.status(403).json({
+            "error": "Authorization required",
+            "message": "Only group organizer, or authorized member, is authorized to do that"
+        })
+
+})
+
+
+
+
+
+
+//! LAST FOR DELETE'S
 //* DELETE A GROUP
 router.delete('/:groupId', requireAuth, async (req, res, next) => {
     const user = req.user;
