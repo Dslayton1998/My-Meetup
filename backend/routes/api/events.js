@@ -247,6 +247,8 @@ router.get('/:eventId', async (req, res, next) => {
     res.json(event[0])
 });
 
+
+
 //* EDIT AN EVENT
 router.put('/:eventId', requireAuth, validateEvents, async (req, res, next) => {
     const user = req.user
@@ -317,6 +319,14 @@ router.put('/:eventId', requireAuth, validateEvents, async (req, res, next) => {
         }
     } 
 });
+
+
+
+//* ADD IMAGE TO EVENT 
+router.post('/:eventId/images', requireAuth, async (req, res, next) => {
+    //! attendance status has to be attending
+    //! or be a organizer or co-host 
+})
 
 
 
