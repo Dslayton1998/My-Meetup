@@ -222,11 +222,64 @@ router.put('/:eventId', requireAuth, validateEvents, async (req, res, next) => {
             })
         }
     } 
+});
+
+
+
+//* DELETE A EVENT
+router.delete('/:eventId', requireAuth, async (req, res, next) => {
+    const user = req.user
+    const { eventId } = req.params;
+    const events = await Event.findByPk(eventId);
+
+
+    if(!events) {
+          return res.status(404).json({
+            message: "Event couldn't be found"
+        })
+    }
+    const event = events.toJSON();
+
+    const group = await Group.findAll({
+        where: {
+            id: event.groupId
+        }
+    });
+
+    const organizer = group.map(ele => {
+        const arr = ele.toJSON();
+        return arr
+    });
+    // console.log("here", organizer)
+
+    const getMembers = await Membership.findAll({
+        where: {
+            status: "co-host"
+        }
+    })
+    // console.log(member)
+    const members = getMembers.map(ele => {
+        const arr = ele.toJSON();
+        return arr
+    });
+    
+    for(let i = 0; i < members.length; i++) {
+        const member = members[i]
+        if(user.id === organizer[0].organizerId || user.id === member.userId && organizer[0].id === member.groupId) {
+            await events.destroy();
+
+            res.json({
+                "message": "Successfully deleted"
+            })
+
+        } else {
+            return res.status(403).json({
+                "error": "Authorization required",
+                "message": "Only group organizer, or co-host, is authorized to do that"
+            })
+        }
+    } 
 })
-
-
-
-
 
 
 
