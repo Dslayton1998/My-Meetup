@@ -601,6 +601,7 @@ router.get('/:groupId/events', async (req, res, next) => {
 });
 
 
+//* GET ALL MEMBERS OF GROUP BY ID
 router.get('/:groupId/members', async (req, res, next) => {
     const { groupId } = req.params
     const user = req.user;
