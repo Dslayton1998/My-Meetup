@@ -141,12 +141,12 @@ router.post('/:eventId/images', requireAuth, async (req, res, next) => {
         } else {
             return res.status(403).json({
                 "error": "Authorization required",
-                message: "Only group organizer, or co-host, is authorized to do that"
+                "message": "Only group organizer, or co-host, is authorized to do that"
             })
         }
     } else {
         return res.status(403).json({
-            message: "Must be a group member to do this."
+            "message": "Must be a member of this group to perform this action."
         })
     }
 
