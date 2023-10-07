@@ -1,7 +1,7 @@
 const express = require('express')
 const { Op } = require('sequelize');
 const bcrypt = require('bcryptjs');
-const { Event, Group, Venue, EventImage, Membership  } = require('../../db/models');
+const { Event, Group, Venue, EventImage, Membership, Attendance, User  } = require('../../db/models');
 
 //? Validating Group Request Body (& middleware)
 const { check } = require('express-validator');
@@ -104,6 +104,100 @@ router.get('/', async (req, res, next) => {
 
 
 
+//* GET ALL ATTENDEES OF EVENT
+router.get('/:eventId/attendees', async (req, res, next) => {
+    const user = req.user
+    const { eventId } = req.params
+    const getEvent = await Event.findByPk(eventId);
+    if(!getEvent) {
+        return res.status(404).json({
+            "message": "Event couldn't be found"
+          })
+    }
+    const event = getEvent.toJSON();
+
+    const getGroup = await Group.findByPk(event.groupId);
+    const group = getGroup.toJSON();
+
+    const getMembers = await Membership.findAll({
+        where: {
+            userId: user.id,
+            groupId: group.id,
+            status: 'co-host'
+        }
+    });
+    console.log("GET MEMBERS", getMembers)
+    const member = getMembers.map(ele => {
+        const arr = ele.toJSON();
+        return arr
+    });
+    console.log("MEMBER", member)
+  const resObj = {
+    Attendees: []
+  };
+     
+    if(user.id === group.organizerId || member.length) {
+ 
+        const getAttendance = await Attendance.findAll();
+        const attendees = getAttendance.map(ele => {
+            const arr = ele.toJSON();
+            return arr
+        });
+
+        for(let i = 0; i < attendees.length; i++) {
+            const attendeeObj = {};
+            const attendee = attendees[i]; //* get status from here
+            const statusObj = {status: attendee.status};
+
+            const attendeeInfo = await User.findByPk(attendee.userId);
+            const userData = attendeeInfo.toJSON();
+
+            attendeeObj.id = userData.id
+            attendeeObj.firstName = userData.firstName
+            attendeeObj.lastName = userData.lastName
+            attendeeObj.Attendance = statusObj;
+            resObj.Attendees.push(attendeeObj)
+        }
+
+        res.json(resObj)
+
+    } else {
+        const getAttendance = await Attendance.findAll();
+        const attendees = getAttendance.map(ele => {
+            const arr = ele.toJSON();
+            return arr
+        });
+        const notPending = [];
+        // const attendeeObj = {};
+
+        for(let i = 0; i < attendees.length; i++) {
+            const attendee = attendees[i]; //* get status from here
+            if(attendee.status !== 'Pending') {notPending.push(attendee)};
+        }
+
+        for(let i = 0; i < notPending.length; i++) {
+            const attendeeObj = {};
+            const attendee = notPending[i];
+            const statusObj = {status: attendee.status};
+            const attendeeInfo = await User.findByPk(attendee.userId);
+            const userData = attendeeInfo.toJSON();
+
+                attendeeObj.id = userData.id
+                attendeeObj.firstName = userData.firstName
+                attendeeObj.lastName = userData.lastName
+                attendeeObj.Attendance = statusObj;
+            
+            resObj.Attendees.push(attendeeObj)
+        }
+
+        
+        res.json(resObj)
+    }
+})
+
+
+
+//! LAST
 //* GET DETAILS OF EVENT BY ITS ID
 router.get('/:eventId', async (req, res, next) => {
     const { eventId } = req.params;
