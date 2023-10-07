@@ -110,4 +110,48 @@ router.get('/:eventId', async (req, res, next) => {
     res.json(event[0])
 });
 
+
+router.put('/events/:eventId', requireAuth, async (req, res, next) => {
+    const user = req.user;
+    const { eventId } = req.params;
+    const events = await Event.findByPk(eventId);
+    const eventsArr = events.toJSON();
+    console.log(eventsArr)
+    //? Confirm the requested Group exists
+    if(!group) {
+        return res.status(404).json({
+            "message": "Group couldn't be found"
+        })
+    }
+
+//? Check which members of the group have permission
+    const validUser = [];
+    const getMembers = await Membership.findAll({
+        where: {
+            groupId: groupId
+        }
+    });
+    const members = getMembers.map((member) => {
+        const arr = member.toJSON();
+        return arr
+        //* Array of Memberships objects
+    });
+    members.forEach(member => {
+        if(member.status === 'co-host' && user.id === member.userId) {
+            validUser.push(member)
+        }
+    })
+
+
+//? Check if user has Authorization('co-host', 'organizer'):
+    if(user.id === group.organizerId || validUser.length) {}
+})
+
+
+
+
+
+
+
+
 module.exports = router;
