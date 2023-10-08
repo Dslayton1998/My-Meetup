@@ -103,7 +103,7 @@ router.get('/', async (req, res, next) => {
 });
 
 
-//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! COME BACK TO IT
+//* ADD IMAGE TO EVENT
 router.post('/:eventId/images', requireAuth, async (req, res, next) => {
     const user = req.user;
     const { url, preview } = req.body;
@@ -123,15 +123,16 @@ router.post('/:eventId/images', requireAuth, async (req, res, next) => {
         userId: user.id
       }
     });
+    console.log(membership)
     
     const attendance = await event.getAttendances({
       where:{
         userId: user.id
       }
     });
-//! REQUIRES FUTURE TESTING !!!!!!!!!
+
     if(membership.length) {
-        if(membership[0].status === "co-host" || user.id === group.organizerId || attendance[0].status === "Attending") {
+        if(membership[0].status === "co-host") {
             const newEventImg = await EventImage.create({ url, preview });
             const resObj = {};
             resObj.id = newEventImg.id
@@ -144,6 +145,14 @@ router.post('/:eventId/images', requireAuth, async (req, res, next) => {
                 "message": "Only group organizer, or co-host, is authorized to do that"
             })
         }
+    } else if(user.id === group.organizerId || attendance[0].status === "Attending") {
+        const newEventImg = await EventImage.create({ url, preview });
+            const resObj = {};
+            resObj.id = newEventImg.id
+            resObj.url = newEventImg.url
+            resObj.preview = newEventImg.preview
+            res.json(resObj)
+
     } else {
         return res.status(403).json({
             "message": "Must be a member of this group to perform this action."
