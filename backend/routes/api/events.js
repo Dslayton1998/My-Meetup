@@ -103,6 +103,108 @@ router.get('/', async (req, res, next) => {
 });
 
 
+//* ADD IMAGE TO EVENT
+router.post('/:eventId/images', requireAuth, async (req, res, next) => {
+    const user = req.user;
+    const { url, preview } = req.body;
+    const { eventId } = req.params;
+    const event = await Event.findByPk(eventId);
+
+    if(!event){
+        return res.status(404).json({
+            message: "Event couldn't be found"
+        })
+    }
+
+    const group = await event.getGroup();
+
+    const membership = await group.getMemberships({
+      where:{
+        userId: user.id
+      }
+    });
+    console.log(membership)
+    
+    const attendance = await event.getAttendances({
+      where:{
+        userId: user.id
+      }
+    });
+
+    if(membership.length) {
+        if(membership[0].status === "co-host") {
+            const newEventImg = await EventImage.create({ url, preview });
+            const resObj = {};
+            resObj.id = newEventImg.id
+            resObj.url = newEventImg.url
+            resObj.preview = newEventImg.preview
+            res.json(resObj)
+        } else {
+            return res.status(403).json({
+                "error": "Authorization required",
+                "message": "Only group organizer, or co-host, is authorized to do that"
+            })
+        }
+    } else if(user.id === group.organizerId || attendance[0].status === "Attending") {
+        const newEventImg = await EventImage.create({ url, preview });
+            const resObj = {};
+            resObj.id = newEventImg.id
+            resObj.url = newEventImg.url
+            resObj.preview = newEventImg.preview
+            res.json(resObj)
+
+    } else {
+        return res.status(403).json({
+            "message": "Must be a member of this group to perform this action."
+        })
+    }
+
+})
+
+
+
+router.put('/:eventId', requireAuth, validateEvents, async (req, res, next) => {
+    const user = req.user
+    const { eventId } = req.params;
+    const { venueId, name, type, capacity, price, description, startDate, endDate } = req.body;
+    const venue = await Venue.findByPk(venueId);
+    const event = await Event.findByPk(eventId)
+
+    if(!venue) {
+        return res.status(404).json({
+            message: "Venue couldn't be found"
+        })
+    }
+
+    if(!event) {
+          return res.status(404).json({
+            message: "Event couldn't be found"
+        })
+    }
+
+    const group = await Group.findAll({
+        where: {
+            id: event.groupId
+        }
+    });
+    const organizer = group.forEach(ele => {
+        const arr = ele.toJSON();
+        return arr
+    });
+    console.log(organizer)
+
+    const member = await Membership.findAll({
+        where: {
+            status: "co-host"
+        }
+    })
+
+
+    
+
+})
+
+
 
 //* GET ALL ATTENDEES OF EVENT
 router.get('/:eventId/attendees', async (req, res, next) => {

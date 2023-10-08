@@ -36,6 +36,11 @@ module.exports = {
       eventId: 1,
       userId: 1,
       status: 'Attending'
+    },
+    {
+      eventId: 1,
+      userId: 3,
+      status: "Attending"
     }
    ], options, {validate: true})
   },

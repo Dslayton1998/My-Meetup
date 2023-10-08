@@ -39,7 +39,7 @@ const validateGroups = [ //*https://express-validator.github.io/docs/api/validat
    handleValidationErrors
   ];
 
-  const validateVenue = [
+const validateVenue = [
     check('address')
         .exists({ checkFalsy: true })
         .withMessage('Street address is required'),
@@ -62,7 +62,7 @@ const validateGroups = [ //*https://express-validator.github.io/docs/api/validat
     handleValidationErrors
     ];
 
-    const validateEvents = [
+const validateEvents = [
         check('venueId')
             .custom(async val => {
                 if(val === null) return true
