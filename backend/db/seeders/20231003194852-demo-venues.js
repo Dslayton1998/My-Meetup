@@ -24,17 +24,49 @@ module.exports = {
    await Venue.bulkCreate([
     {
       groupId: 1,
-      address: "First Fake Street",
-      city: "Not real",
-      state: "Missouri",
+      address: "1st Fake Street",
+      city: "Gotham",
+      state: "New Jersey",
       lat: 24.25,
       lng: 89.98
     },
     {
       groupId: 2,
-      address: "Another fake Street",
-      city: "Pretend Land",
-      state: 'Texas',
+      address: "2nd Fake Street",
+      city: "Metropolis",
+      state: 'New York',
+      lat: 23.32,
+      lng: 67.76
+    },
+    {
+      groupId: 3,
+      address: "3rd Fake Street",
+      city: "Star City",
+      state: 'San Francisco',
+      lat: 23.32,
+      lng: 67.76
+    },
+    {
+      groupId: 4,
+      address: "The bats place",
+      city: "Gotham",
+      state: 'New Jersey',
+      lat: 23.32,
+      lng: 67.76
+    },
+    {
+      groupId: 5,
+      address: "The Moon",
+      city: "Outer",
+      state: 'Space',
+      lat: 23.32,
+      lng: 67.76
+    },
+    {
+      groupId: 6,
+      address: '"Paradise island"',
+      city: "the Island",
+      state: 'Themyscira',
       lat: 23.32,
       lng: 67.76
     }
