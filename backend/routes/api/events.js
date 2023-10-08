@@ -103,6 +103,80 @@ router.get('/', async (req, res, next) => {
 });
 
 
+//* REQUEST TO ATTEND AN EVENT
+router.post('/:eventId/attendance', requireAuth, async (req, res, next) => {
+    const { eventId } = req.params;
+    const user = req.user;
+    const getEvent = await Event.findByPk(eventId);
+    if(!getEvent) {
+        return res.status(404).json({
+            "message": "Event couldn't be found"
+          })
+    }
+    const event = getEvent.toJSON();
+    const getGroup = await Group.findByPk(event.groupId);
+    const group = getGroup.toJSON();
+    const getMembers = await Membership.findAll({
+        where: {
+            userId: user.id,
+            groupId: group.id
+        }
+    });
+    const member = getMembers.map(ele => {
+        const arr = ele.toJSON();
+        return arr
+    });
+
+
+    const getAttendance = await Attendance.findAll({
+        where: {
+            eventId: event.id,
+            userId: user.id
+        }
+    });
+    const attendance = getAttendance.map(ele => {
+        const arr = ele.toJSON();
+        return arr
+    });
+
+    if(!getAttendance.length) {
+        if(member.length && member[0].status !== "pending") { //! probs don't need organizer
+            const resObj = {};
+            const attendanceRequest = await Attendance.create({
+                eventId,
+                userId: user.id,
+                status: "Pending"
+            });
+    
+            resObj.userId = attendanceRequest[0].id //* might not need [0]
+            resObj.status = attendanceRequest[0].status
+    
+            return res.json(resObj)
+        } else {
+            return res.status(400).json({
+                "message": "Must be a group member to send this request."
+            })
+        }
+    } else {
+        if(attendance[0].status === 'Pending') {
+           return res.status(400).json({
+                "message": "Attendance has already been requested"
+              })
+        }
+
+        if(attendance[0].status === 'Attending') {
+           return res.status(400).json({
+                "message": "User is already an attendee of the event"
+              })
+        }
+    }
+
+})
+
+
+
+
+
 //* ADD IMAGE TO EVENT
 router.post('/:eventId/images', requireAuth, async (req, res, next) => {
     const user = req.user;
@@ -158,49 +232,6 @@ router.post('/:eventId/images', requireAuth, async (req, res, next) => {
             "message": "Must be a member of this group to perform this action."
         })
     }
-
-})
-
-
-
-router.put('/:eventId', requireAuth, validateEvents, async (req, res, next) => {
-    const user = req.user
-    const { eventId } = req.params;
-    const { venueId, name, type, capacity, price, description, startDate, endDate } = req.body;
-    const venue = await Venue.findByPk(venueId);
-    const event = await Event.findByPk(eventId)
-
-    if(!venue) {
-        return res.status(404).json({
-            message: "Venue couldn't be found"
-        })
-    }
-
-    if(!event) {
-          return res.status(404).json({
-            message: "Event couldn't be found"
-        })
-    }
-
-    const group = await Group.findAll({
-        where: {
-            id: event.groupId
-        }
-    });
-    const organizer = group.forEach(ele => {
-        const arr = ele.toJSON();
-        return arr
-    });
-    console.log(organizer)
-
-    const member = await Membership.findAll({
-        where: {
-            status: "co-host"
-        }
-    })
-
-
-    
 
 })
 
@@ -421,14 +452,6 @@ router.put('/:eventId', requireAuth, validateEvents, async (req, res, next) => {
         }
     } 
 });
-
-
-
-//* ADD IMAGE TO EVENT 
-router.post('/:eventId/images', requireAuth, async (req, res, next) => {
-    //! attendance status has to be attending
-    //! or be a organizer or co-host 
-})
 
 
 
