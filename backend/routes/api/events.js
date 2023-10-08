@@ -382,7 +382,7 @@ router.get('/:eventId', async (req, res, next) => {
 
 
 
-//* CHANGE STATUS OF ATTENDANCE FOR EVETN
+//* CHANGE STATUS OF ATTENDANCE FOR EVENT
 router.put('/:eventId/attendance', requireAuth, async (req, res, next) => {
     const user = req.user;
     const { userId, status } = req.body;
@@ -524,7 +524,63 @@ router.put('/:eventId', requireAuth, validateEvents, async (req, res, next) => {
 
 
 //* DELETE ATTENDANCE TO AN EVENT
+router.delete('/:eventId/attendance', requireAuth, async (req, res, next) => {
+    const user = req.user;
+    const { eventId } = req.params;
+    const { userId } = req.body;
 
+
+    const getEvent = await Event.findByPk(eventId);
+    if(!getEvent) {
+        return res.status(404).json({
+            "message": "Event couldn't be found"
+          })
+    }
+    const event = getEvent.toJSON();
+    const getGroup = await Group.findByPk(event.groupId);
+    if(!getGroup) {
+        return res.status(404).json({
+            "message": "Group couldn't be found"
+          })
+    }
+    const group = getGroup.toJSON();
+    const getMembership = await Membership.findAll({
+        where: {
+            groupId: group.id,
+            userId: userId
+        }
+    });
+    if(!getMembership) {
+        return res.status(404).json({
+            "message": "Group member couldn't be found"
+          })
+    }
+
+    const getAttendance = await Attendance.findAll({
+        where: {
+            userId: userId,
+            eventId: event.id
+        }
+    });
+
+    if(!getAttendance.length) {
+        return res.status(404).json({
+            "message": "Attendance does not exist for this User"
+          })
+    }
+
+    if(userId === user.id || user.id === group.organizerId) {
+        await getAttendance[0].destroy();
+
+        return res.json({
+            "message": "Successfully deleted attendance from event"
+          })
+    } else {
+        return res.status(403).json({
+            "message": "Only the User or organizer may delete an Attendance"
+          })
+    }
+})
 
 
 //! LAST
