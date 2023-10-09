@@ -21,10 +21,11 @@ router.delete('/:imageId', requireAuth, async (req, res, next) => {
             "message": "Event Image couldn't be found"
           })
     };
-
+    console.log(getEventImage)
     const getEvent = await Event.findByPk(getEventImage.eventId);
-
+    console.log(getEvent)
     const getGroup = await Group.findByPk(getEvent.groupId);
+    console.log(getGroup)
 
     const getMemberships = await Membership.findAll({
         where: {
@@ -43,6 +44,7 @@ router.delete('/:imageId', requireAuth, async (req, res, next) => {
           });
     } else {
         return res.status(403).json({
+            "error": "Authorization required",
             "message": "Only members with status of, co-host, or organizer may delete an image" 
           })
     }
