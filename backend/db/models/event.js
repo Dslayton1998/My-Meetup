@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      Event.hasMany(models. Attendance, {
+      Event.hasMany(models.Attendance, {
         foreignKey: 'eventId',
         onDelete: 'CASCADE',
         hooks: true
@@ -35,8 +35,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Event.init({
     venueId: {
-      type: DataTypes.INTEGER,
-      allowNull: false
+      type: DataTypes.INTEGER
     }, 
     groupId: {
       type: DataTypes.INTEGER,
@@ -46,7 +45,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       allowNull: false,
       validate: {
-        len: [5, 60]
+        min: 5
       }
     }, 
     description: {
@@ -55,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
     }, 
     type: {
       type: DataTypes.ENUM,
-      values: ['Online', 'In Person'],
+      values: ['Online', 'In person'],
       allowNull: false
     }, 
     capacity: {
@@ -63,7 +62,7 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false
     }, 
     price: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.DECIMAL,
       allowNull: false,
       validate: {
         min: 0
@@ -71,7 +70,7 @@ module.exports = (sequelize, DataTypes) => {
     }, 
     startDate: {
       type: DataTypes.DATE,
-      allowNull: false //! Maybe something else?
+      allowNull: false 
     }, 
     endDate: {
       type: DataTypes.DATE,

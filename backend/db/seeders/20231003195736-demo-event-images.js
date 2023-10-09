@@ -23,15 +23,65 @@ module.exports = {
     */
    await EventImage.bulkCreate([
     {
-      eventId:1 ,
-      url: "ThisIsFake.com",
+      eventId: 1,
+      url: 'SuchAFakeUrl.com',
+      preview: true
+    },
+    {
+      eventId: 1,
+      url: 'anotherFakeUrl.com',
       preview: false
     },
     {
-      eventId:2 ,
-      url: 'ThisIsAlsoFake.com',
+      eventId: 2,
+      url: 'anotherFakeUrl.com',
+      preview: false
+    },
+    {
+      eventId: 2,
+      url: 'anotherFakeUrl.com',
       preview: true
-    }
+    },
+    {
+      eventId: 3,
+      url: 'anotherFakeUrl.com',
+      preview: false
+    },
+    {
+      eventId: 3,
+      url: 'anotherFakeUrl.com',
+      preview: true
+    },
+    {
+      eventId: 4,
+      url: 'anotherFakeUrl.com',
+      preview: false
+    },
+    {
+      eventId: 4,
+      url: 'anotherFakeUrl.com',
+      preview: true
+    },
+    {
+      eventId: 5,
+      url: 'anotherFakeUrl.com',
+      preview: false
+    },
+    {
+      eventId: 5,
+      url: 'anotherFakeUrl.com',
+      preview: true
+    },
+    {
+      eventId: 6,
+      url: 'anotherFakeUrl.com',
+      preview: false
+    },
+    {
+      eventId: 6,
+      url: 'anotherFakeUrl.com',
+      preview: true
+    },
    ], options, {validate: true})
   },
 
@@ -45,7 +95,7 @@ module.exports = {
     options.tableName = 'EventImages';
     const Op = Sequelize.Op;
     return queryInterface.bulkDelete(options, {
-      eventId: { [Op.in]: [1,2] }
+      eventId: { [Op.in]: [1,2,3,4,5,6] }
     }, {});
   }
 };

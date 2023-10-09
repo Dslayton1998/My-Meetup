@@ -28,10 +28,60 @@ module.exports = {
       preview: true
     },
     {
+      groupId: 1,
+      url: 'anotherFakeUrl.com',
+      preview: false
+    },
+    {
       groupId: 2,
       url: 'anotherFakeUrl.com',
       preview: false
-    }
+    },
+    {
+      groupId: 2,
+      url: 'anotherFakeUrl.com',
+      preview: true
+    },
+    {
+      groupId: 3,
+      url: 'anotherFakeUrl.com',
+      preview: false
+    },
+    {
+      groupId: 3,
+      url: 'anotherFakeUrl.com',
+      preview: true
+    },
+    {
+      groupId: 4,
+      url: 'anotherFakeUrl.com',
+      preview: false
+    },
+    {
+      groupId: 4,
+      url: 'anotherFakeUrl.com',
+      preview: true
+    },
+    {
+      groupId: 5,
+      url: 'anotherFakeUrl.com',
+      preview: false
+    },
+    {
+      groupId: 5,
+      url: 'anotherFakeUrl.com',
+      preview: true
+    },
+    {
+      groupId: 6,
+      url: 'anotherFakeUrl.com',
+      preview: false
+    },
+    {
+      groupId: 6,
+      url: 'anotherFakeUrl.com',
+      preview: true
+    },
    ], options, {validate: true})
   },
 
@@ -45,7 +95,7 @@ module.exports = {
     options.tableName = 'GroupImages';
     const Op = Sequelize.Op;
     return queryInterface.bulkDelete(options, {
-      groupId: { [Op.in]: [1,2] }
+      groupId: { [Op.in]: [1,2,3,4,5,6] }
     }, {});
   }
 };
