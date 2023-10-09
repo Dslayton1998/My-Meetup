@@ -26,8 +26,6 @@ const validateGroups = [ //*https://express-validator.github.io/docs/api/validat
       .isIn(['Online','In person'])
       .withMessage("Type must be Online or In person"), 
     check('private')
-      .exists({ checkFalsy: true })
-      .withMessage('A private status is required')
       .isBoolean()
       .withMessage("Private must be a boolean"),
     check('city')
@@ -113,7 +111,7 @@ const router = express.Router();
 // CODE HERE 
 
 //* CREATE A GROUP
-router.post('/', validateGroups, requireAuth, async (req, res, next) => {
+router.post('/', requireAuth, validateGroups, async (req, res, next) => {
     const { name, about, type, private, city, state } = req.body;
     const organizer = req.user
                         //* ^ console.log(req)
@@ -309,7 +307,7 @@ router.post('/:groupId/images', requireAuth, async (req, res, next) => {
     
     
 //*CREATE NEW VENUE FOR A GROUP BY ID
-router.post('/:groupId/venues', validateVenue, requireAuth, async (req, res, next) => {
+router.post('/:groupId/venues', requireAuth, validateVenue, async (req, res, next) => {
     const { address, city, state, lat, lng } = req.body
     const user = req.user;
 
@@ -586,6 +584,7 @@ router.put('/:groupId/membership', requireAuth, async(req, res, next) =>{
         if(currUser.status === "co-host") { //* IF THEY ARE ONLY CO-HOST
             if(status === "co-host") {
                return res.status(403).json({
+                    "error": "Authorization required",
                     "message": "Only group organizer can promote member to co-host."
                 })
             };
@@ -597,6 +596,7 @@ router.put('/:groupId/membership', requireAuth, async(req, res, next) =>{
             res.json(resObj)
         } else {
            return res.status(403).json({
+                "error": "Authorization required",
                 "message": "Only group organizer, or co-host, are allowed to make changes"
             })
         }
@@ -644,6 +644,18 @@ router.delete('/:groupId/membership', requireAuth, async (req, res, next) => {
     const user = req.user;
     const { memberId } = req.body;
     const { groupId } = req.params;
+    const checkUserMem = await Membership.findAll({
+        where: {
+            userId: user.id,
+            groupId: groupId
+        }
+    })
+    if(!checkUserMem.length) {
+        return res.status(404).json({
+            "error": "Authorization required",
+            "message": "Only members with status of, co-host, or organizer may delete an image"
+        })
+    }
     const group = await Group.findByPk(groupId);
     //? Confirm the requested Group exists
         if(!group) {
