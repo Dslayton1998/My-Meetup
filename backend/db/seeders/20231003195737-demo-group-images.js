@@ -95,7 +95,7 @@ module.exports = {
     options.tableName = 'GroupImages';
     const Op = Sequelize.Op;
     return queryInterface.bulkDelete(options, {
-      groupId: { [Op.in]: [1,2] }
+      groupId: { [Op.in]: [1,2,3,4,5,6] }
     }, {});
   }
 };

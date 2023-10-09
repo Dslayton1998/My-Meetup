@@ -54,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
     }, 
     type: {
       type: DataTypes.ENUM,
-      values: ['Online', 'In Person'],
+      values: ['Online', 'In person'],
       allowNull: false
     }, 
     capacity: {
@@ -70,7 +70,7 @@ module.exports = (sequelize, DataTypes) => {
     }, 
     startDate: {
       type: DataTypes.DATE,
-      allowNull: false //! Maybe something else?
+      allowNull: false 
     }, 
     endDate: {
       type: DataTypes.DATE,

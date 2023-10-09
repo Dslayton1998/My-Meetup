@@ -52,14 +52,136 @@ const validateEvents = [
         .withMessage("End date is less than start date"),
     handleValidationErrors
 ]
+const validateQuery = [
+    check('page')
+        .custom(value =>{
+            if(!value) {
+                return true 
+            };
+
+            if (value > 0) {
+                return true 
+            };
+
+            return false;
+        })
+        .withMessage('Page must be greater than or equal to 1')
+        .custom(value =>{
+            if(!value) {
+                return true 
+            };
+
+            if (isNaN(value)) {
+                return false
+            } else return true;
+        })
+        .withMessage('Page must be a integer'),
+    check('size')
+        .custom(value =>{
+            if(!value) {
+                return true 
+            };
+
+            if (value > 0) {
+                return true
+            }; 
+
+            return false;
+            })
+        .withMessage('Page must be greater than or equal to 1')
+        .custom(value =>{
+            if(!value) {
+                return true 
+            }; 
+
+            if (isNaN(value)) {
+                return false
+            } else return true;
+        })
+        .withMessage('Page must be a integer'),
+    check('name')
+        .custom(value =>{
+            if(!value) {
+                return true 
+            };
+
+            if (isNaN(value)) {
+                return true
+            } else return false;
+        }) 
+        .withMessage('Name must be a string'),
+    check('type')
+    .custom(value =>{
+        if(!value) {
+            return true 
+        };
+
+        if (value == 'Online' || value == 'In person') {
+            return true
+        } else return false;
+    }) 
+        .withMessage("Type must be 'Online' or 'In person'"),
+    check('startDate')
+    .custom(value =>{
+        if(!value) {
+            return true
+        }; 
+
+        if(typeof val !== "string") {
+            return false
+        }
+
+        if (isNaN(new Date(value).getTime())) {
+            return false
+        };
+
+        return true;
+    }) 
+        .withMessage("Start date must be a valid datetime"),
+
+    handleValidationErrors
+]
 
 const router = express.Router();
 
 // CODE GOES HERE
 
 //* GET ALL EVENTS ********NEEDS WORK *no time
-router.get('/', async (req, res, next) => { 
+router.get('/', validateQuery, async (req, res, next) => { 
+    let { page, size, name, type, startDate } = req.query;
+    const whereObj = {};
+// name: string, optional
+// type: string, optional
+// startDate: string, optional
+    if(name) {
+        whereObj.name = name
+    };
+    if(type) {
+        whereObj.type = type
+    };
+    if(startDate) {
+        whereObj.startDate = startDate
+    };
+
+
+
+const pagination = {};
+    if(!size) {
+        size = 20
+    };
+    if(size > 20) {
+        size = 20
+    };
+
+    if(!page) {
+        page = 1
+    };
+    if(page > 10) {
+        page = 10
+    }
+
     const getEvents = await Event.findAll({
+        where: {...whereObj},
         include: [
             {
                 model: Group,
@@ -71,8 +193,9 @@ router.get('/', async (req, res, next) => {
             }
         ],
         attributes:{
-            exclude: ["createdAt", "updatedAt"]
-        }
+            exclude: ["createdAt", "updatedAt", "description", "capacity", "price"]
+        },
+        ...pagination
     });
     const event = getEvents.map((event) => {
         const arr = event.toJSON();
@@ -88,7 +211,7 @@ router.get('/', async (req, res, next) => {
 
         const attendees = await getEvents[i].getAttendances({
             where:{
-                status: 'Attending'
+                status: 'attending'
             }
         });
 
@@ -140,31 +263,31 @@ router.post('/:eventId/attendance', requireAuth, async (req, res, next) => {
     });
 
     if(!getAttendance.length) {
-        if(member.length && member[0].status !== "pending") { //! probs don't need organizer
+        if(member.length && member[0].status !== "pending" || user.id === group.organizerId) { //! probs don't need organizer
             const resObj = {};
             const attendanceRequest = await Attendance.create({
                 eventId,
                 userId: user.id,
-                status: "Pending"
+                status: "pending"
             });
     
-            resObj.userId = attendanceRequest[0].id //* might not need [0]
-            resObj.status = attendanceRequest[0].status
+            resObj.userId = attendanceRequest.userId //* might not need [0]
+            resObj.status = attendanceRequest.status
     
             return res.json(resObj)
         } else {
-            return res.status(400).json({
+            return res.status(403).json({
                 "message": "Must be a group member to send this request."
             })
         }
     } else {
-        if(attendance[0].status === 'Pending') {
+        if(attendance[0].status === 'pending') {
            return res.status(400).json({
                 "message": "Attendance has already been requested"
               })
         }
 
-        if(attendance[0].status === 'Attending') {
+        if(attendance[0].status === 'attending') {
            return res.status(400).json({
                 "message": "User is already an attendee of the event"
               })
@@ -197,42 +320,59 @@ router.post('/:eventId/images', requireAuth, async (req, res, next) => {
         userId: user.id
       }
     });
-    console.log(membership)
     
     const attendance = await event.getAttendances({
       where:{
         userId: user.id
       }
     });
+    const attend = attendance.map(ele => {
+        const arr = ele.toJSON();
+        return arr
+    });
 
     if(membership.length) {
         if(membership[0].status === "co-host") {
-            const newEventImg = await EventImage.create({ url, preview });
+            const newEventImg = await EventImage.create({
+                eventId: event.id, 
+                url, 
+                preview 
+            });
             const resObj = {};
             resObj.id = newEventImg.id
             resObj.url = newEventImg.url
             resObj.preview = newEventImg.preview
-            res.json(resObj)
+            return res.json(resObj)
         } else {
-            return res.status(403).json({
-                "error": "Authorization required",
-                "message": "Only group organizer, or co-host, is authorized to do that"
-            })
+            if(attendance[0].status === "attending") {
+               const newEventImg = await EventImage.create({ url, preview });
+                   const resObj = {};
+                   resObj.id = newEventImg.id
+                   resObj.url = newEventImg.url
+                   resObj.preview = newEventImg.preview
+                   res.json(resObj)
+           } else {
+               return res.status(403).json({
+                   "error": "Authorization required",
+                   "message": "Only group organizer, co-host, or attending member is authorized to do that"
+               })
+           }
         }
-    } else if(user.id === group.organizerId || attendance[0].status === "Attending") {
-        const newEventImg = await EventImage.create({ url, preview });
-            const resObj = {};
-            resObj.id = newEventImg.id
-            resObj.url = newEventImg.url
-            resObj.preview = newEventImg.preview
-            res.json(resObj)
-
-    } else {
-        return res.status(403).json({
-            "message": "Must be a member of this group to perform this action."
-        })
-    }
-
+    } 
+    
+    if(user.id === group.organizerId) {
+        const newEventImg = await EventImage.create({eventId: event.id, url, preview });
+                   const resObj = {};
+                   resObj.id = newEventImg.id
+                   resObj.url = newEventImg.url
+                   resObj.preview = newEventImg.preview
+                   res.json(resObj)
+           } else {
+               return res.status(403).json({
+                   "error": "Authorization required",
+                   "message": "Only group organizer, co-host, or attending member is authorized to do that"
+               })
+           }
 })
 
 
@@ -248,6 +388,7 @@ router.get('/:eventId/attendees', async (req, res, next) => {
           })
     }
     const event = getEvent.toJSON();
+    console.log(event)
 
     const getGroup = await Group.findByPk(event.groupId);
     const group = getGroup.toJSON();
@@ -259,19 +400,23 @@ router.get('/:eventId/attendees', async (req, res, next) => {
             status: 'co-host'
         }
     });
-    console.log("GET MEMBERS", getMembers)
+
     const member = getMembers.map(ele => {
         const arr = ele.toJSON();
         return arr
     });
-    console.log("MEMBER", member)
+
   const resObj = {
     Attendees: []
   };
      
     if(user.id === group.organizerId || member.length) {
  
-        const getAttendance = await Attendance.findAll();
+        const getAttendance = await Attendance.findAll({
+            where: {
+                eventId: event.id
+            }
+        });
         const attendees = getAttendance.map(ele => {
             const arr = ele.toJSON();
             return arr
@@ -292,10 +437,14 @@ router.get('/:eventId/attendees', async (req, res, next) => {
             resObj.Attendees.push(attendeeObj)
         }
 
-        res.json(resObj)
+        return res.json(resObj)
 
     } else {
-        const getAttendance = await Attendance.findAll();
+        const getAttendance = await Attendance.findAll({
+            where: {
+                eventId: event.id
+            }
+        });
         const attendees = getAttendance.map(ele => {
             const arr = ele.toJSON();
             return arr
@@ -305,7 +454,7 @@ router.get('/:eventId/attendees', async (req, res, next) => {
 
         for(let i = 0; i < attendees.length; i++) {
             const attendee = attendees[i]; //* get status from here
-            if(attendee.status !== 'Pending') {notPending.push(attendee)};
+            if(attendee.status !== 'pending') {notPending.push(attendee)};
         }
 
         for(let i = 0; i < notPending.length; i++) {
@@ -324,7 +473,7 @@ router.get('/:eventId/attendees', async (req, res, next) => {
         }
 
         
-        res.json(resObj)
+        return res.json(resObj)
     }
 })
 
@@ -336,7 +485,7 @@ router.get('/:eventId', async (req, res, next) => {
     const { eventId } = req.params;
     const getEvents = await Event.findAll({
         where: {
-            id: req.params.eventId,
+            id: eventId,
         },
             include: [
                 {
@@ -357,7 +506,7 @@ router.get('/:eventId', async (req, res, next) => {
             }
     });
 
-    if(!getEvents) {
+    if(!getEvents.length) {
         return res.status(404).json({
             "message": "Event couldn't be found"
         })
@@ -371,7 +520,7 @@ router.get('/:eventId', async (req, res, next) => {
     for(let i = 0; i < getEvents.length; i++) {
         const attendees = await getEvents[i].getAttendances({
             where:{
-                status: 'Attending'
+                status: 'attending'
             }
         });
         event[i].numAttending = attendees.length;
@@ -438,7 +587,7 @@ router.put('/:eventId/attendance', requireAuth, async (req, res, next) => {
         status
        };
 
-       res.json(resObj); //! finished here, need to run testing !\\
+       res.json(resObj); 
     } else {
         return res.status(403).json({
             "message": "Must be the owner of this group, or co-host, to perform this action."
@@ -458,25 +607,32 @@ router.put('/:eventId', requireAuth, validateEvents, async (req, res, next) => {
     const venue = await Venue.findByPk(venueId);
     const events = await Event.findByPk(eventId);
 
-    if(!venue) {
-        return res.status(404).json({
-            message: "Venue couldn't be found"
-        })
-    }
-
+    
     if(!events) {
-          return res.status(404).json({
+        return res.status(404).json({
             message: "Event couldn't be found"
         })
     }
     const event = events.toJSON();
-
+    
     const group = await Group.findAll({
         where: {
             id: event.groupId
         }
     });
-
+    console.log("HERE", group[0].id)
+    const groupVenues = await Venue.findAll({
+        where: {
+            id: venueId,
+            groupId: group[0].id,
+        }
+    });
+    
+    if(!groupVenues.length) { 
+        return res.status(404).json({
+            message: "Venue couldn't be found"
+        })
+    }
     const organizer = group.map(ele => {
         const arr = ele.toJSON();
         return arr
@@ -510,7 +666,7 @@ router.put('/:eventId', requireAuth, validateEvents, async (req, res, next) => {
                 endDate: update.endDate
             };
 
-            res.json(resObj);
+            return res.json(resObj);
 
         } else {
             return res.status(403).json({

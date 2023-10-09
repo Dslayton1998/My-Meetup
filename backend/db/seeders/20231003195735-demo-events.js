@@ -26,7 +26,7 @@ module.exports = {
       groupId: 1,
       name: 'Dock-of-the-Bay Beat-down',
       description: "Got some intel that some big stuff going down at the docks. Who's in?",
-      type: 'In Person',
+      type: 'In person',
       capacity: 20,
       price: 0,
       startDate: "06-05-2023",
@@ -37,7 +37,7 @@ module.exports = {
       groupId: 2,
       name: 'Crime Time',
       description: "This city gets better, when we fight crime together!",
-      type: 'In Person',
+      type: 'In person',
       capacity: 40,
       price: 0,
       startDate: "08-12-2023" ,
@@ -48,7 +48,7 @@ module.exports = {
       groupId: 3,
       name: 'Bird Watching!',
       description: "Just us birds watching the city!",
-      type: 'In Person',
+      type: 'In person',
       capacity: 20,
       price: 0,
       startDate: "08-14-2023" ,
@@ -59,7 +59,7 @@ module.exports = {
       groupId: 4,
       name: 'Poker Night',
       description: "Still at the bats place this time, bring $50 for the pot, BYOB.",
-      type: 'In Person',
+      type: 'In person',
       capacity: 40,
       price: 50,
       startDate: "09-12-2023" ,
@@ -70,7 +70,7 @@ module.exports = {
       groupId: 5,
       name: 'Meet-up',
       description: "I require Intel, please be present and punctual.",
-      type: 'In Person',
+      type: 'In person',
       capacity: 35,
       price: 0,
       startDate: "08-21-2023" ,
@@ -81,7 +81,7 @@ module.exports = {
       groupId: 6,
       name: 'Spa-Day',
       description: "It's Island time ladies! bring money for the gift shop!",
-      type: 'In Person',
+      type: 'In person',
       capacity: 40,
       price: 40,
       startDate: "10-12-2023" ,
@@ -100,7 +100,7 @@ module.exports = {
     options.tableName = 'Events';
     const Op = Sequelize.Op;
     return queryInterface.bulkDelete(options, {
-      groupId: { [Op.in]: [1,2] }
+      groupId: { [Op.in]: [1,2,3,4,5,6] }
     }, {});
   }
 };
