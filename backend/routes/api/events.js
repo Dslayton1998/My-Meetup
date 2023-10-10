@@ -52,14 +52,137 @@ const validateEvents = [
         .withMessage("End date is less than start date"),
     handleValidationErrors
 ]
+const validateQuery = [
+    check('page')
+        .custom(value =>{
+            if(!value) {
+                return true 
+            };
+
+            if (value > 0) {
+                return true 
+            };
+
+            return false;
+        })
+        .withMessage('Page must be greater than or equal to 1')
+        .custom(value =>{
+            if(!value) {
+                return true 
+            };
+
+            if (isNaN(value)) {
+                return false
+            } else return true;
+        })
+        .withMessage('Page must be a integer'),
+    check('size')
+        .custom(value =>{
+            if(!value) {
+                return true 
+            };
+
+            if (value > 0) {
+                return true
+            }; 
+
+            return false;
+            })
+        .withMessage('Page must be greater than or equal to 1')
+        .custom(value =>{
+            if(!value) {
+                return true 
+            }; 
+
+            if (isNaN(value)) {
+                return false
+            } else return true;
+        })
+        .withMessage('Page must be a integer'),
+    check('name')
+        .custom(value =>{
+            if(!value) {
+                return true 
+            };
+
+            if (isNaN(value)) {
+                return true
+            } else return false;
+        }) 
+        .withMessage('Name must be a string'),
+    check('type')
+    .custom(value =>{
+        if(!value) {
+            return true 
+        };
+
+        if (value == 'Online' || value == 'In person') {
+            return true
+        } else return false;
+    }) 
+        .withMessage("Type must be 'Online' or 'In person'"),
+    check('startDate')
+    .custom(value =>{
+        if(!value) {
+            return true
+        }; 
+
+        if(typeof val !== "string") {
+            return false
+        };
+
+        if (isNaN(new Date(value).getTime())) {
+            return false
+        };
+
+        return true;
+    }) 
+        .withMessage("Start date must be a valid datetime"),
+
+    handleValidationErrors
+]
 
 const router = express.Router();
 
 // CODE GOES HERE
+
 //! GET's START
 //* GET ALL EVENTS 
-router.get('/', async (req, res, next) => { 
+router.get('/', validateQuery, async (req, res, next) => { 
+    let { page, size, name, type, startDate } = req.query;
+    const whereObj = {};
+// name: string, optional
+// type: string, optional
+// startDate: string, optional
+    if(name) {
+        whereObj.name = name
+    };
+    if(type) {
+        whereObj.type = type
+    };
+    if(startDate) {
+        whereObj.startDate = startDate
+    };
+
+
+
+const pagination = {};
+    if(!size) {
+        size = 20
+    };
+    if(size > 20) {
+        size = 20
+    };
+
+    if(!page) {
+        page = 1
+    };
+    if(page > 10) {
+        page = 10
+    }
+
     const getEvents = await Event.findAll({
+        where: {...whereObj},
         include: [
             {
                 model: Group,
@@ -71,8 +194,9 @@ router.get('/', async (req, res, next) => {
             }
         ],
         attributes:{
-            exclude: ["createdAt", "updatedAt"]
-        }
+            exclude: ["createdAt", "updatedAt", "description", "capacity", "price"]
+        },
+        ...pagination
     });
     const event = getEvents.map((event) => {
         const arr = event.toJSON();
