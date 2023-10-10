@@ -56,8 +56,8 @@ const validateEvents = [
 const router = express.Router();
 
 // CODE GOES HERE
-
-//* GET ALL EVENTS ********NEEDS WORK *no time
+//! GET's START
+//* GET ALL EVENTS 
 router.get('/', async (req, res, next) => { 
     const getEvents = await Event.findAll({
         include: [
@@ -79,16 +79,13 @@ router.get('/', async (req, res, next) => {
         return arr
     });
 
-
-
-//!!!! CAN POSSIBLY MAKE APART OF ORIGINAL QUERY (alias?)
     for(let i = 0; i < getEvents.length; i++) {
         const image = await getEvents[i].getEventImages()
 
 
         const attendees = await getEvents[i].getAttendances({
             where:{
-                status: 'Attending'
+                status: 'attending'
             }
         });
 
@@ -101,154 +98,6 @@ router.get('/', async (req, res, next) => {
 
     res.json({"Events": event})
 });
-
-
-//* REQUEST TO ATTEND AN EVENT
-router.post('/:eventId/attendance', requireAuth, async (req, res, next) => {
-    const { eventId } = req.params;
-    const user = req.user;
-    const getEvent = await Event.findByPk(eventId);
-    if(!getEvent) {
-        return res.status(404).json({
-            "message": "Event couldn't be found"
-          })
-    }
-    const event = getEvent.toJSON();
-    const getGroup = await Group.findByPk(event.groupId);
-    const group = getGroup.toJSON();
-    const getMembers = await Membership.findAll({
-        where: {
-            userId: user.id,
-            groupId: group.id
-        }
-    });
-    const member = getMembers.map(ele => {
-        const arr = ele.toJSON();
-        return arr
-    });
-
-
-    const getAttendance = await Attendance.findAll({
-        where: {
-            eventId: event.id,
-            userId: user.id
-        }
-    });
-    const attendance = getAttendance.map(ele => {
-        const arr = ele.toJSON();
-        return arr
-    });
-
-    if(!getAttendance.length) {
-        if(member.length && member[0].status !== "pending") { //! probs don't need organizer
-            const resObj = {};
-            const attendanceRequest = await Attendance.create({
-                eventId,
-                userId: user.id,
-                status: "Pending"
-            });
-    
-            resObj.userId = attendanceRequest[0].id //* might not need [0]
-            resObj.status = attendanceRequest[0].status
-    
-            return res.json(resObj)
-        } else {
-            return res.status(400).json({
-                "message": "Must be a group member to send this request."
-            })
-        }
-    } else {
-        if(attendance[0].status === 'Pending') {
-           return res.status(400).json({
-                "message": "Attendance has already been requested"
-              })
-        }
-
-        if(attendance[0].status === 'Attending') {
-           return res.status(400).json({
-                "message": "User is already an attendee of the event"
-              })
-        }
-    }
-
-})
-
-
-
-
-
-//* ADD IMAGE TO EVENT
-router.post('/:eventId/images', requireAuth, async (req, res, next) => {
-    const user = req.user;
-    const { url, preview } = req.body;
-    const { eventId } = req.params;
-    const event = await Event.findByPk(eventId);
-    
-
-    if(!event){
-        return res.status(404).json({
-            message: "Event couldn't be found"
-        })
-    }
-
-    const group = await event.getGroup();
-
-    const membership = await group.getMemberships({
-      where:{
-        userId: user.id
-      }
-    });
-    console.log(membership)
-    
-    const attendance = await event.getAttendances({
-      where:{
-        userId: user.id
-      }
-    });
-    const checkUserMem = await Membership.findAll({
-        where: {
-            userId: user.id,
-            groupId: group.id
-        }
-    })
-    if(!checkUserMem.length) {
-        return res.status(404).json({
-            "error": "Authorization required",
-            "message": "Only members with status of, co-host, or organizer may delete an image"
-        })
-    }
-
-    if(membership.length) {
-        if(membership[0].status === "co-host") {
-            const newEventImg = await EventImage.create({ eventId, url, preview });
-            const resObj = {};
-            resObj.id = newEventImg.id
-            resObj.url = newEventImg.url
-            resObj.preview = newEventImg.preview
-            res.json(resObj)
-        } else {
-            return res.status(403).json({
-                "error": "Authorization required",
-                "message": "Only group organizer, or co-host, is authorized to do that"
-            })
-        }
-    } else if(user.id === group.organizerId || attendance[0].status === "Attending") {
-        const newEventImg = await EventImage.create({ eventId, url, preview });
-            const resObj = {};
-            resObj.id = newEventImg.id
-            resObj.url = newEventImg.url
-            resObj.preview = newEventImg.preview
-            res.json(resObj)
-
-    } else {
-        return res.status(403).json({
-            "error": "Authorization required",
-            "message": "Must be a member of this group to perform this action."
-        })
-    }
-
-})
-
 
 
 //* GET ALL ATTENDEES OF EVENT
@@ -273,12 +122,12 @@ router.get('/:eventId/attendees', async (req, res, next) => {
             status: 'co-host'
         }
     });
-    console.log("GET MEMBERS", getMembers)
+    // console.log("GET MEMBERS", getMembers)
     const member = getMembers.map(ele => {
         const arr = ele.toJSON();
         return arr
     });
-    console.log("MEMBER", member)
+    // console.log("MEMBER", member)
   const resObj = {
     Attendees: []
   };
@@ -350,8 +199,6 @@ router.get('/:eventId/attendees', async (req, res, next) => {
 })
 
 
-
-//! LAST
 //* GET DETAILS OF EVENT BY ITS ID
 router.get('/:eventId', async (req, res, next) => {
     const { eventId } = req.params;
@@ -378,7 +225,7 @@ router.get('/:eventId', async (req, res, next) => {
             }
     });
 
-    if(!getEvents) {
+    if(!getEvents.length) {
         return res.status(404).json({
             "message": "Event couldn't be found"
         })
@@ -392,25 +239,174 @@ router.get('/:eventId', async (req, res, next) => {
     for(let i = 0; i < getEvents.length; i++) {
         const attendees = await getEvents[i].getAttendances({
             where:{
-                status: 'Attending'
+                status: 'attending'
             }
         });
         event[i].numAttending = attendees.length;
     }
 
-    res.json(event[0])
+    return res.json(event[0])
 });
 
 
 
+//! POST's START
+//* REQUEST TO ATTEND AN EVENT
+router.post('/:eventId/attendance', requireAuth, async (req, res, next) => {
+    const { eventId } = req.params;
+    const user = req.user;
+    const getEvent = await Event.findByPk(eventId);
+    if(!getEvent) {
+        return res.status(404).json({
+            "message": "Event couldn't be found"
+          })
+    }
+    const event = getEvent.toJSON();
+    const getGroup = await Group.findByPk(event.groupId);
+    const group = getGroup.toJSON();
+    const getMembers = await Membership.findAll({
+        where: {
+            userId: user.id,
+            groupId: group.id
+        }
+    });
+    const member = getMembers.map(ele => {
+        const arr = ele.toJSON();
+        return arr
+    });
+
+
+    const getAttendance = await Attendance.findAll({
+        where: {
+            eventId: event.id,
+            userId: user.id
+        }
+    });
+    const attendance = getAttendance.map(ele => {
+        const arr = ele.toJSON();
+        return arr
+    });
+
+    if(!getAttendance.length) {
+        if(member.length && member[0].status !== "pending") { //! probs don't need organizer
+            const resObj = {};
+            const attendanceRequest = await Attendance.create({
+                eventId,
+                userId: user.id,
+                status: "pending"
+            });
+    
+            resObj.userId = attendanceRequest.id //* might not need [0]
+            resObj.status = attendanceRequest.status
+    
+            return res.json(resObj)
+        } else {
+            return res.status(403).json({
+                "error": "Authorization required",
+                "message": "Must be a group member to send this request."
+            })
+        }
+    } else {
+        if(attendance[0].status === 'pending') {
+           return res.status(400).json({
+                "message": "Attendance has already been requested"
+              })
+        }
+
+        if(attendance[0].status === 'attending') {
+           return res.status(400).json({
+                "message": "User is already an attendee of the event"
+              })
+        }
+    }
+
+})
+
+
+//* ADD IMAGE TO EVENT
+router.post('/:eventId/images', requireAuth, async (req, res, next) => {
+    const user = req.user;
+    const { url, preview } = req.body;
+    const { eventId } = req.params;
+    const event = await Event.findByPk(eventId);
+    
+
+    if(!event){
+        return res.status(404).json({
+            message: "Event couldn't be found"
+        })
+    }
+
+    const group = await event.getGroup();
+
+    const membership = await group.getMemberships({
+      where:{
+        userId: user.id
+      }
+    });
+    console.log(membership)
+    
+    const attendance = await event.getAttendances({
+      where:{
+        userId: user.id
+      }
+    });
+    const checkUserMem = await Membership.findAll({
+        where: {
+            userId: user.id,
+            groupId: group.id,
+        }
+    })
+    console.log(membership);
+    console.log(attendance)
+
+    if(membership.length || user.id === group.organizerId) {
+        if (user.id === group.organizerId || membership[0].status === "co-host") {
+            const newEventImg = await EventImage.create({ eventId, url, preview });
+                const resObj = {};
+                resObj.id = newEventImg.id
+                resObj.url = newEventImg.url
+                resObj.preview = newEventImg.preview
+                return res.json(resObj)
+        };
+    
+    if(attendance[0].status === "attending") {
+        const newEventImg = await EventImage.create({ eventId, url, preview });
+                const resObj = {};
+                resObj.id = newEventImg.id
+                resObj.url = newEventImg.url
+                resObj.preview = newEventImg.preview
+                return res.json(resObj)
+    } else {
+        return res.status(403).json({
+            "error": "Authorization required",
+            "message": "Must be a member of this group to perform this action."
+        })
+    }
+    }
+    return res.status(403).json({
+        "error": "Authorization required",
+        "message": "Must be a member of this group to perform this action."
+    })
+})
+
+
+
+//! PUT's START
 //* CHANGE STATUS OF ATTENDANCE FOR EVENT
 router.put('/:eventId/attendance', requireAuth, async (req, res, next) => {
     const user = req.user;
     const { userId, status } = req.body;
+    const getUser = await User.findByPk(userId);
+    if(!getUser) {
+        return res.status(404).json({
+            "message": "User with that Id, could not be found"
+        })
+    }
     const { eventId } = req.params;
     const getEvent = await Event.findByPk(eventId);
     if(!getEvent) {
-        res.status(404).json({
+        return res.status(404).json({
             "message": "Event couldn't be found"
           })
     }
@@ -424,10 +420,10 @@ router.put('/:eventId/attendance', requireAuth, async (req, res, next) => {
             status: "co-host"
         }
     });
-    console.log(getMembers)
+    // console.log(getMembers)
 
     if(status === 'pending') {
-        res.status(400).json({
+        return res.status(400).json({
             "message": "Cannot change an attendance status to pending"
           })
     };
@@ -441,7 +437,6 @@ router.put('/:eventId/attendance', requireAuth, async (req, res, next) => {
 
     if(!getAttendance.length) {
        return res.status(404).json({
-        "error": "Authorization required",
             "message": "Attendance between the user and the event does not exist"
           })
     };
@@ -460,9 +455,10 @@ router.put('/:eventId/attendance', requireAuth, async (req, res, next) => {
         status
        };
 
-       res.json(resObj); //! finished here, need to run testing !\\
+       return res.json(resObj); //! finished here, need to run testing !\\
     } else {
         return res.status(403).json({
+            "error": "Authorization required",
             "message": "Must be the owner of this group, or co-host, to perform this action."
         })
     }
@@ -470,56 +466,58 @@ router.put('/:eventId/attendance', requireAuth, async (req, res, next) => {
 });
 
 
-
-//! LAST
 //* EDIT AN EVENT
 router.put('/:eventId', requireAuth, validateEvents, async (req, res, next) => {
     const user = req.user
     const { eventId } = req.params;
     const { venueId, name, type, capacity, price, description, startDate, endDate } = req.body;
-    const venue = await Venue.findByPk(venueId);
+//* EVENT
     const events = await Event.findByPk(eventId);
-
-    if(!venue) {
-        return res.status(404).json({
-            message: "Venue couldn't be found"
-        })
-    }
-
     if(!events) {
-          return res.status(404).json({
+        return res.status(404).json({
             message: "Event couldn't be found"
         })
     }
     const event = events.toJSON();
 
-    const group = await Group.findAll({
+//* GROUP
+    const getGroup = await Group.findAll({
         where: {
             id: event.groupId
         }
     });
-
-    const organizer = group.map(ele => {
+    
+    const group = getGroup.map(ele => {
         const arr = ele.toJSON();
         return arr
     });
-    // console.log("here", organizer)
 
+//* VENUE    
+    const venue = await Venue.findAll({
+        where: {
+            groupId: group[0].id,
+            id: venueId
+        }
+    });
+    if(!venue.length) {
+        return res.status(404).json({
+            message: "Venue couldn't be found"
+        })
+    }
+
+//* MEMBERSHIPS
     const getMembers = await Membership.findAll({
         where: {
             status: "co-host",
             groupId: group[0].id
         }
     });
-    // console.log(member)
     const members = getMembers.map(ele => {
         const arr = ele.toJSON();
         return arr
     });
-    
-    for(let i = 0; i < members.length; i++) {
-        const member = members[i]
-        if(user.id === organizer[0].organizerId || user.id === member.userId && organizer[0].id === member.groupId) {
+
+        if(user.id === group[0].organizerId || user.id === members[0].userId) {
             const update = await events.update({ venueId, name, type, capacity, price, description, startDate, endDate })
             const resObj = {
                 id: update.id,
@@ -533,7 +531,7 @@ router.put('/:eventId', requireAuth, validateEvents, async (req, res, next) => {
                 endDate: update.endDate
             };
 
-            res.json(resObj);
+            return res.json(resObj);
 
         } else {
             return res.status(403).json({
@@ -541,11 +539,12 @@ router.put('/:eventId', requireAuth, validateEvents, async (req, res, next) => {
                 "message": "Only group organizer, or co-host, is authorized to do that"
             })
         }
-    } 
+     
 });
 
 
 
+//! DELETE's START
 //* DELETE ATTENDANCE TO AN EVENT
 router.delete('/:eventId/attendance', requireAuth, async (req, res, next) => {
     const user = req.user;
@@ -600,13 +599,13 @@ router.delete('/:eventId/attendance', requireAuth, async (req, res, next) => {
           })
     } else {
         return res.status(403).json({
+            "error": "Authorization required",
             "message": "Only the User or organizer may delete an Attendance"
           })
     }
 })
 
 
-//! LAST
 //* DELETE A EVENT
 router.delete('/:eventId', requireAuth, async (req, res, next) => {
     const user = req.user
@@ -620,6 +619,7 @@ router.delete('/:eventId', requireAuth, async (req, res, next) => {
         })
     };
     const event = events.toJSON();
+    // console.log(event)
 
     const group = await Group.findAll({
         where: {
@@ -644,10 +644,16 @@ router.delete('/:eventId', requireAuth, async (req, res, next) => {
         const arr = ele.toJSON();
         return arr
     });
+    console.log(members)
     
-    for(let i = 0; i < members.length; i++) {
-        const member = members[i]
-        if(user.id === organizer[0].organizerId || user.id === member.userId && organizer[0].id === member.groupId) {
+    if(members.length) {
+        await events.destroy();
+       return res.json({
+            "message": "Successfully deleted"
+        })
+    };
+
+    if(user.id === organizer[0].organizerId) {
             await events.destroy();
 
             res.json({
@@ -660,7 +666,7 @@ router.delete('/:eventId', requireAuth, async (req, res, next) => {
                 "message": "Only group organizer, or co-host, is authorized to do that"
             })
         };
-    } 
+
 });
 
 
