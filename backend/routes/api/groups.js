@@ -7,9 +7,7 @@ const { Group, Membership, GroupImage, User, Venue, Event } = require('../../db/
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const { requireAuth } = require('../../utils/auth.js');
-const { group, error } = require('console');//!?????! WHAT IS THIS???
-const event = require('../../db/models/event');//?????????????
-const validateGroups = [ //*https://express-validator.github.io/docs/api/validation-chain/
+const validateGroups = [ //* https://express-validator.github.io/docs/api/validation-chain/
     check('name')
       .exists({ checkFalsy: true })
       .withMessage('A name is required.')
@@ -106,73 +104,62 @@ const validateEvents = [
     ]
 
 const router = express.Router();
-
-
-// CODE HERE 
+ 
 //! GET's START
-//* GET ALL GROUPS
+//* GET ALL GROUPS (DRY, - n+1 query's)
 router.get('/', requireAuth, async (req,res,next) => {
-
-    const getGroups = await Group.findAll(); 
-    const groups = getGroups.map((group) => {
-        const arr = group.toJSON();
-        return arr 
-        //* Array of Groups objects
-    });
-    
+    const returnObj = {Groups:[]};
+    const getGroups = await Group.findAll();  
     const getMembers = await Membership.findAll();
-    const members = getMembers.map((member) => {
-        const arr = member.toJSON();
-        return arr
-    //* Array of Memberships objects
-});
+    const groupImg = await GroupImage.findAll();
 
-for(let i = 0; i < groups.length; i++) {
-    let group = groups[i];
+    for(let i = 0; i < getGroups.length; i++) {
+        let group = getGroups[i];
         const confirmedMembers = [];
         const id = group.id;
-        members.forEach(member => {
+
+        getMembers.forEach(member => {
             if(member.groupId === id) {
-                if(member.status === 'co-host' || member.status === 'member') {
-                    confirmedMembers.push(member)
-                }   
-            }
-        });
-        group.numMembers = confirmedMembers.length
-        //* Creates numMembers key: 'and value'
-        const groupImg = await GroupImage.findAll();
-        const confirmPreview = groupImg.map((ele) => {
-            const arr = ele.toJSON();
-            return arr
-        //* Array on GroupImages objects 
-    });
-        
-    
-        for(let i = 0; i < confirmPreview.length; i++) {
-            if(confirmPreview[i].groupId === group.id) {
-                if(confirmPreview[i].preview === true) {
-                    group.previewImage = confirmPreview[i].url
+                    if(member.status === 'co-host' || member.status === 'member') {
+                        confirmedMembers.push(member)
+                    }   
+                }
+            });
+        group.dataValues.numMembers = confirmedMembers.length  
+
+        for(let i = 0; i < groupImg.length; i++) {
+            if(groupImg[i].groupId === group.id) {
+                if(groupImg[i].preview === true) {
+                    group.dataValues.previewImage = groupImg[i].url
                 }
             }
+        };
+        returnObj.Groups.push(group)
     };
-    // console.log(members)
-    // console.log(groups)
 
-    
-    //* Provide the url if the preview status is true
-    }
-    
-    return res.json({Groups:groups})
+    return res.json(returnObj)
 });
+
 
 
 //* GET ALL GROUPS OF CURRENT USER
 router.get('/current', requireAuth, async (req, res, next) => {
     const user = req.user;
 
-    //? Getting all joined or organized groups:
-
-    const member = await Group.findAll({
+//? Getting all joined or organized groups/getting information for response:
+    const resObj = {Groups:[]};
+    const groupImg = await GroupImage.findAll();
+    const getMembers = await Membership.findAll({
+        where: {
+            userId: user.id
+        }
+    });
+    const organizerOf = await Group.findAll({
+        where: {
+            organizerId: user.id
+        },
+    });
+    const memberOf = await Group.findAll({
         include: {
             model: Membership,
             where: {
@@ -183,67 +170,63 @@ router.get('/current', requireAuth, async (req, res, next) => {
             },
             attributes: []
         }
-    }); 
-    const memberOf = member.map((group) => {
-        const arr = group.toJSON();
-        return arr;
-    //* Array of Groups that user is a MEMBER of
-});
-
-const usersGroups = await Group.findAll({
-    where: {
-        organizerId: user.id
-    }
-});
-const groups = usersGroups.map((group) => {
-    const arr = group.toJSON();
-    return arr;
-    //* Array of Groups that BELONG to the user
-});
-
-memberOf.forEach(member => {
-    groups.push(member)
-    //* Adds the Groups user is a member of to the array of groups that User owns
-    })
-    
-
-//? Adding numMembers & previewImage:
-
-const getMembers = await Membership.findAll();
-const members = getMembers.map((member) => {
-    const arr = member.toJSON();
-        return arr
-    //* Array of Memberships objects
     });
-    const groupImg = await GroupImage.findAll();
-    const confirmPreview = groupImg.map((ele) => {
-        const arr = ele.toJSON();
-        return arr
-        //* Array on GroupImages objects 
-    });
-    groups.forEach(group => {
-        console.log(group)
-        const confirmedMembers = [];                
+
+
+//? Setting up the response Object
+    for(let i = 0; i < memberOf.length; i++) {
+        const confirmedMembers = [];
+        let organizedGroup = organizerOf[i];
+        let group = memberOf[i];
         const id = group.id;
-        members.forEach(member => {
+
+
+//? Finding the number of members for each group
+        getMembers.forEach(member => {
             if(member.groupId === id) {
-                if(member.status === 'co-host' || member.status === 'member') {
-                    confirmedMembers.push(member)
-                }   
+                    if(member.status === 'co-host' || member.status === 'member') {
+                        confirmedMembers.push(member)
+                    }   
+                }
+            });
+
+
+//? Adding numMembers to each group object
+    //* ORGANIZER CHECK
+        if(organizedGroup !== undefined) {
+            organizedGroup.dataValues.numMembers = confirmedMembers.length
+        };
+
+        group.dataValues.numMembers = confirmedMembers.length  
+
+
+//? Adding previewImage: IF preview status is true
+        for(let i = 0; i < groupImg.length; i++) {
+            if(groupImg[i].groupId === group.id) {
+                if(groupImg[i].preview === true) {
+                    group.dataValues.previewImage = groupImg[i].url
+
+                //* ORGANIZER CHECK
+                    if(organizedGroup !== undefined) {
+                        organizedGroup.dataValues.previewImage = groupImg[i].url
+                    };
+
+                }
             }
-        });
-        group.numMembers = confirmedMembers.length
-        //* Creates numMembers key: 'and value'
-        
-        for(let i = 0; i < confirmPreview.length; i++) {
-            if(confirmPreview[i].preview === true) {
-                group.previewImage = confirmPreview[i].url
-            }
-            //* Provide the url if the preview status is true
-        }
-        
-    });
-    return res.json({Groups:groups})
+        };
+
+        resObj.Groups.push(group)
+    };
+
+//? Check to see if the organizer group exists
+        if(organizerOf) {
+            organizerOf.forEach(group => {
+                resObj.Groups.push(group)
+            })
+        };
+    
+    return res.json(resObj)
+
 });
 
 
@@ -433,38 +416,32 @@ router.get('/:groupId/members', async (req, res, next) => {
 })
 
 
-//! LAST
+
 //* GET GROUP DETAILS FROM ID 
 router.get('/:groupId', requireAuth, async (req, res, next) => {
-  const { groupId } = req.params;
+  const groupId = req.params.groupId;
   const getGroup =  await Group.findByPk(groupId);
   
   if(!getGroup) {
       return res.status(404).json({
           "message": "Group couldn't be found"
         })
-    } else {
-    const groups = getGroup.toJSON();
-        
-
+    };
+    
+    
 //? Creates numMembers key:
-
-  const getMembers = await Membership.findAll();
-  const members = getMembers.map((member) => {
-      const arr = member.toJSON();
-      return arr
-  //* Array of Memberships objects
-  });
+    const getMembers = await Membership.findAll();
+    
         const confirmedMembers = [];                
-        const id = groups.id;
-        members.forEach(member => {
+        const id = getGroup.dataValues.id;
+        getMembers.forEach(member => {
             if(member.groupId === id) {
                 if(member.status === 'co-host' || member.status === 'member') {
                     confirmedMembers.push(member)
                 }   
             }
         });
-        groups.numMembers = confirmedMembers.length
+        getGroup.dataValues.numMembers = confirmedMembers.length
         //* Creates numMembers key: 'and value'
 
 
@@ -476,43 +453,32 @@ router.get('/:groupId', requireAuth, async (req, res, next) => {
             },
             attributes: ['id', 'url', 'preview']
         });
-        const confirmPreview = groupImg.map((ele) => {
-            const arr = ele.toJSON();
-            return arr
-        //* Array on GroupImages objects 
-        });
-        groups.GroupImages = confirmPreview;
+        getGroup.dataValues.GroupImages = groupImg;
+
 
 //? Creates Organizer key:
 
         const getOrganizer = await User.findAll({
             where: {
-                id: groups.organizerId
+                id: getGroup.dataValues.organizerId
             },
             attributes: ['id', 'firstName', 'lastName']
         });
-        const organizer = getOrganizer.map(ele => {
-            const arr = ele.toJSON();
-            return arr
-        });
-        groups.Organizer = organizer[0];
+        getGroup.dataValues.Organizer = getOrganizer[0];
+
 
 //? Creates Venues key:
 
         const getVenues = await Venue.findAll({
             where: {
-                groupId: groups.id
+                groupId: id
             },
             attributes:['id', 'groupId', 'address', 'city', 'state', 'lat', 'lng']
         });
-        const venues = getVenues.map(ele => {
-            const arr = ele.toJSON();
-            return arr;
-        })
-        groups.Venues = venues;
+        getGroup.dataValues.Venues = getVenues;
 
-  return res.json(groups)
-    }
+
+  return res.json(getGroup)
 });
 
 
@@ -524,7 +490,6 @@ router.get('/:groupId', requireAuth, async (req, res, next) => {
 router.post('/', requireAuth, validateGroups, async (req, res, next) => {
     const { name, about, type, private, city, state } = req.body;
     const organizer = req.user
-                    //* ^ console.log(req)
     const NewGroup = await Group.create({
         organizerId: organizer.id,
         name,
@@ -533,15 +498,14 @@ router.post('/', requireAuth, validateGroups, async (req, res, next) => {
         city,
         private,
         state})
-    res.statusCode = 201
-    return res.json(NewGroup)
+    return res.status(201).json(NewGroup)
 });
 
 
 //* ADD IMAGE TO GROUP BASED ON GROUP ID
 router.post('/:groupId/images', requireAuth, async (req, res, next) => {
     const user = req.user
-    const { groupId }= req.params;
+    const groupId = req.params.groupId;
     const { url, preview } = req.body;
     const getGroup = await Group.findByPk(groupId);
     
@@ -550,12 +514,13 @@ router.post('/:groupId/images', requireAuth, async (req, res, next) => {
             "message": "Group couldn't be found"
         })
     }
-    
+
     if(user.id === getGroup.organizerId) {
         const newImage = await GroupImage.create({ 
             groupId: groupId,
             url,
-            preview})
+            preview
+        });
             
             const details = await GroupImage.findAll({
                 where: {
@@ -565,7 +530,7 @@ router.post('/:groupId/images', requireAuth, async (req, res, next) => {
                 attributes: ["id", "url", "preview"]
             })
             
-            res.json(details[0])
+           return  res.json(details[0])
         } else {
             return res.status(403).json({
                 "error": "Authorization required",
@@ -884,11 +849,37 @@ router.put('/:groupId/membership', requireAuth, async(req, res, next) =>{
 
 //* EDIT A GROUP
 router.put('/:groupId', requireAuth, validateGroups, async (req, res, next) => {
-    const { name, about, type, private, city, state } = req.body;
+    let { name, about, type, private, city, state } = req.body;
     const user = req.user;
 
     const { groupId } = req.params;
     const group = await Group.findByPk(groupId)
+
+    const createObj = {};
+
+    if(name) {
+        createObj.name = name
+    } 
+
+    if(about) {
+        createObj.about = about
+    } 
+
+    if(type) {
+        createObj.type = type
+    } 
+
+    if(private) {
+        createObj.private = private
+    } 
+
+    if(city) {
+        createObj.city = city
+    } 
+
+    if(state) {
+        createObj.state = state
+    } 
 
 //? Confirm the requested Group exists
     if(!group) {
@@ -899,7 +890,7 @@ router.put('/:groupId', requireAuth, validateGroups, async (req, res, next) => {
 
 //? Confirm current user is Organizer:
     if(user.id === group.organizerId) {
-        const update = await group.update({ name, about, type, private, city, state })
+        const update = await group.update(createObj)
         return res.json(update)
 
     } else {
@@ -1016,7 +1007,7 @@ if(user.id === group.organizerId) {
 //* DELETE A GROUP
 router.delete('/:groupId', requireAuth, async (req, res, next) => {
     const user = req.user;
-    const { groupId } = req.params;
+    const groupId = req.params.groupId;
     const group = await Group.findByPk(groupId)
 
 //? Confirm the requested Group exists

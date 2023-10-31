@@ -7,7 +7,6 @@ const { Event, Group, Venue, EventImage, Membership, Attendance, User  } = requi
 const { check } = require('express-validator');
 const { handleValidationErrors } = require('../../utils/validation');
 const { requireAuth } = require('../../utils/auth.js');
-const event = require('../../db/models/event');
 const validateEvents = [
     check('venueId')
         .custom(async val => {
@@ -127,9 +126,9 @@ const validateQuery = [
             return true
         }; 
 
-        if(typeof val !== "string") {
-            return false
-        };
+        // if(typeof val !== "string") {
+        //     return false
+        // };
 
         if (isNaN(new Date(value).getTime())) {
             return false
@@ -144,28 +143,26 @@ const validateQuery = [
 
 const router = express.Router();
 
-// CODE GOES HERE
-
 //! GET's START
 //* GET ALL EVENTS 
 router.get('/', validateQuery, async (req, res, next) => { 
+                                                                //* Query Filters * \\
     let { page, size, name, type, startDate } = req.query;
     const whereObj = {};
-// name: string, optional
-// type: string, optional
-// startDate: string, optional
+    // name: string, optional
     if(name) {
         whereObj.name = name
     };
+    // type: string, optional
     if(type) {
         whereObj.type = type
     };
+    // startDate: string, optional
     if(startDate) {
         whereObj.startDate = startDate
     };
 
-
-
+                                                                //* Pagination * \\
 const pagination = {};
     if(!size) {
         size = 20
@@ -179,8 +176,12 @@ const pagination = {};
     };
     if(page > 10) {
         page = 10
-    }
+    };
+    pagination.limit = size;
+    pagination.offset = size * (page - 1);
 
+
+                                                        //* Getting All Events (plus format res) * \\
     const getEvents = await Event.findAll({
         where: {...whereObj},
         include: [
@@ -198,64 +199,76 @@ const pagination = {};
         },
         ...pagination
     });
-    const event = getEvents.map((event) => {
+    const events = getEvents.map((event) => {
         const arr = event.toJSON();
         return arr
     });
 
     for(let i = 0; i < getEvents.length; i++) {
         const image = await getEvents[i].getEventImages()
-
-
         const attendees = await getEvents[i].getAttendances({
             where:{
                 status: 'attending'
             }
         });
 
-        event[i].numAttending = attendees.length;
+        events[i].numAttending = attendees.length;
         if(image.length) {
-            event[i].previewImage = image[0].url
-        } else {event[i].previewImage = null}
+            events[i].previewImage = image[0].url
+        } else {events[i].previewImage = null}
     }
-//!!!! PLUS THE ORDER IN RES BUGGGGGSSSS ME
-
-    res.json({"Events": event})
+    return res.json({"Events": events})
 });
 
 
 //* GET ALL ATTENDEES OF EVENT
 router.get('/:eventId/attendees', async (req, res, next) => {
-    const user = req.user
+//    Successful Response: If you ARE the organizer of the group or a member of the group
+//     with a status of "co-host". Shows all attendees including those with a status of "pending".
+
     const { eventId } = req.params
+    const user = req.user
+
+                                                                //* Getting Event (set up for manipulation) * \\
     const getEvent = await Event.findByPk(eventId);
     if(!getEvent) {
         return res.status(404).json({
             "message": "Event couldn't be found"
           })
     }
-    const event = getEvent.toJSON();
+    const event = getEvent.toJSON(); //* {event} (findByPk)
 
-    const getGroup = await Group.findByPk(event.groupId);
-    const group = getGroup.toJSON();
+                                                                //* Get the Group to check member status * \\
+    // const getGroup = await Group.findByPk(event.groupId);
+    // const group = getGroup.toJSON();
+    const getGroups = await getEvent.getGroup();
+    const group = getGroups.toJSON();
+    // console.log(group)
 
-    const getMembers = await Membership.findAll({
+                                                                //* Check if current user is member with * \\
+    const getMembers = await getGroups.getMemberships({
         where: {
-            userId: user.id,
-            groupId: group.id,
-            status: 'co-host'
+            status: 'co-host',
+            userId: user.id
         }
     });
-    // console.log("GET MEMBERS", getMembers)
     const member = getMembers.map(ele => {
         const arr = ele.toJSON();
         return arr
     });
-    // console.log("MEMBER", member)
+    // console.log(member) 
+    // const getMembers = await Membership.findAll({
+    //     where: {
+    //         userId: user.id,
+    //         groupId: group.id,
+    //         status: 'co-host'
+    //     }
+    // });
+                                                                 //* Begin Response * \\
   const resObj = {
     Attendees: []
   };
-     
+                                                                //* If current user is organizer or co-host * \\
     if(user.id === group.organizerId || member.length) {
         const getAttendance = await Attendance.findAll({
             where: {
@@ -266,6 +279,7 @@ router.get('/:eventId/attendees', async (req, res, next) => {
             const arr = ele.toJSON();
             return arr
         });
+        console.log(attendees)
 
         for(let i = 0; i < attendees.length; i++) {
             const attendeeObj = {};
@@ -282,9 +296,9 @@ router.get('/:eventId/attendees', async (req, res, next) => {
             resObj.Attendees.push(attendeeObj)
         }
 
-        res.json(resObj)
+        return res.json(resObj)
 
-    } else {
+    } else {                                                     //* Everyone else (does not show pending) * \\
         const getAttendance = await Attendance.findAll({
             where: {
             eventId: eventId
@@ -318,7 +332,7 @@ router.get('/:eventId/attendees', async (req, res, next) => {
         }
 
         
-        res.json(resObj)
+        return res.json(resObj)
     }
 })
 
@@ -328,7 +342,7 @@ router.get('/:eventId', async (req, res, next) => {
     const { eventId } = req.params;
     const getEvents = await Event.findAll({
         where: {
-            id: req.params.eventId,
+            id: eventId,
         },
             include: [
                 {
