@@ -4,7 +4,6 @@
 /** @type {import('sequelize-cli').Migration} */
 
 const { Group } = require('../models');
-const bcrypt = require("bcryptjs");
 
 let options = {};
 if (process.env.NODE_ENV === 'production') {
@@ -25,21 +24,57 @@ module.exports = {
     await Group.bulkCreate([
     {
       organizerId: 1,
-      name: "Testing Group 1" ,
-      about: 'A group so I can test some stuff out ya know?, HAVE TO ADD MORE CHARACTERrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrS SO THAT WE GET TO AT LEAST 50',
-      type: "Online",
-      private: false,
-      city: "Faketown",
-      state: "Faklanta",
+      name: "Night-Watchers" ,
+      about: "We're pretty much only active at night. Anyone who loves to stalk through the city at night, to bust a baddie jaw or two. This is the group for you!",
+      type: "In person",
+      private: true,
+      city: "Gotham",
+      state: "New Jersey",
     },
     {
       organizerId: 2,
-      name: "Testing Group 2",
-      about: "We are a group all about our love for run on sentences, boy aren't they just the most wonderful, fantastic, super duper fun way of speaking to another human, my grandpappy taught me how to talk for four days straight, but I eventually got that up to a whopping six days ",
+      name: "Day-Watchers",
+      about: "If you don't care what time of day it is, and probably have god like powers, therefor no real reason to sleep. This is the group for you!",
+      type: "Online",
+      private: false,
+      city: "Metropolis",
+      state: "New York",
+    },
+    {
+      organizerId: 10,
+      name: "Bird Club!",
+      about: "If you dig the whole, bird astetic, like; watching birds, feeding birds, screaming like a bird, or just dressing up a bird. This is your group. ",
+      type: "Online",
+      private: true,
+      city: "Star City",
+      state: "San Francisco",
+    },
+    {
+      organizerId: 8,
+      name: "Saturdays",
+      about: "YOU already KNOW what it isss, oh wait? what is 'it' you ask? ITS FOR THE BOIISSSS. Usually at the Bat's place, unless something else gets broken.",
       type: "In person",
       private: true,
-      city: "Not-realville",
-      state: "not here",
+      city: "Gotham",
+      state: "New Jersey",
+    },
+    {
+      organizerId: 4,
+      name: "Out of this World",
+      about: "It will be a strategical benefit if my allies with the ability to traverse through space would join this group, Sharing information is essential.",
+      type: "In person",
+      private: false,
+      city: "Outer",
+      state: "Space",
+    },
+    {
+      organizerId: 3,
+      name: "Strong & Independent",
+      about: "Come relax and get away from the worries of the world ladies, We host at my home island. Sorry fellas, No guys aloud in Themysirca.",
+      type: "In person",
+      private: true,
+      city: "Themyscira",
+      state: "The Ocean",
     },
 
   ], options, { validate: true })
@@ -55,7 +90,7 @@ module.exports = {
     options.tableName = 'Groups';
     const Op = Sequelize.Op;
     return queryInterface.bulkDelete(options, {
-      organizerId: { [Op.in]: [1, 2] }
+      organizerId: { [Op.in]: [1, 2, 10, 8, 4, 3] }
     }, {});
   }
 };

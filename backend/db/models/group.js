@@ -17,6 +17,11 @@ module.exports = (sequelize, DataTypes) => {
         hooks: true
       })
 
+      Group.belongsTo(models.User, {
+        foreignKey: 'organizerId',
+        as: 'Organizer'
+      })
+      
       Group.hasMany(models.GroupImage, {
         foreignKey: 'groupId',
         onDelete: 'CASCADE',
@@ -35,10 +40,6 @@ module.exports = (sequelize, DataTypes) => {
         hooks: true
       })
 
-      Group.belongsTo(models.User, {
-        foreignKey: 'organizerId',
-        as: 'Organizer'
-      })
     }
   }
   Group.init({

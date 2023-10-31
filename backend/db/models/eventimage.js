@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   EventImage.init({
-    eventId: DataTypes.INTEGER,
+    eventId: DataTypes.INTEGER, //!? not null?
     url: {
       type: DataTypes.STRING,
       validate: {
