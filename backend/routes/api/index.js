@@ -7,7 +7,7 @@ const eventsRouter = require('./events.js');
 const groupImagesRouter = require('./group-images.js');
 const eventImagesRouter = require('./event_images.js');
 //!
-const { restoreUser } = require("../../utils/auth.js");
+const { restoreUser } = require("../../utils/auth.js"); //! add user Auth functions here /utils/auth.js
 
 // Connect restoreUser middleware to the API router
   // If current user session is valid, set req.user to the user in the database

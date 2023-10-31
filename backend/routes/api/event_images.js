@@ -9,8 +9,6 @@ const { handleValidationErrors } = require('../../utils/validation');
 const { requireAuth } = require('../../utils/auth.js');
 const router = express.Router();
 
-// CODE GOES HERE
-
 //* DELETE AN IMAGE FROM A Event
 router.delete('/:imageId', requireAuth, async (req, res, next) => {
     const { imageId } = req.params;

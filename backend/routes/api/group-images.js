@@ -9,7 +9,6 @@ const { handleValidationErrors } = require('../../utils/validation');
 const { requireAuth } = require('../../utils/auth.js');
 const router = express.Router();
 
-// CODE GOES HERE
 
 //* DELETE AN IMAGE FROM A GROUP
 router.delete('/:imageId', requireAuth, async (req, res, next) => {
@@ -42,6 +41,7 @@ router.delete('/:imageId', requireAuth, async (req, res, next) => {
           });
     } else {
         return res.status(403).json({
+            "error": "Authorization required",
             "message": "Only members with status of, co-host, or organizer may delete an image" 
           })
     }

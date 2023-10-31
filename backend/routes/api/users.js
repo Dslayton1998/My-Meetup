@@ -41,7 +41,7 @@ const validateSignup = [
 
 const router = express.Router();
 
-//* Sign up (look at /routes/api/session)
+//* Sign up (look at routes/api/session)
 router.post(
     '/',
     validateSignup,
