@@ -467,7 +467,7 @@ router.post('/:eventId/images', requireAuth, async (req, res, next) => {
     const { url, preview } = req.body;
     const { eventId } = req.params;
     const event = await Event.findByPk(eventId);
-    
+    // console.log(user)
 
     if(!event){
         return res.status(404).json({
@@ -482,21 +482,19 @@ router.post('/:eventId/images', requireAuth, async (req, res, next) => {
         userId: user.id
       }
     });
-    console.log(membership)
+    // console.log(membership)
     
     const attendance = await event.getAttendances({
       where:{
         userId: user.id
       }
     });
-    const checkUserMem = await Membership.findAll({
-        where: {
-            userId: user.id,
-            groupId: group.id,
-        }
-    })
-    console.log(membership);
-    console.log(attendance)
+    // const checkUserMem = await Membership.findAll({
+    //     where: {
+    //         userId: user.id,
+    //         groupId: group.id,
+    //     }
+    // })
 
     if(membership.length || user.id === group.organizerId) {
         if (user.id === group.organizerId || membership[0].status === "co-host") {
@@ -507,7 +505,14 @@ router.post('/:eventId/images', requireAuth, async (req, res, next) => {
                 resObj.preview = newEventImg.preview
                 return res.json(resObj)
         };
-    
+
+        if(!attendance.length) {
+            return res.status(403).json({
+                "error": "Authorization required",
+                "message": "Must be a member of this group to perform this action."
+            })
+        }
+//! another conditional to check if attendance 
     if(attendance[0].status === "attending") {
         const newEventImg = await EventImage.create({ eventId, url, preview });
                 const resObj = {};
