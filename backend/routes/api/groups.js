@@ -22,7 +22,7 @@ const validateGroups = [ //* https://express-validator.github.io/docs/api/valida
       .exists({ checkFalsy: true })
       .withMessage('A type is required.')
       .isIn(['Online','In person'])
-      .withMessage("Type must be Online or In person"), 
+      .withMessage("Type must be 'Online' or 'In person'"), 
     check('private')
       .isBoolean()
       .withMessage("Private must be a boolean"),
@@ -48,12 +48,18 @@ const validateVenue = [
     check('lat')
         .exists({ checkFalsy: true })
         .withMessage('Please provide a latitude')
-        .isDecimal()
+        .isFloat({
+            min: -90,
+            max: 90
+        })
         .withMessage("Latitude is not valid"),
     check('lng')
         .exists({ checkFalsy: true })
         .withMessage('Please provide a longitude')
-        .isDecimal()
+        .isFloat({
+            min: -180,
+            max: 180
+        })
         .withMessage("Longitude is not valid"),
     handleValidationErrors
     ];

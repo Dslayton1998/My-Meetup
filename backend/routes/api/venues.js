@@ -20,12 +20,18 @@ const validateVenue = [
     check('lat')
         .exists({ checkFalsy: true })
         .withMessage('Please provide a latitude')
-        .isDecimal()
+        .isFloat({
+            min: -180,
+            max: 180
+        })
         .withMessage("Latitude is not valid"),
     check('lng')
         .exists({ checkFalsy: true })
         .withMessage('Please provide a longitude')
-        .isDecimal()
+        .isFloat({
+            min: -180,
+            max: 180
+        })
         .withMessage("Longitude is not valid"),
     handleValidationErrors
     ];

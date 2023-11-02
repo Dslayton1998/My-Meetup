@@ -1,6 +1,6 @@
 const express = require('express')
-const { Op } = require('sequelize');
-const bcrypt = require('bcryptjs');
+// const { Op } = require('sequelize');
+// const bcrypt = require('bcryptjs');
 const { Event, Group, Venue, EventImage, Membership, Attendance, User  } = require('../../db/models');
 
 //? Validating Group Request Body (& middleware)
@@ -115,7 +115,7 @@ const validateQuery = [
             return true 
         };
 
-        if (value == 'Online' || value == 'In person') {
+        if (value === 'Online' || value === 'In person') {
             return true
         } else return false;
     }) 
@@ -203,7 +203,7 @@ const pagination = {};
         const arr = event.toJSON();
         return arr
     });
-
+    
     for(let i = 0; i < getEvents.length; i++) {
         const image = await getEvents[i].getEventImages()
         const attendees = await getEvents[i].getAttendances({
@@ -661,6 +661,7 @@ router.put('/:eventId', requireAuth, validateEvents, async (req, res, next) => {
                 id: update.id,
                 groupId: update.groupId,
                 venueId: update.venueId,
+                name: update.name,
                 type: update.type,
                 capacity: update.capacity,
                 price: update.price,
