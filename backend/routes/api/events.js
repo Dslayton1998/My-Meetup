@@ -441,7 +441,7 @@ router.post('/:eventId/attendance', requireAuth, async (req, res, next) => {
         } else {
             return res.status(403).json({
                 "error": "Authorization required",
-                "message": "Must be a group member to send this request."
+                "message": "Forbidden"
             })
         }
     } else {
@@ -509,7 +509,7 @@ router.post('/:eventId/images', requireAuth, async (req, res, next) => {
         if(!attendance.length) {
             return res.status(403).json({
                 "error": "Authorization required",
-                "message": "Must be a member of this group to perform this action."
+                "message": "Forbidden"
             })
         }
 //! another conditional to check if attendance 
@@ -523,13 +523,13 @@ router.post('/:eventId/images', requireAuth, async (req, res, next) => {
     } else {
         return res.status(403).json({
             "error": "Authorization required",
-            "message": "Must be a member of this group to perform this action."
+            "message": "Forbidden"
         })
     }
     }
     return res.status(403).json({
         "error": "Authorization required",
-        "message": "Must be a member of this group to perform this action."
+        "message": "Forbidden"
     })
 })
 
@@ -598,11 +598,11 @@ router.put('/:eventId/attendance', requireAuth, async (req, res, next) => {
         status
        };
 
-       return res.json(resObj); //! finished here, need to run testing !\\
+       return res.json(resObj); 
     } else {
         return res.status(403).json({
             "error": "Authorization required",
-            "message": "Must be the owner of this group, or co-host, to perform this action."
+            "message": "Forbidden"
         })
     }
 
@@ -674,13 +674,13 @@ router.put('/:eventId', requireAuth, validateEvents, async (req, res, next) => {
                 startDate: update.startDate,
                 endDate: update.endDate
             };
-
+            console.log(resObj)
             return res.json(resObj);
 
         } else {
             return res.status(403).json({
                 "error": "Authorization required",
-                "message": "Only group organizer, or co-host, is authorized to do that"
+                "message": "Forbidden"
             })
         }
      
@@ -744,7 +744,7 @@ router.delete('/:eventId/attendance', requireAuth, async (req, res, next) => {
     } else {
         return res.status(403).json({
             "error": "Authorization required",
-            "message": "Only the User or organizer may delete an Attendance"
+            "message": "Forbidden"
           })
     }
 })
@@ -807,7 +807,7 @@ router.delete('/:eventId', requireAuth, async (req, res, next) => {
         } else {
             return res.status(403).json({
                 "error": "Authorization required",
-                "message": "Only group organizer, or co-host, is authorized to do that"
+                "message": "Forbidden"
             })
         };
 

@@ -282,7 +282,7 @@ router.get('/:groupId/venues', requireAuth, async (req, res, next) => {
     } else {
         return res.status(403).json({
             "error": "Authorization required",
-            "message": "Only group organizer (or co-host) is authorized to do that"
+            "message": "Forbidden"
         })
     }
 });
@@ -540,7 +540,7 @@ router.post('/:groupId/images', requireAuth, async (req, res, next) => {
         } else {
             return res.status(403).json({
                 "error": "Authorization required",
-                "message": "Only group organizer is authorized to do that"
+                "message": "Forbidden"
             })
         }
     });
@@ -606,7 +606,7 @@ router.post('/:groupId/venues', requireAuth, validateVenue, async (req, res, nex
         } else {
             return res.status(403).json({
                 "error": "Authorization required",
-                "message": "Only group organizer is authorized to do that"
+                "message": "Forbidden"
             })
         }
 });
@@ -671,7 +671,7 @@ router.post('/:groupId/events', requireAuth, validateEvents, async (req, res, ne
     } else {
         return res.status(403).json({
             "error": "Authorization required",
-            "message": "Only group organizer, or co-host, is authorized to do that"
+            "message": "Forbidden"
         })
     }
 });
@@ -810,7 +810,7 @@ router.put('/:groupId/membership', requireAuth, async(req, res, next) =>{
     if(!getMembers || group.organizerId !== user.id){
         return res.status(403).json({
             "error": "Authorization required",
-            "message": "Not Authorized to make that change."
+            "message": "Forbidden"
         })
     }
 
@@ -831,7 +831,7 @@ router.put('/:groupId/membership', requireAuth, async(req, res, next) =>{
             if(status === "co-host") {
                return res.status(403).json({
                     "error": "Authorization required",
-                    "message": "Only group organizer can promote member to co-host."
+                    "message": "Forbidden"
                 })
             };
             const update = await updateMember[0].update({status});
@@ -843,7 +843,7 @@ router.put('/:groupId/membership', requireAuth, async(req, res, next) =>{
         } else {
            return res.status(403).json({
                 "error": "Authorization required",
-                "message": "Only group organizer, or co-host, are allowed to make changes"
+                "message": "Forbidden"
             })
         }
     }
@@ -902,7 +902,7 @@ router.put('/:groupId', requireAuth, validateGroups, async (req, res, next) => {
     } else {
         return res.status(403).json({
             "error": "Authorization required",
-            "message": "Only group organizer is authorized to do that"
+            "message": "Forbidden"
         })
     }
 
@@ -1004,7 +1004,7 @@ if(user.id === group.organizerId) {
     
    return  res.status(403).json({
             "error": "Authorization required",
-            "message": "Only group organizer, or authorized member, is authorized to do that"
+            "message": "Forbidden"
         })
 
 })
@@ -1033,7 +1033,7 @@ router.delete('/:groupId', requireAuth, async (req, res, next) => {
     } else {
         return res.status(403).json({
             "error": "Authorization required",
-            "message": "Only group organizer is authorized to do that"
+            "message": "Forbidden"
         })
     }
 })

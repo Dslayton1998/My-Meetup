@@ -43,7 +43,7 @@ router.delete('/:imageId', requireAuth, async (req, res, next) => {
     } else {
         return res.status(403).json({
             "error": "Authorization required",
-            "message": "Only members with status of, co-host, or organizer may delete an image" 
+            "message": "Forbidden" 
           })
     }
 })

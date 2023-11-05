@@ -101,7 +101,7 @@ router.put('/:venueId', requireAuth, validateVenue, async (req, res, next) => {
     } else {
         return res.status(403).json({
             "error": "Authorization required",
-            "message": "Only group organizer (or co-host) is authorized to do that"
+            "message": "Forbidden"
         })
     }
 
