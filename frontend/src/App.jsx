@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
-import LoginFormPage from './components/LoginFormPage/LoginFormPage.jsx';
-import SignupFormPage from './components/SignupFormPage/SignupFormPage.jsx';
-import Navigation from './components/Navigation/Navigation.jsx';
+import { Outlet, createBrowserRouter, RouterProvider } from 'react-router-dom';
+import LoginFormPage from './components/LoginFormPage/LoginFormPage';
+import SignupFormPage from './components/SignupFormPage/SignupFormPage';
+import Navigation from './components/Navigation/Navigation';
 import * as sessionActions from './store/session';
 
 function Layout() {
@@ -24,7 +24,6 @@ function Layout() {
   );
 }
 
-// todo: fix this ugly syntax
 const router = createBrowserRouter([
   {
     element: <Layout />,
@@ -34,11 +33,11 @@ const router = createBrowserRouter([
         element: <h1>Welcome!</h1>
       },
       {
-        path: '/login',
+        path: "login",
         element: <LoginFormPage />
       },
       {
-        path: "/signup",
+        path: "signup",
         element: <SignupFormPage />
       }
     ]
