@@ -28,8 +28,8 @@ router.use('/group-images', groupImagesRouter);
 
 router.use('/event-images', eventImagesRouter);
 
-router.post('/test', (req, res) => {
-  res.json({ requestBody: req.body });
-});
+// router.post('/test', (req, res) => {
+//   res.json({ requestBody: req.body });
+// });
 
 module.exports = router;
