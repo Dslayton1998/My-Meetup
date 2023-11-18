@@ -2,3 +2,20 @@
 .hidden {
     display: none;
 }
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.home-logo {
+    display: flex;
+    justify-content: flex-start
+};
+
+
+.user-info-options {
+    display: flex;
+    justify-content: flex-end
+}
