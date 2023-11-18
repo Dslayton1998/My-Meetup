@@ -2,3 +2,24 @@
 .hidden {
     display: none;
 }
+
+.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    list-style-type: none;
+}
+
+.home-logo {
+    display: flex;
+    justify-content: flex-start;
+    height: 50px;
+};
+
+
+.user-info-options {
+    display: flex;
+    justify-content: flex-end;
+    border-right: 900px;
+};
+
