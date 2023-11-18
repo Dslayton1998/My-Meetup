@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
-import Navigation from './components/Navigation/Navigation';
 import * as sessionActions from './store/session';
+import Navigation from './components/Navigation/Navigation';
 import LandingPage from './components/LandingPage/LandingPage';
+import GroupList from './components/GroupListPage/GroupList';
 
 function Layout() {
   const dispatch = useDispatch();
@@ -23,7 +24,7 @@ function Layout() {
   );
 }
 
-// todo: fix this ugly ass syntax 
+// todo: fix this ugly ass syntax (eventually...)
 const router = createBrowserRouter([
   {
     element: <Layout />,
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
       {
         path: '/',
         element: <LandingPage />
+      },
+      {
+        path: '/groups',
+        element: <GroupList />
       }
     ]
   }
