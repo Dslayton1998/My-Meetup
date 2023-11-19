@@ -1,6 +1,6 @@
 
-
-.intro-container { /* todo: fix layout of text */
+/* todo: fix layout of text */
+.intro-container { 
     display: flex;
     flex-direction: row;
 }
@@ -14,7 +14,7 @@
 .nav-container {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     margin-top: 20px;
 }
@@ -24,16 +24,17 @@
 }
 
 
-/* .see-groups {
-    size:
+
+/* todo: adjust spacing */
+.see-groups {
+    margin-right: 10px;
 }
 
 .start-groups {
- display: flex;
-    flex-direction: column;
+ margin-right: 10px;
 }
 
 .find-events {
- display: flex;
-    flex-direction: column;
-} */
+    margin-left: 10px ;
+    margin-right: 20px;
+}

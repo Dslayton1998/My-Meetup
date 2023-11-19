@@ -8,12 +8,14 @@
     align-items: center;
     justify-content: space-between;
     list-style-type: none;
+    margin-left: 0px;
 }
 
 .home-logo {
     display: flex;
     justify-content: flex-start;
     height: 50px;
+    margin-left: 0px
 };
 
 
