@@ -8,20 +8,27 @@
     align-items: center;
     justify-content: space-between;
     list-style-type: none;
-    margin-left: 0px;
+    margin-left: -10px;
+    margin-right: -10px;
+    margin-top: -12px;
+    padding-top: 20px;
+    padding-right: 25px;
+    background-color: gray;
 }
 
 .home-logo {
     display: flex;
     justify-content: flex-start;
-    height: 50px;
-    margin-left: 0px
+    height: 60px;
+    margin-left: -10px;
+    padding-bottom: 10px
 };
 
 
 .user-info-options {
     display: flex;
     justify-content: flex-end;
-    border-right: 900px;
+    
+    /* border: solid black 20px; */
 };
 

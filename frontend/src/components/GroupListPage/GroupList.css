@@ -1,0 +1,15 @@
+.list-items-container {
+    display: flex;
+    flex-direction: row;
+    margin-top: 20px;
+}
+
+.list-items {
+    display: flex;
+    flex-direction: column;
+}
+
+.preview-image {
+    height: 150px;
+    /* width: 200px; */
+}
