@@ -113,7 +113,7 @@ const router = express.Router();
  
 //! GET's START
 //* GET ALL GROUPS (DRY, - n+1 query's)
-router.get('/', requireAuth, async (req,res,next) => {
+router.get('/',  async (req,res,next) => {
     const returnObj = {Groups:[]};
     const getGroups = await Group.findAll();  
     const getMembers = await Membership.findAll();

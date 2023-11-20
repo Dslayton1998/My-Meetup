@@ -25,6 +25,8 @@ const groupsReducer = (state = initial, action) => {
     switch (action.type) {
         
         case LOAD_GROUPS: {
+            // console.log(state)
+            // console.log(action.groups)
             const newState = { ...state, Groups: [...action.groups.Groups] };
             return newState
         }

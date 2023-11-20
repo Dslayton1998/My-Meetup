@@ -39,11 +39,11 @@ function ProfileButton({ user }) {
   };
 
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
-
+// todo: add button to logged users option list "View groups"
   return (
     <>
       <button className='user-info-options' onClick={toggleMenu}>
-        <i className="fas fa-user-circle" />
+        <i className="fas fa-user-circle" /> {user ? user.username : null}
       </button>
       <ul className={ulClassName} ref={ulRef}>
         {user ? (
@@ -51,6 +51,7 @@ function ProfileButton({ user }) {
             <li>{user.username}</li>
             <li>{user.firstName} {user.lastName}</li>
             <li>{user.email}</li>
+            {/* View groups (here) */}
             <li>
               <button onClick={logout}>Log Out</button>
             </li>
@@ -61,11 +62,13 @@ function ProfileButton({ user }) {
               itemText="Log In"
               onItemClick={closeMenu}
               modalComponent={<LoginFormModal />}
+              style={{cursor: 'pointer'}}
             />
             <OpenModalMenuItem
               itemText="Sign Up"
               onItemClick={closeMenu}
               modalComponent={<SignupFormModal />}
+              style={{cursor: 'pointer'}}
             />
           </>
         )}

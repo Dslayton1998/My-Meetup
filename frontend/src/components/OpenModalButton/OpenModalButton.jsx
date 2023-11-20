@@ -14,7 +14,7 @@ function OpenModalButton({
     if (typeof onButtonClick === "function") onButtonClick();
   };
 
-  return <button onClick={onClick}>{buttonText}</button>;
+  return <button onClick={onClick}>{buttonText} style={{cursor: 'pointer'}}</button>;
 }
 
 export default OpenModalButton;
