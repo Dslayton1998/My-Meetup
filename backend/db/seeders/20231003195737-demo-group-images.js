@@ -23,7 +23,7 @@ module.exports = {
    await GroupImage.bulkCreate([
     {
       groupId: 1,
-      url: 'SuchAFakeUrl.com',
+      url: 'https://i.pinimg.com/736x/a0/6a/cf/a06acf64e4346ec3e512ad5946ecdc91.jpg',
       preview: true
     },
     {
@@ -38,7 +38,7 @@ module.exports = {
     },
     {
       groupId: 2,
-      url: 'anotherFakeUrl.com',
+      url: 'https://images.thedirect.com/media/photos/A8D168A5-A091-4A86-9FC2-2A07C570A56D.jpg',
       preview: true
     },
     {
@@ -48,7 +48,7 @@ module.exports = {
     },
     {
       groupId: 3,
-      url: 'anotherFakeUrl.com',
+      url: 'https://e7.pngegg.com/pngimages/624/641/png-clipart-black-canary-green-arrow-hawkman-hawkgirl-starfire-raven-animals-fictional-characters.png',
       preview: true
     },
     {
@@ -58,7 +58,7 @@ module.exports = {
     },
     {
       groupId: 4,
-      url: 'anotherFakeUrl.com',
+      url: 'https://media.niftygateway.com/image/upload/fl_keep_dar,q_auto:good,w_500/v1612205000/A/JoseDelbo/Heroes_Playing_Poker_-_Classic_yjaus5.webp',
       preview: true
     },
     {
@@ -68,7 +68,7 @@ module.exports = {
     },
     {
       groupId: 5,
-      url: 'anotherFakeUrl.com',
+      url: 'https://photos1.blogger.com/x/blogger/5426/3062/1600/264154/MARTIAN%20MANHUNTER%20%2336.jpg',
       preview: true
     },
     {
@@ -78,7 +78,7 @@ module.exports = {
     },
     {
       groupId: 6,
-      url: 'anotherFakeUrl.com',
+      url: 'https://screenrant.com/wp-content/uploads/2017/05/Paradise-Island-Wonder-Woman-comics.jpg',
       preview: true
     },
    ], options, {validate: true})
