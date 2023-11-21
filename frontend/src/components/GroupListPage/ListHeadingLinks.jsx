@@ -1,1 +1,0 @@
-// todo: might not need this, but "Events" and "Groups" headings need to be links

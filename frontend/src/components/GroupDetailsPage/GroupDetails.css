@@ -1,0 +1,8 @@
+.details-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.details-image {
+    height: 200px;
+}

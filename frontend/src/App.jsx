@@ -5,6 +5,8 @@ import * as sessionActions from './store/session';
 import Navigation from './components/Navigation/Navigation';
 import LandingPage from './components/LandingPage/LandingPage';
 import GroupList from './components/GroupListPage/GroupList';
+import GroupDetails from './components/GroupDetailsPage/GroupDetails';
+import CreateGroupForm from './components/CreateGroupForm/CreateGroupForm'
 
 function Layout() {
   const dispatch = useDispatch();
@@ -36,6 +38,14 @@ const router = createBrowserRouter([
       {
         path: '/groups',
         element: <GroupList />
+      },
+      {
+        path: '/groups/:groupId',
+        element: <GroupDetails />
+      },
+      {
+        path: '/groups/new',
+        element: <CreateGroupForm />
       }
     ]
   }

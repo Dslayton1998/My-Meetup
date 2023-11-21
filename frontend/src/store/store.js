@@ -5,7 +5,7 @@ import groupsReducer from './groups';
 
 const rootReducer = combineReducers({
     session: sessionReducer,
-    groupState: groupsReducer
+    groups: groupsReducer
 });
 
 

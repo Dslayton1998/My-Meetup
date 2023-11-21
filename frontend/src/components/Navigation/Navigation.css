@@ -13,7 +13,7 @@
     margin-top: -12px;
     padding-top: 20px;
     padding-right: 25px;
-    background-color: gray;
+    /* background-color: gray; */
 }
 
 .home-logo {
@@ -22,13 +22,14 @@
     height: 60px;
     margin-left: -10px;
     padding-bottom: 10px
-};
+}
 
 
 .user-info-options {
     display: flex;
     justify-content: flex-end;
+    /* color: #ed1c40 */
     
     /* border: solid black 20px; */
-};
+}
 

@@ -1,10 +1,9 @@
-import Intro from './Intro'
-import Subtitle from './Subtitle'
-import JoinButton from './JoinButton'
-import LandingLinks from './LandingLinks'
-import './LandingPage.css'
+import Intro from './LandingComponents/Intro'
+import Subtitle from './LandingComponents/Subtitle'
+import JoinButton from './LandingComponents/JoinButton'
+import LandingLinks from './LandingComponents/LandingLinks'
+import '../LandingPage/LandingPage.css'
 
-import infographic from '../../../../images/LP-section1.jpg';
 
 export default function LandingPage()  {
  // todo: needs more styles/ improve layout
@@ -12,7 +11,7 @@ export default function LandingPage()  {
     return (
         <>
         <div className='intro-container'> <Intro /> 
-        <img className='section1-img' src={infographic}/>
+        <img className='section1-img' src='https://cdn-az.allevents.in/events5/banners/b7634bf5d34c8ed6bdb4a81d844f10637e5881e41f97149218b2a22488fb0242-rimg-w1000-h667-gmir.jpg?v=1699881508'/>
         </div> {/* section 1 (title intro: left, infographic: right) */}
 
 
@@ -22,6 +21,7 @@ export default function LandingPage()  {
 
         <div className='nav-container'> <LandingLinks />
         </div> {/* section 3 (3 columns with icons, underlined links and a caption) */}
+
 
         <div className='join-button-container'> <JoinButton />
         </div> {/* section 4 (Join Meetup button) */}
