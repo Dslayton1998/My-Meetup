@@ -21,8 +21,16 @@ export default function UpdateGroupForm( props ) {
     // console.log('type:', type)
     // console.log('private:', isPrivate)
 
+    console.log(location)
+    console.log(name)
+    console.log(type)
+
     const groups = useSelector(state => Object.values(state.Groups))
-    const group = groups.find(group => group.id == groupId)
+    let group;
+    if(groups) {
+        group =  groups.find(group => group.id == groupId)
+
+    }
     // console.log('currentGroup', group)
     // console.log(groups, 'GROUPS')
     useEffect(() => {
@@ -61,7 +69,7 @@ export default function UpdateGroupForm( props ) {
         const locationArr = location.split(', ')
         
         const newGroup = {
-            id: group.id,
+            id: groupId,
             name: name,
             city: locationArr[0],
             state: locationArr[1],
@@ -69,7 +77,7 @@ export default function UpdateGroupForm( props ) {
             type: type,
             isPrivate: isPrivate
         };
-        console.log('newGroup',newGroup)
+        // console.log('newGroup',newGroup)
         // console.log('NEW_GROUP', newGroup)
         await dispatch(updateGroupThunk(newGroup));
 
@@ -77,7 +85,7 @@ export default function UpdateGroupForm( props ) {
         // console.log(groups)
         // const groupId = groups[groups.length].id
         // console.log('groupId',groupId)
-        // navigate(`/groups/${groupId}`) 
+        navigate(`/groups/${groupId}`) 
     // todo: figure out how to redirect to the new page \\
     }
 

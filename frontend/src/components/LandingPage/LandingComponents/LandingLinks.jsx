@@ -30,7 +30,7 @@ export default function LandingLinks() {
 
             <div className='find-events'>
                 <img/>
-                <NavLink>Find an event</NavLink>
+                <NavLink to='/events'>Find an event</NavLink>
                 <p>Plenty of events to be apart of, far away or in your area! </p>
             </div>
 

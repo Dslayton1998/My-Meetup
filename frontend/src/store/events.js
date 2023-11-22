@@ -1,38 +1,38 @@
 import { csrfFetch } from './csrf';
 
 // TYPES
-const READ_GROUPS = 'groups/LOAD_GROUPS'
-const CREATE_GROUP = 'groups/CREATE_GROUP'
-const UPDATE_GROUP = 'groups/UPDATE_GROUP'
-const DELETE_GROUP = 'groups/DELETE_GROUP'
+const READ_EVENTS = 'events/LOAD_EVENTS'
+const CREATE_EVENT = 'events/CREATE_EVENT'
+const UPDATE_EVENT = 'events/UPDATE_EVENT'
+const DELETE_EVENT = 'events/DELETE_EVENT'
 
 
 // ACTIONS
 // todo: Full CRUD   READ - CREATE - UPDATE - DELETE 
-export const readGroupsAction = ( groups ) => {
+export const readEventsAction = ( events ) => {
     return {
-        type: READ_GROUPS,
-        groups
+        type: READ_EVENTS,
+        events
     }
 }
 
-export const createGroupAction = ( group ) => {
+export const createEventAction = ( events ) => {
     return {
-        type: CREATE_GROUP,
-        group
+        type: CREATE_EVENT,
+        events
     }
 }
 
-export const updateGroupAction = ( group ) => {
+export const updateEventAction = ( events ) => {
     return {
-        type: UPDATE_GROUP,
-        group
+        type: UPDATE_EVENT,
+        events
     }
 }
 
-export const deleteGroupAction = ( response ) => {
+export const deleteEventAction = ( response ) => {
     return {
-        type: DELETE_GROUP,
+        type: DELETE_EVENT,
         response
     }
 }
@@ -40,29 +40,29 @@ export const deleteGroupAction = ( response ) => {
 
 // todo: THUNKS!!!!--------------------------------------------------------------
 
-export const getAllGroupsThunk = () => async (dispatch) => {
-    const res = await fetch('/api/groups');
+export const getAllEventsThunk = () => async (dispatch) => {
+    const res = await fetch('/api/events');
     // console.log('HEEEEEEEEY',res)
     
     if(res.ok) {
-        const groups = await res.json();
-        dispatch(readGroupsAction(groups));
+        const data = await res.json();
+        dispatch(readEventsAction(data));
     } else {
         // console.log(res, "Hello")
     }
 }
 
-export const createGroupThunk = ( groupData ) => async (dispatch) => {
+export const createEventThunk = ( newEvent ) => async (dispatch) => {
 //    try {
-       const res = await csrfFetch('/api/groups', {
+       const res = await csrfFetch('/api/events', {
            method: 'POST',
            headers: { 'Content-Type': 'application/json'},
-           body: JSON.stringify(groupData)
+           body: JSON.stringify(newEvent)
        })
 
        if(res.ok) {
         const data = await res.json();
-        dispatch(createGroupAction(data))
+        dispatch(createEventAction(data))
         return data
     } 
 //    } catch (err) {
@@ -75,14 +75,14 @@ export const createGroupThunk = ( groupData ) => async (dispatch) => {
 }
 
 
-export const deleteGroupThunk = ( group ) => async (dispatch) => {
+export const deleteEventThunk = ( event ) => async (dispatch) => {
     // console.log(group)
-    const res = await csrfFetch(`/api/groups/${group.id}`, { method: 'DELETE'} )
+    const res = await csrfFetch(`/api/groups/${event.id}`, { method: 'DELETE'} )
     
     if(res.ok) {
         const data = await res.json();
         // console.log('here', data)
-        dispatch(deleteGroupAction(data))
+        dispatch(deleteEventAction(data))
     } else {
         const err = await res.json()
         // console.log(err)
@@ -90,18 +90,18 @@ export const deleteGroupThunk = ( group ) => async (dispatch) => {
 }
 
 
-export const updateGroupThunk = ( updates ) => async (dispatch) => {
-    console.log('updatedData',updates)
+export const updateEventThunk = ( update ) => async (dispatch) => {
+    console.log('updatedData',update)
     // try {
-        const res = await csrfFetch(`/api/groups/${updates.id}`, {
+        const res = await csrfFetch(`/api/groups/${update.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json'},
-            body: JSON.stringify(updates)
+            body: JSON.stringify(update)
         })
         if(res.ok) {
             const data = await res.json();
             console.log('res',data)
-            dispatch(updateGroupAction(data))
+            dispatch(updateEventAction(data))
         }
     // } catch(err) {
     //     const errors = await err.json()
@@ -115,33 +115,33 @@ export const updateGroupThunk = ( updates ) => async (dispatch) => {
 
 
 // todo: REDUCER!!!!--------------------------------------------------------------------
-const initial = { Groups: {} };
-const groupsReducer = (state = initial, action) => {
+const initial = { }; // Events: { }
+const eventsReducer = (state = initial, action) => {
     switch (action.type) {
         
-        case READ_GROUPS: {
+        case READ_EVENTS: {
             // console.log('state!',state)
-            // console.log('action!',action.groups)
-            const newState = { ...action.groups.Groups };
+            // console.log('action!',action.events)
+            const newState = { ...action.events.Events };
             // console.log('newState',newState)
             return newState
         }
 
-        case CREATE_GROUP: {
+        case CREATE_EVENT: {
             // console.log('state', state)
             // console.log('action', action)
             // const newGroup = action.group
-            const newState = { ...state, ...action.group.Groups };
+            const newState = { ...state, ...action.event.Events };
             // console.log('newState', newState)
             
             return newState
         }
 
-        case UPDATE_GROUP: {
+        case UPDATE_EVENT: {
             return state
         }
 
-        case DELETE_GROUP: {
+        case DELETE_EVENT: {
             // console.log('hello from reducer')
             // console.log('state', state)
             // console.log('action',action)
@@ -157,4 +157,4 @@ const groupsReducer = (state = initial, action) => {
     }
 }
 
-export default groupsReducer;
+export default eventsReducer;

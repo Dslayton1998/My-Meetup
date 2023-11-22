@@ -8,6 +8,7 @@ import GroupList from './components/GroupListPage/GroupList';
 import GroupDetails from './components/GroupDetailsPage/GroupDetails';
 import CreateGroupForm from './components/CreateGroupForm/CreateGroupForm'
 import UpdateGroupForm from './components/GroupDetailsPage/GroupDetailComponents/UpdateGroupForm';
+import EventList from './components/EventListPage/EventList';
 
 // const groups = useSelector(state => Object.values(state.Groups))
 
@@ -53,6 +54,14 @@ const router = createBrowserRouter([
       {
         path: '/groups/:groupId/edit',
         element: <UpdateGroupForm />
+      },
+      {
+        path: '/events',
+        element: <EventList />
+      },
+      {
+        path: '*',
+        element: <h1>404 Page not found</h1>
       }
     ]
   }
