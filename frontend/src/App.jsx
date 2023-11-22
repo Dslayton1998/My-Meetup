@@ -9,6 +9,8 @@ import GroupDetails from './components/GroupDetailsPage/GroupDetails';
 import CreateGroupForm from './components/CreateGroupForm/CreateGroupForm'
 import UpdateGroupForm from './components/GroupDetailsPage/GroupDetailComponents/UpdateGroupForm';
 import EventList from './components/EventListPage/EventList';
+import EventDetails from './components/EventDetailsPage/EventDetails';
+import CreateEventForm from './components/GroupDetailsPage/GroupDetailComponents/CreateEventForm';
 
 // const groups = useSelector(state => Object.values(state.Groups))
 
@@ -56,8 +58,16 @@ const router = createBrowserRouter([
         element: <UpdateGroupForm />
       },
       {
+        path: '/groups/:groupId/events/new',
+        element: <CreateEventForm/>
+      },
+      {
         path: '/events',
         element: <EventList />
+      },
+      {
+        path: '/events/:eventId',
+        element: <EventDetails />
       },
       {
         path: '*',

@@ -40,7 +40,7 @@ export default function GroupDetailsHeading({ group }) {
         if(sessionUser) {
             if(sessionUser.id === organizerId) {
                 return <div> 
-                <button>Create event</button>
+                <button onClick={() => navigate(`/groups/${group.id}/events/new`)}>Create event</button>
                  <button onClick={() => updateRedirect()}>Update</button> 
                  <button onClick={() => setOpenModal(true)}>Delete</button>
                 <DeleteModal group={group} open={openModal} onClose={() => setOpenModal(false)}/> </div>

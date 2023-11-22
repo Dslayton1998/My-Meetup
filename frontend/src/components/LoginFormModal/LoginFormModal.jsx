@@ -20,7 +20,7 @@ function LoginFormModal() {
     .then(closeModal)
     .catch(async (res) => {
       const data = await res.json();
-      console.log(data)
+      // console.log(data)
       if (data && data.errors) {
         setErrors(data.errors);
       }
@@ -48,7 +48,7 @@ function LoginFormModal() {
     }
 
     if(errors.message) {
-      console.log(errors, 'here')
+      // console.log(errors, 'here')
       noSubmit = errors.message
       setErrors(noSubmit)
     }
@@ -56,7 +56,7 @@ function LoginFormModal() {
       setLogin(login)
   
     }, [credential, password, errors])
-    console.log(errors)
+    // console.log(errors)
   
   const checkLoginButton = ( ) => {
     if(login.access === false) {

@@ -115,7 +115,7 @@ export const updateGroupThunk = ( updates ) => async (dispatch) => {
 
 
 // todo: REDUCER!!!!--------------------------------------------------------------------
-const initial = { Groups: {} };
+const initial = { Groups: {} }; // todo: see if this makes things look funky
 const groupsReducer = (state = initial, action) => {
     switch (action.type) {
         

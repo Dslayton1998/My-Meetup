@@ -54,12 +54,13 @@ export const getAllEventsThunk = () => async (dispatch) => {
 
 export const createEventThunk = ( newEvent ) => async (dispatch) => {
 //    try {
-       const res = await csrfFetch('/api/events', {
+        console.log('newEvent in Thunk:', newEvent)
+       const res = await csrfFetch(`/api/groups/${newEvent.groupId}/events`, {
            method: 'POST',
            headers: { 'Content-Type': 'application/json'},
            body: JSON.stringify(newEvent)
        })
-
+       console.log('res:', await res.json())
        if(res.ok) {
         const data = await res.json();
         dispatch(createEventAction(data))
@@ -115,7 +116,7 @@ export const updateEventThunk = ( update ) => async (dispatch) => {
 
 
 // todo: REDUCER!!!!--------------------------------------------------------------------
-const initial = { }; // Events: { }
+const initial = {  }; // Events: { }
 const eventsReducer = (state = initial, action) => {
     switch (action.type) {
         

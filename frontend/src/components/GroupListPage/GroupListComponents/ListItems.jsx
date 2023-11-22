@@ -5,7 +5,7 @@ export default function ListItems({ group }) {
     const navigate = useNavigate();
     // todo: add basic styles (font sizes/layout)
     // todo: figure out how to get num of events & dot
-
+   
     const onClick = () => {
         navigate(`/groups/${group.id}`)
     }
