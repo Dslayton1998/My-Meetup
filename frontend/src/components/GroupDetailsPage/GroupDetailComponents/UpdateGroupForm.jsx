@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux";
-import { createGroupThunk, getAllGroupsThunk } from "../../store/groups";
-import { useNavigate } from "react-router-dom";
+import { updateGroupThunk, getAllGroupsThunk } from "../../../store/groups";
+import { useNavigate, useParams } from "react-router-dom";
 
 
-export default function CreateGroupForm() {
+export default function UpdateGroupForm( props ) {
+    console.log('data', props)
     const [name, setName] = useState('');
     const [location, setLocation] = useState('');
     const [description, setDescription] = useState('');
@@ -14,11 +15,15 @@ export default function CreateGroupForm() {
     const [hasSubmitted, setHasSubmitted] = useState(false)
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { groupId } = useParams();
+    
 
     // console.log('type:', type)
     // console.log('private:', isPrivate)
 
     const groups = useSelector(state => Object.values(state.Groups))
+    const group = groups.find(group => group.id == groupId)
+    // console.log('currentGroup', group)
     // console.log(groups, 'GROUPS')
     useEffect(() => {
         dispatch(getAllGroupsThunk())
@@ -56,21 +61,23 @@ export default function CreateGroupForm() {
         const locationArr = location.split(', ')
         
         const newGroup = {
-            name,
+            id: group.id,
+            name: name,
             city: locationArr[0],
             state: locationArr[1],
             about: description,
-            type,
-            isPrivate
+            type: type,
+            isPrivate: isPrivate
         };
+        console.log('newGroup',newGroup)
         // console.log('NEW_GROUP', newGroup)
-        await dispatch(createGroupThunk(newGroup));
+        await dispatch(updateGroupThunk(newGroup));
 
         reset();
         // console.log(groups)
-        const groupId = groups[groups.length].id
+        // const groupId = groups[groups.length].id
         // console.log('groupId',groupId)
-        navigate(`/groups/${groupId}`) 
+        // navigate(`/groups/${groupId}`) 
     // todo: figure out how to redirect to the new page \\
     }
 
@@ -84,14 +91,24 @@ export default function CreateGroupForm() {
         setValidations({})
       };
 
+      let combined;
+      if(group) {
+        combined = group.city + ', ' + group.state
+      }
 
+      let privacy;
+      if(!isPrivate) {
+        privacy = 'Public'
+      } else {
+        privacy = 'Private'
+      }
 
     return (
         <div>
             {/* <title>Start a New Group</title>
         <p>BECOME AN ORGANIZER</p>
         <h1>We&apos;ll walk you through a few steps to build your local community</h1> */}
-        <h1>Start a New Group</h1>
+        <h1>Update your group</h1>
         <form onSubmit={handleSubmit}>
             <div>
                 <h1>Set your group&apos;s location</h1>
@@ -101,7 +118,7 @@ export default function CreateGroupForm() {
                     type="text"
                     onChange={(e) => setLocation(e.target.value)}
                     value={location}
-                    placeholder="City, STATE"
+                    placeholder={combined ? combined: null} 
                     name="location"
                 />
             </div>
@@ -115,7 +132,7 @@ export default function CreateGroupForm() {
                     type="text"
                     onChange={(e) => setName(e.target.value)}
                     value={name}
-                    placeholder="What is your group name?"
+                    placeholder={group ? group.name : null}
                     name="name"
                 />
             </div>
@@ -132,7 +149,7 @@ export default function CreateGroupForm() {
                     // type="textarea"
                     onChange={(e) => setDescription(e.target.value)}
                     value={description}
-                    placeholder="Please write at least 30 characters"
+                    placeholder={group ? group.about: null}
                     name="description"
                 />
             </div>
@@ -141,22 +158,22 @@ export default function CreateGroupForm() {
                 <h1>Final steps...</h1>
                 <p>Is this an in person or online group?</p>
                 <select onChange={(e) => setType(e.target.value)}>
-                    <option defaultValue="" selected disabled hidden>(select one)</option>
+                    <option defaultValue="" selected disabled hidden>{group ? group.type : null}</option>
                     <option value={'Online'} >Online</option>
                     <option value={'In person'} >In-Person</option>
                 </select>
                 {hasSubmitted && validations.type && `*${validations.type}`}
                 <p>Is this group private or public?</p>
                 <select onChange={(e) => setPrivate(e.target.value)}>
-                    <option value="" selected disabled hidden>(select one)</option>
+                    <option defaultValue="" selected disabled hidden>{privacy}</option>
                     <option value={true} >Private</option>
                     <option value={false} >Public</option>
                 </select>
                 {hasSubmitted && validations.isPrivate && `*${validations.isPrivate}`}
                 <p>Please add an image url for your group below:</p>
-                <input placeholder="Image Url"/> 
+                <input placeholder={group ? group.previewImage: null}/> 
             </div>
-            <button type="submit">Create group</button>
+            <button type="submit">Update group</button>
         </form>
         </div>
     )

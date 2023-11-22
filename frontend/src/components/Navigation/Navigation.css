@@ -33,3 +33,8 @@
     /* border: solid black 20px; */
 }
 
+.isDisabled {
+    cursor: not-allowed;
+    color: lightgray;
+}
+

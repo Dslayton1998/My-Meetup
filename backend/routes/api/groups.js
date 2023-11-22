@@ -23,9 +23,9 @@ const validateGroups = [ //* https://express-validator.github.io/docs/api/valida
       .withMessage('A type is required.')
       .isIn(['Online','In person'])
       .withMessage("Type must be 'Online' or 'In person'"), 
-    check('private')
+    check('isPrivate')
       .isBoolean()
-      .withMessage("Private must be a boolean"),
+      .withMessage("isPrivate must be a boolean"),
     check('city')
       .exists({ checkFalsy: true })
       .withMessage('City is required'),
@@ -493,8 +493,8 @@ router.get('/:groupId', requireAuth, async (req, res, next) => {
 
 //! POST's START
 //* CREATE A GROUP
-router.post('/', requireAuth, validateGroups, async (req, res, next) => {
-    const { name, about, type, private, city, state } = req.body;
+router.post('/', /*requireAuth,*/ validateGroups, async (req, res, next) => {
+    const { name, about, type, isPrivate, city, state } = req.body;
     const organizer = req.user
     const NewGroup = await Group.create({
         organizerId: organizer.id,
@@ -502,7 +502,7 @@ router.post('/', requireAuth, validateGroups, async (req, res, next) => {
         about,
         type,
         city,
-        private,
+        isPrivate,
         state})
     return res.status(201).json(NewGroup)
 });
@@ -855,7 +855,7 @@ router.put('/:groupId/membership', requireAuth, async(req, res, next) =>{
 
 //* EDIT A GROUP
 router.put('/:groupId', requireAuth, validateGroups, async (req, res, next) => {
-    let { name, about, type, private, city, state } = req.body;
+    let { name, about, type, isPrivate, city, state } = req.body;
     const user = req.user;
 
     const { groupId } = req.params;
@@ -875,8 +875,8 @@ router.put('/:groupId', requireAuth, validateGroups, async (req, res, next) => {
         createObj.type = type
     } 
 
-    if(private) {
-        createObj.private = private
+    if(isPrivate) {
+        createObj.isPrivate = isPrivate
     } 
 
     if(city) {

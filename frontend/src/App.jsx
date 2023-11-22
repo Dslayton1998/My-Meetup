@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import * as sessionActions from './store/session';
 import Navigation from './components/Navigation/Navigation';
@@ -7,6 +7,9 @@ import LandingPage from './components/LandingPage/LandingPage';
 import GroupList from './components/GroupListPage/GroupList';
 import GroupDetails from './components/GroupDetailsPage/GroupDetails';
 import CreateGroupForm from './components/CreateGroupForm/CreateGroupForm'
+import UpdateGroupForm from './components/GroupDetailsPage/GroupDetailComponents/UpdateGroupForm';
+
+// const groups = useSelector(state => Object.values(state.Groups))
 
 function Layout() {
   const dispatch = useDispatch();
@@ -46,6 +49,10 @@ const router = createBrowserRouter([
       {
         path: '/groups/new',
         element: <CreateGroupForm />
+      }, 
+      {
+        path: '/groups/:groupId/edit',
+        element: <UpdateGroupForm />
       }
     ]
   }

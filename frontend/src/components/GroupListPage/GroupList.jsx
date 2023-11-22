@@ -7,8 +7,8 @@ import ListHeading from './GroupListComponents/ListHeading.jsx'
 
 export default function GroupList() {
     const dispatch = useDispatch();
-    const groups = useSelector(state => Object.values(state.groups.Groups));
-    console.log(groups)
+    const groups = useSelector(state => Object.values(state.Groups));
+    // console.log(groups)
 
     useEffect(() => {
         dispatch(getAllGroupsThunk())

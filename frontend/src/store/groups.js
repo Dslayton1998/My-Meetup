@@ -30,10 +30,10 @@ export const updateGroupAction = ( group ) => {
     }
 }
 
-export const deleteGroupAction = ( group ) => {
+export const deleteGroupAction = ( response ) => {
     return {
         type: DELETE_GROUP,
-        group
+        response
     }
 }
 
@@ -53,36 +53,65 @@ export const getAllGroupsThunk = () => async (dispatch) => {
 }
 
 export const createGroupThunk = ( groupData ) => async (dispatch) => {
-    const res = await csrfFetch('/api/groups', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json'},
-        body: JSON.stringify(groupData)
-    })
+//    try {
+       const res = await csrfFetch('/api/groups', {
+           method: 'POST',
+           headers: { 'Content-Type': 'application/json'},
+           body: JSON.stringify(groupData)
+       })
 
-    if(res.ok) {
+       if(res.ok) {
         const data = await res.json();
         dispatch(createGroupAction(data))
         return data
+    } 
+//    } catch (err) {
+//        // todo: handle errors
+//             //    console.log('err here', err)
+//                const error = await err.json()
+//                console.log('err here', error)
+//    }
+
+}
+
+
+export const deleteGroupThunk = ( group ) => async (dispatch) => {
+    // console.log(group)
+    const res = await csrfFetch(`/api/groups/${group.id}`, { method: 'DELETE'} )
+    
+    if(res.ok) {
+        const data = await res.json();
+        // console.log('here', data)
+        dispatch(deleteGroupAction(data))
     } else {
-// todo: handle errors
-        console.log('err here', res)
         const err = await res.json()
-        console.log(err)
+        // console.log(err)
     }
 }
 
 
-// export const getDetailsThunk = ( payload ) => async (dispatch) => {
-//     const res = await fetch(`api/groups/:groupId`)
-//     console.log(payload)
-//     console.log('oi', res)
-//     if(res.ok) {
-//         const groups = await res.json();
-//         console.log(groups, 'made it')
-//         dispatch(readGroupsAction(groups));
-//         return groups
-//     }
-// }
+export const updateGroupThunk = ( updates ) => async (dispatch) => {
+    console.log('updatedData',updates)
+    try {
+        const res = await csrfFetch(`/api/groups/${updates.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify(updates)
+        })
+        if(res.ok) {
+            const data = await res.json();
+            console.log('res',data)
+            dispatch(updateGroupAction(data))
+        }
+
+    } catch(err) {
+        const errors = await err.json()
+        console.log('err',errors)
+
+    }
+ 
+    
+}
 
 
 
@@ -94,26 +123,36 @@ const groupsReducer = (state = initial, action) => {
     switch (action.type) {
         
         case READ_GROUPS: {
-            // console.log(state)
-            // console.log('HERE',action)
-            const newState = { ...state, Groups: [...action.groups.Groups] };
-            console.log(newState)
+            // console.log('state!',state)
+            // console.log('action!',action.groups)
+            const newState = { ...action.groups.Groups };
+            // console.log('newState',newState)
             return newState
         }
 
         case CREATE_GROUP: {
             // console.log('state', state)
             // console.log('action', action)
-            return null;
+            // const newGroup = action.group
+            const newState = { ...state, ...action.group.Groups };
+            // console.log('newState', newState)
+            
+            return newState
         }
 
         // case UPDATE_GROUP: {
         //     return null;
         // }
 
-        // case DELETE_GROUP: {
-        //     return null;
-        // }
+        case DELETE_GROUP: {
+            // console.log('hello from reducer')
+            // console.log('state', state)
+            // console.log('action',action)
+            console.log('hello from reducer')
+            // const newState = { ...state };
+            // console.log(newState)
+            return newState
+        }
 
 
         default:

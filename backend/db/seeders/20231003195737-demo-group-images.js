@@ -48,7 +48,7 @@ module.exports = {
     },
     {
       groupId: 3,
-      url: 'https://e7.pngegg.com/pngimages/624/641/png-clipart-black-canary-green-arrow-hawkman-hawkgirl-starfire-raven-animals-fictional-characters.png',
+      url: 'https://i.pinimg.com/736x/db/8a/24/db8a24de1407b68ae8703688ac7a7865.jpg',
       preview: true
     },
     {
