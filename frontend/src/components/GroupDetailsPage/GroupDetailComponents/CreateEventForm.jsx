@@ -23,6 +23,7 @@ export default function CreateEventForm() {
     const group = groups.find(group => group.id == groupId);
 
 
+
     useEffect(() => {
         dispatch(getAllGroupsThunk())
         const urlArr = url.split('.')

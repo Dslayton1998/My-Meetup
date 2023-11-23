@@ -1,6 +1,7 @@
 import { csrfFetch } from './csrf';
 
 // TYPES
+const READ_EVENT_ID = 'events/READ_EVENT_ID'
 const READ_EVENTS = 'events/LOAD_EVENTS'
 const CREATE_EVENT = 'events/CREATE_EVENT'
 const UPDATE_EVENT = 'events/UPDATE_EVENT'
@@ -13,6 +14,13 @@ export const readEventsAction = ( events ) => {
     return {
         type: READ_EVENTS,
         events
+    }
+}
+
+export const readEventByIdAction = ( event ) => {
+    return {
+        type: READ_EVENT_ID,
+        event
     }
 }
 
@@ -52,6 +60,18 @@ export const getAllEventsThunk = () => async (dispatch) => {
     }
 }
 
+
+export const getEventByIdThunk = ( eventId ) => async (dispatch) => {
+    const res = await csrfFetch(`/api/events/${eventId}`)
+
+    if(res.ok) {
+        const data = await res.json();
+        dispatch(readEventByIdAction(data))
+    }
+}
+
+
+
 export const createEventThunk = ( newEvent ) => async (dispatch) => {
 //    try {
         console.log('newEvent in Thunk:', newEvent)
@@ -78,7 +98,7 @@ export const createEventThunk = ( newEvent ) => async (dispatch) => {
 
 export const deleteEventThunk = ( event ) => async (dispatch) => {
     // console.log(group)
-    const res = await csrfFetch(`/api/groups/${event.id}`, { method: 'DELETE'} )
+    const res = await csrfFetch(`/api/events/${event.id}`, { method: 'DELETE'} )
     
     if(res.ok) {
         const data = await res.json();
@@ -112,7 +132,7 @@ export const updateEventThunk = ( update ) => async (dispatch) => {
 }
 
 
-
+//!!!! NEED TO TEST NEW API FETCH FOR GET EVENT BY ID
 
 
 // todo: REDUCER!!!!--------------------------------------------------------------------
@@ -124,6 +144,14 @@ const eventsReducer = (state = initial, action) => {
             // console.log('state!',state)
             // console.log('action!',action.events)
             const newState = { ...action.events.Events };
+            // console.log('newState',newState)
+            return newState
+        }
+
+        case READ_EVENT_ID: {
+            // console.log('state!',state)
+            // console.log('action!',action.group)
+            const newState = { ...state, CurrentEventDetails:{...action.event} };
             // console.log('newState',newState)
             return newState
         }

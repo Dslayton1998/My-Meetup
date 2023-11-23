@@ -1,24 +1,27 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { getAllGroupsThunk } from '../../../store/groups';
 import DeleteModal from '../Modal/DeleteModal'
 import '../GroupDetails.css'
 import { useNavigate } from 'react-router-dom';
 
-export default function GroupDetailsHeading({ group }) {
+export default function GroupDetailsHeading({ group, groupId }) {
     const [openModal, setOpenModal] = useState(false)
     const dispatch = useDispatch()
     const navigate = useNavigate()
     const sessionUser = useSelector(state => state.session.user);
-    const organizerId = group ? group.organizerId : null
+    const organizer = useSelector(state => state.Groups.CurrentGroupDetails ? state.Groups.CurrentGroupDetails.Organizer: null)
+    const organizerId = organizer ? organizer.id : null
+    const events = useSelector(state => state.Events[0] ? Object.values(state.Events): null)
+    const event = events ? events.find(event => event.groupId == groupId) : null
+    const eventArr = [];
+    if(event) {
+        eventArr.push(event)
+    }
+    // console.log(groupId)
+    // console.log('organizer',organizerInfo)
     // console.log(sessionUser)
     
-        useEffect(() => {
-            dispatch(getAllGroupsThunk())
-        }, [ dispatch ])
 
-
-    
     const onClick = () => {
         if(sessionUser) {
             if(sessionUser.id === organizerId) {
@@ -53,17 +56,16 @@ export default function GroupDetailsHeading({ group }) {
         }
     }
 
-// todo: Need events by groupId and organizer data
+// todo: Need events by groupId and ## events needs double digits
     return (
         <div className='details-container'>
             <img className='details-image' src={group ? group.previewImage: null} /> 
             <div>
                 <h1>{group ? group.name: null}</h1>
                 <p>{group ? group.city: null}, {group ? group.state: null}</p>
-                <p>## events </p>
-                <p>Organized by ...</p>
+                <p>{eventArr ? eventArr.length: null} events </p>
+                <p>Organized by {organizer ? organizer.firstName: null} {organizer ? organizer.lastName: null}</p>
                 <span onClick={onClick}>{checkAuth()}</span>
-                {/* <DeleteModal open={openModal} onClose={() => setOpenModal(false)}/> */}
             </div>
         </div>
     )

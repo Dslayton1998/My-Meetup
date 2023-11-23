@@ -1,7 +1,9 @@
 import { csrfFetch } from './csrf';
 
 // TYPES
-const READ_GROUPS = 'groups/LOAD_GROUPS'
+//todo: edit types and actions
+const READ_ALL_GROUPS = 'groups/LOAD_GROUPS'
+const READ_GROUP_ID = 'groups/READ_GROUP_ID'
 const CREATE_GROUP = 'groups/CREATE_GROUP'
 const UPDATE_GROUP = 'groups/UPDATE_GROUP'
 const DELETE_GROUP = 'groups/DELETE_GROUP'
@@ -9,10 +11,17 @@ const DELETE_GROUP = 'groups/DELETE_GROUP'
 
 // ACTIONS
 // todo: Full CRUD   READ - CREATE - UPDATE - DELETE 
-export const readGroupsAction = ( groups ) => {
+export const readAllGroupsAction = ( groups ) => {
     return {
-        type: READ_GROUPS,
+        type: READ_ALL_GROUPS,
         groups
+    }
+}
+
+export const readGroupByIdAction = ( group ) => {
+    return {
+        type: READ_GROUP_ID,
+        group
     }
 }
 
@@ -46,11 +55,23 @@ export const getAllGroupsThunk = () => async (dispatch) => {
     
     if(res.ok) {
         const groups = await res.json();
-        dispatch(readGroupsAction(groups));
+        dispatch(readAllGroupsAction(groups));
     } else {
         // console.log(res, "Hello")
     }
 }
+
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+export const getGroupByIdThunk = ( groupId ) => async (dispatch) => {
+    const res = await csrfFetch(`/api/groups/${groupId}`)
+
+    if(res.ok) {
+        const data = await res.json();
+        dispatch(readGroupByIdAction(data))
+    }
+}
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 
 export const createGroupThunk = ( groupData ) => async (dispatch) => {
 //    try {
@@ -119,7 +140,7 @@ const initial = { Groups: {} }; // todo: see if this makes things look funky
 const groupsReducer = (state = initial, action) => {
     switch (action.type) {
         
-        case READ_GROUPS: {
+        case READ_ALL_GROUPS: {
             // console.log('state!',state)
             // console.log('action!',action.groups)
             const newState = { ...action.groups.Groups };
@@ -127,10 +148,17 @@ const groupsReducer = (state = initial, action) => {
             return newState
         }
 
+        case READ_GROUP_ID: {
+            // console.log('state!',state)
+            // console.log('action!',action.group)
+            const newState = { ...state, CurrentGroupDetails:{...action.group} };
+            // console.log('newState',newState)
+            return newState
+        }
+
         case CREATE_GROUP: {
             // console.log('state', state)
             // console.log('action', action)
-            // const newGroup = action.group
             const newState = { ...state, ...action.group.Groups };
             // console.log('newState', newState)
             

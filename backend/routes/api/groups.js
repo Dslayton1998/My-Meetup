@@ -424,7 +424,7 @@ router.get('/:groupId/members', async (req, res, next) => {
 
 
 //* GET GROUP DETAILS FROM ID 
-router.get('/:groupId', requireAuth, async (req, res, next) => {
+router.get('/:groupId', /*requireAuth,*/ async (req, res, next) => {
   const groupId = req.params.groupId;
   const getGroup =  await Group.findByPk(groupId);
   
