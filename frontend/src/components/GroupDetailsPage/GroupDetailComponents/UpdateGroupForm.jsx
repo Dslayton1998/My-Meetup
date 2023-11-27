@@ -2,10 +2,11 @@ import { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux";
 import { updateGroupThunk, getAllGroupsThunk } from "../../../store/groups";
 import { useNavigate, useParams } from "react-router-dom";
+import '../GroupDetails.css'
 
 
 export default function UpdateGroupForm( props ) {
-    console.log('data', props)
+    // console.log('data', props)
     const [name, setName] = useState('');
     const [location, setLocation] = useState('');
     const [description, setDescription] = useState('');
@@ -21,9 +22,9 @@ export default function UpdateGroupForm( props ) {
     // console.log('type:', type)
     // console.log('private:', isPrivate)
 
-    console.log(location)
-    console.log(name)
-    console.log(type)
+    // console.log(location)
+    // console.log(name)
+    // console.log(type)
 
     const groups = useSelector(state => Object.values(state.Groups))
     let group;
@@ -112,16 +113,17 @@ export default function UpdateGroupForm( props ) {
       }
 
     return (
-        <div>
+        <div className="update-group-form-container">
             {/* <title>Start a New Group</title>
         <p>BECOME AN ORGANIZER</p>
         <h1>We&apos;ll walk you through a few steps to build your local community</h1> */}
-        <h1>Update your group</h1>
-        <form onSubmit={handleSubmit}>
-            <div>
-                <h1>Set your group&apos;s location</h1>
+        <h1 style={{borderBottom: '2px solid #808080', marginBottom: 0, paddingBottom: 2, width: 800}}>Update your group</h1>
+        <form className="update-group-form" onSubmit={handleSubmit}>
+            <div className="update-form-info-containers">
+                <h2>Set your group&apos;s location</h2>
                 <p>Meetup groups meet locally, in person and online. We&apos;ll connect you with people
                     in your area.</p>
+                    <div className="input-and-validation">
                 <input
                     type="text"
                     onChange={(e) => setLocation(e.target.value)}
@@ -129,13 +131,15 @@ export default function UpdateGroupForm( props ) {
                     placeholder={combined ? combined: null} 
                     name="location"
                 />
+                {hasSubmitted && validations.location && `*${validations.location}`}
+                    </div>
             </div>
                 {/* Validation err's go here */}
-                {hasSubmitted && validations.location && `*${validations.location}`}
-            <div>
-                <h1>What will your group&apos;s name be?</h1>
+            <div className="update-form-info-containers">
+                <h2>What will your group&apos;s name be?</h2>
                 <p>Choose a name that will give people a clear idea of what the group is about. </p>
                 <p>Feel free to get creative! You can edit this later if you change your mind</p>
+                <div className="input-and-validation">
                 <input
                     type="text"
                     onChange={(e) => setName(e.target.value)}
@@ -143,45 +147,53 @@ export default function UpdateGroupForm( props ) {
                     placeholder={group ? group.name : null}
                     name="name"
                 />
-            </div>
             {hasSubmitted && validations.name && `*${validations.name}`}
-            <div>
-                <h1>Describe the purpose of your group</h1>
+                </div>
+            </div>
+            <div className="update-form-info-containers">
+                <h2>Describe the purpose of your group</h2>
                 <p>People will see this when we promote your group, but you&apos;ll be able to add to it later, too.</p>
                 <ol>
                     <li>What&apos;s the purpose of the group? </li>
                     <li>Who should join?</li>
                     <li>What will you do at your events?</li>
                 </ol>
+                <div className="input-and-validation">
                 <textarea
                     // type="textarea"
                     onChange={(e) => setDescription(e.target.value)}
                     value={description}
                     placeholder={group ? group.about: null}
                     name="description"
+                    style={{width: '400px', height: '150px'}}
                 />
-            </div>
             {hasSubmitted && validations.description && `*${validations.description}`}
-            <div>
-                <h1>Final steps...</h1>
+                </div>
+            </div>
+            <div className="update-form-info-containers">
+                <h2>Final steps...</h2>
                 <p>Is this an in person or online group?</p>
+                <div className="input-and-validation-select">
                 <select onChange={(e) => setType(e.target.value)}>
                     <option defaultValue="" selected disabled hidden>{group ? group.type : null}</option>
                     <option value={'Online'} >Online</option>
                     <option value={'In person'} >In-Person</option>
                 </select>
                 {hasSubmitted && validations.type && `*${validations.type}`}
+                </div>
                 <p>Is this group private or public?</p>
+                <div className="input-and-validation-select">
                 <select onChange={(e) => setPrivate(e.target.value)}>
                     <option defaultValue="" selected disabled hidden>{privacy}</option>
                     <option value={true} >Private</option>
                     <option value={false} >Public</option>
                 </select>
                 {hasSubmitted && validations.isPrivate && `*${validations.isPrivate}`}
-                <p>Please add an image url for your group below:</p>
-                <input placeholder={group ? group.previewImage: null}/> 
+                </div>
+                {/* <p>Please add an image url for your group below:</p>
+                <input placeholder={group ? group.previewImage: null}/>  */}
             </div>
-            <button type="submit">Update group</button>
+            <button style={{marginTop: 10}} type="submit">Update group</button>
         </form>
         </div>
     )

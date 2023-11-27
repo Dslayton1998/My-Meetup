@@ -11,12 +11,17 @@ export default function GroupList() {
     // console.log(groups)
 
     useEffect(() => {
-        dispatch(getAllGroupsThunk())
-    }, [ dispatch ])
+        const getGroups = async () => {
+            await dispatch(getAllGroupsThunk())
+        }
+        
+
+        getGroups()
+    }, [ ])
 
     // todo: just passed the group info to ListItems !still need to format! and finish listItems
     return (
-        <div>
+        <div className='list-container'>
             <div className='list-headings'>
             <ListHeading />
             </div>
@@ -25,7 +30,7 @@ export default function GroupList() {
                 {/* {.map trough groups state and create listItem (nav-links) for every group} */}
                 {groups.map(group => (
                     <div key={group.id} to={`/groups/${group.id}`}>
-                        <ListItems group={group} />
+                        <ListItems key={group.id} group={group} />
                     </div>
                     
                 ))}

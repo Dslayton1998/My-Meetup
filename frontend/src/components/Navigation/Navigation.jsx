@@ -7,15 +7,24 @@ import homeLogo from '../../../../images/homeLogo.png'
 function Navigation({ isLoaded }) {
   const sessionUser = useSelector(state => state.session.user);
 
-  const handleClick = (e) => {
-    if(sessionUser === null) {
-        e.preventDefault()
-    }
-  }
 
-  const checkUser = () => {
+  const toggleButton = () => {
     if(sessionUser === null) {
-        return 'isDisabled'
+      return null
+    } else {
+      const handleClick = (e) => {
+        if(sessionUser === null) {
+            e.preventDefault()
+        }
+      }
+    
+      const checkUser = () => {
+        if(sessionUser === null) {
+            return 'isDisabled'
+        }
+      }
+      const component = <li> <NavLink className={checkUser} onClick={handleClick} to='/groups/new' > Start a new group </NavLink> </li>
+      return component
     }
   }
 
@@ -26,16 +35,16 @@ function Navigation({ isLoaded }) {
             <img className='home-logo' src={homeLogo}/> 
         </NavLink>
       </li>
-      <li>
-        <NavLink className={checkUser} onClick={handleClick} to='/groups/new' >
-          Start a new group
-        </NavLink>
+      <div className='nav-right'>
+      <li className='start-group-button'>
+        {toggleButton()}
       </li>
       {isLoaded && (
         <li className='user-info-options'>
           <ProfileButton user={sessionUser} />
         </li>
       )}
+      </div>
     </ul>
   );
 }

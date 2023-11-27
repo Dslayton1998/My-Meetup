@@ -9,7 +9,7 @@ export default function LandingPage()  {
  // todo: needs more styles/ improve layout
  // todo: JoinButton still needs to render sign-up modal
     return (
-        <>
+        <div className='landing-page-container'>
         <div className='intro-container'> <Intro /> 
         <img className='section1-img' src='https://cdn-az.allevents.in/events5/banners/b7634bf5d34c8ed6bdb4a81d844f10637e5881e41f97149218b2a22488fb0242-rimg-w1000-h667-gmir.jpg?v=1699881508'/>
         </div> {/* section 1 (title intro: left, infographic: right) */}
@@ -25,6 +25,6 @@ export default function LandingPage()  {
 
         <div className='join-button-container'> <JoinButton />
         </div> {/* section 4 (Join Meetup button) */}
-        </>
+        </div>
     )
  }

@@ -46,6 +46,11 @@ function ProfileButton({ user }) {
     navigate('/groups')
   }
 
+  const viewEvents = (e) => {
+    e.preventDefault();
+    navigate('/events')
+  }
+
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
 // todo: add button to logged users option list "View groups"
   return (
@@ -63,6 +68,9 @@ function ProfileButton({ user }) {
             {/* View groups (here) */}
             <li>
               <button onClick={viewGroups}>View groups</button>
+            </li>
+            <li>
+              <button onClick={viewEvents}>View Events</button>
             </li>
             <li>
               <button onClick={logout}>Log Out</button>

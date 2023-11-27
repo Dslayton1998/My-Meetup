@@ -1,0 +1,31 @@
+.delete-modal-container {
+    display: flex;
+    width: 400px;
+    align-items: center;
+    justify-content: center;
+}
+
+.delete-modal-title {
+    display: flex;
+    justify-content: center;
+}
+
+.delete-modal-buttons-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.modal-button-yes {
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color:  #ed1c40;
+    cursor: pointer;
+}
+
+.modal-button-no {
+    padding: 10px;
+    background-color:  gray;
+    cursor: pointer;
+}

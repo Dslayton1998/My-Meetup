@@ -1,26 +1,48 @@
-import { useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import DeleteModal from '../Modal/DeleteModal'
-import '../GroupDetails.css'
+import { useSelector } from 'react-redux'
 import { useNavigate } from 'react-router-dom';
+import { useState } from 'react'
+import DeleteModal from '../DeleteModal'
+import '../GroupDetails.css'
+import OpenModalMenuItem from '../../Navigation/NavComponents/OpenModalMenuItem';
 
-export default function GroupDetailsHeading({ group, groupId }) {
-    const [openModal, setOpenModal] = useState(false)
-    const dispatch = useDispatch()
+
+export default function GroupDetailsHeading({ group }) {
     const navigate = useNavigate()
     const sessionUser = useSelector(state => state.session.user);
-    const organizer = useSelector(state => state.Groups.CurrentGroupDetails ? state.Groups.CurrentGroupDetails.Organizer: null)
-    const organizerId = organizer ? organizer.id : null
-    const events = useSelector(state => state.Events[0] ? Object.values(state.Events): null)
-    const event = events ? events.find(event => event.groupId == groupId) : null
-    const eventArr = [];
-    if(event) {
-        eventArr.push(event)
+    let organizerId;
+    let firstName;
+    let lastName;
+    const eventArr = group ? group.Events : []
+    // todo: event data is a little to static could cause bugs later
+    // console.log(eventArr)
+
+
+    if(group) {
+        if(group.Organizer) {
+            organizerId = group.Organizer.id
+            firstName = group.Organizer.firstName
+            lastName = group.Organizer.lastName
+        }
     }
-    // console.log(groupId)
-    // console.log('organizer',organizerInfo)
-    // console.log(sessionUser)
     
+    const pluralEvents = () => {
+        if(!eventArr) return;
+
+        if(eventArr.length < 10) {
+            if(eventArr.length === 1) {
+                const component = <span>{`0${eventArr.length} event`}</span>
+                return component
+            }
+            const component = <span>{`0${eventArr.length} events`}</span>
+            return component
+        }
+
+        if(eventArr.length >= 10) {
+            const component = <span>{`${eventArr.length} events`}</span>
+            return component
+        }
+    }
+
 
     const onClick = () => {
         if(sessionUser) {
@@ -39,33 +61,48 @@ export default function GroupDetailsHeading({ group, groupId }) {
     }
 
 
-    const checkAuth = () => {
+    const moreOptions = () => {
         if(sessionUser) {
             if(sessionUser.id === organizerId) {
-                return <div> 
+                return <div className='group-option-buttons'> 
                 <button onClick={() => navigate(`/groups/${group.id}/events/new`)}>Create event</button>
                  <button onClick={() => updateRedirect()}>Update</button> 
-                 <button onClick={() => setOpenModal(true)}>Delete</button>
-                <DeleteModal group={group} open={openModal} onClose={() => setOpenModal(false)}/> </div>
+                 <button> <OpenModalMenuItem itemText='Delete' modalComponent={<DeleteModal group={group} navigate={navigate}/>} /></button>
+                 </div>
             } else {
                 return <button onClick={onClick}>Join this group</button>
                 
             }
         } else {
-            return <button onClick={onClick}>Join this group</button>
+           if(sessionUser === null) {
+            return null
+           }
         }
     }
 
+    console.log(group)
+    const isPrivate = () => {
+        if(group) {
+            if(group.isPrivate === true) {
+                return 'Private'
+            } else {
+                return 'Public'
+            }
+        }
+    }
+
+
+
 // todo: Need events by groupId and ## events needs double digits
     return (
-        <div className='details-container'>
+        <div className='header-details-container'>
             <img className='details-image' src={group ? group.previewImage: null} /> 
             <div>
                 <h1>{group ? group.name: null}</h1>
                 <p>{group ? group.city: null}, {group ? group.state: null}</p>
-                <p>{eventArr ? eventArr.length: null} events </p>
-                <p>Organized by {organizer ? organizer.firstName: null} {organizer ? organizer.lastName: null}</p>
-                <span onClick={onClick}>{checkAuth()}</span>
+                <p>{pluralEvents(eventArr)} &#183; {isPrivate()}</p>
+                <p>Organized by: {firstName} {lastName}</p>
+                <span className='group-option-buttons' onClick={onClick}>{moreOptions()}</span>
             </div>
         </div>
     )

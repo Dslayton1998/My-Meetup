@@ -108,11 +108,12 @@ export default function CreateEventForm() {
 
 
     return (
-        <div>
+        <div className="create-event-form-container">
             <h1>Create an event for {group ? group.name: null}</h1>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <p>What is the name of your event?</p>
+            <form className="create-event-form" onSubmit={handleSubmit}>
+                <div className="form-info-containers">
+                    <h4>What is the name of your event?</h4>
+                    <div className="input-and-validation">
                     <input 
                         type="text"
                         onChange={(e) => setName(e.target.value)}
@@ -120,25 +121,31 @@ export default function CreateEventForm() {
                         placeholder="Event Name"
                         name="Event Name"
                     />
-                </div>
                 {hasSubmitted && validations.name && `*${validations.name}`}
-                <div>
-                    <p>Is this an in person or online event?</p>
+                    </div>
+                </div>
+                <div className="form-info-containers">
+                    <h4>Is this an in person or online event?</h4>
+                    <div className="input-and-validation-select">
                     <select onChange={(e) => setType(e.target.value)}> 
                         <option defaultValue="" selected disabled hidden>(select one)</option>
                         <option value={'Online'} >Online</option>
                         <option value={'In person'} >In-Person</option>
                     </select>
                     {hasSubmitted && validations.type && `*${validations.type}`}
-                    <p>Is this event private or public?</p>
+                    </div>
+                    <h4>Is this event private or public?</h4>
+                    <div className="input-and-validation-select">
                     <select onChange={(e) => setIsPrivate(e.target.value)}> 
                         <option defaultValue="" selected disabled hidden>(select one)</option>
                         <option value={true} >Private</option>
                         <option value={false} >Public</option>
                     </select>
                     {hasSubmitted && validations.isPrivate && `*${validations.isPrivate}`}
-                    <p>What is the price for your event</p>
+                    </div>
+                    <h4>What is the price for your event</h4>
                     {/* todo: add $ icon or figure something out */}
+                    <div className="input-and-validation">
                     <input 
                         type="number"
                         value={price}
@@ -146,10 +153,12 @@ export default function CreateEventForm() {
                         placeholder="$"
                         name="price"
                     />
-                </div>
                 {hasSubmitted && validations.price && `*${validations.price}`}
-                <div>
-                    <p>When does your event start?</p>
+                    </div>
+                </div>
+                <div className="form-info-containers">
+                    <h4>When does your event start?</h4>
+                    <div className="input-and-validation-date">
                     <input 
                         type='datetime-local'
                         value={startDate}
@@ -157,7 +166,9 @@ export default function CreateEventForm() {
                         name="startDate"
                     />
                     {hasSubmitted && validations.startDate && `*${validations.startDate}`}
-                    <p>When does your event end?</p>
+                    </div>
+                    <h4>When does your event end?</h4>
+                    <div className="input-and-validation-date">
                     <input 
                         type='datetime-local'
                         value={endDate}
@@ -165,25 +176,32 @@ export default function CreateEventForm() {
                         name="endDate"
                     />
                     {hasSubmitted && validations.endDate && `*${validations.endDate}`}
+                    </div>
                 </div>
-                <div>
-                    <p>Please add an image url for your event below:</p>
+                <div className="form-info-containers">
+                    <h4>Please add an image url for your event below:</h4>
+                    <div className="input-and-validation">
                     <input 
                     placeholder="Image Url"
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
                     />
-                </div>
                 {hasSubmitted && validations.url && `*${validations.url}`}
+                    </div>
+                </div>
                 <div>
-                    <p>Please describe your event:</p>
+                    <h4>Please describe your event:</h4>
+                    <div className="input-and-validation">
                     <textarea 
                         // type="textarea"
                         name="description"
+                        placeholder="Please include at least 30 characters."
                         value={description}
                         onChange={(e) => setDescription(e.target.value)}
+                        style={{width: 800, height: 200}}
                     />
                     {hasSubmitted && validations.description && `*${validations.description}`}
+                    </div>
                 </div>
                 <button>Create Event</button>
             </form>

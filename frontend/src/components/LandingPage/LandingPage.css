@@ -1,10 +1,15 @@
 
 /* todo: fix layout of text */
 /* todo: might need to break things up into separate containers */
+.landing-page-container {
+    margin-left: 150px ;
+    margin-right: 150px;
+}
+
 .intro-container { 
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: space-evenly;
 }
 
 .intro {
@@ -19,7 +24,7 @@
 .section1-img {
     margin-top: 30px;
     margin-right: 40px;
-    height: 140px;
+    height: 200px;
     width: 300px;
 }
 
@@ -28,6 +33,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin-top: 20px;
 }
 
 .nav-container {
@@ -89,6 +95,6 @@
 
 
 .isDisabled {
-    cursor: not-allowed;
+    cursor: 'default';
     color: lightgray;
 }

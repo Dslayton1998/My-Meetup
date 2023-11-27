@@ -1,8 +1,117 @@
-.details-container {
+.header-details-container {
     display: flex;
     flex-direction: row;
+    margin-left: 100px;
+    margin-bottom: 20px;
 }
 
 .details-image {
+    height: 250px;
+    margin-right: 20px;
+    border-radius: 5px;
+}
+
+.group-option-buttons {
+    padding-top: 47px;
+}
+
+.event-details-container {
+    padding: 20px;
+    /* display: flex;
+    flex-direction: column; */
+    width: 100%;
+    /* margin-left: -20px; */
+    /* margin-right: -100px; */
+    background-color: lightgray;
+}
+
+.event-details {  
+    margin-left: 100px;
+    margin-right: 100px;
+}
+
+.event-image {
     height: 200px;
+}
+
+.event-card {
+    display: flex;
+    flex-direction: row;
+    height: 250px;
+    width: 550px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 20px;
+}
+
+
+
+
+
+/* *CREATE EVENT FORM* */
+.create-event-form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    margin-left: 150px;
+    /* background-color: gray; */
+    margin-bottom: 50px;
+}
+
+.create-event-form {
+    width: 800px
+}
+
+/* ! may need to check CSS naming */
+.form-info-containers {
+    border-bottom: 2px solid gray;
+    padding-bottom: 10px;
+}
+
+.input-and-validation {
+    display: flex;
+    flex-direction: column;
+    width: 350px;
+    color: red;
+    padding-bottom: 10px;
+}
+
+.input-and-validation-select {
+    display: flex;
+    flex-direction: column;
+    width: 180px;
+    color: red;
+    padding-bottom: 10px;
+}
+
+.input-and-validation-date {
+    display: flex;
+    flex-direction: column;
+    width: 180px;
+    color: red;
+    padding-bottom: 10px;
+}
+
+
+
+
+/* *UPDATE GROUP FORM */
+.update-group-form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-start;
+    margin-left: 100px;
+    /* background-color: gray; */
+    margin-bottom: 50px;
+}
+
+.update-group-form {
+    width: 800px
+}
+
+.update-form-info-containers {
+    border-bottom: 2px solid gray;
+    padding-bottom: 10px;
 }

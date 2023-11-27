@@ -1,43 +1,70 @@
-import { NavLink } from 'react-router-dom'
-import { useParams } from 'react-router-dom'
 import { useEffect } from 'react'
+import { getGroupByIdThunk } from '../../store/groups';
+import { NavLink, useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { getAllGroupsThunk, getGroupByIdThunk } from '../../store/groups';
+import { getAllEventsThunk, getEventByIdThunk } from '../../store/events';
 import GroupDetailsHeading from './GroupDetailComponents/GroupDetailsHeading';
-import Details from './GroupDetailComponents/Details';
+import Details from './GroupDetailComponents/GroupDetails';
 import './GroupDetails.css'
-import { getAllEventsThunk } from '../../store/events';
+
 
 export default function GroupDetails( ) {
-    const { groupId } = useParams();
     const dispatch = useDispatch();
-    const groups = useSelector(state => state.Groups ? Object.values(state.Groups) : null)
-    // todo: cannot read property of null reading Groups
-    const group = groups.find(group => groupId == group.id)
-    // console.log(groups)
-    // console.log(group)
+    const { groupId } = useParams();
+    const id = Number(groupId)
+    let groups;
+    let events;
+    let event;
+    let eventId;
 
-    // if(!group) return null;
-
-
-    // useEffect(() => {
-    //     dispatch(getAllGroupsThunk())
-    // }, [ dispatch ])
     useEffect(() => {
-        dispatch(getAllGroupsThunk())
-        dispatch(getGroupByIdThunk(groupId))
-        dispatch(getAllEventsThunk())
-    }, [ dispatch ])
+        const getAllEventDetails = async () => {
+            events = await dispatch(getAllEventsThunk())
+            // event = await dispatch(getEventByIdThunk(events.id))
+        }
+
+        const getGroupDetails = async () => {
+            groups = await dispatch(getGroupByIdThunk(groupId)) 
+            // console.log(groups.Events[0].id)
+            // if(eventId !== undefined) {
+                event = await dispatch(getEventByIdThunk(1))
+            // }
+            // todo:  ^ FIX THIS SO ITS NOT HARDCODED
+            
+        }
+
+        getGroupDetails()
+        getAllEventDetails()
+    }, [dispatch])
+
+
+    groups = useSelector(state => state.Groups)
+    events = useSelector(state => state.Events)
+    // const test = useSelector(state => console.log(state))
+    // console.log('hi',events)
+    // eventId = events.Events[0].id
+    // console.log('PPPP',event)
+
+    let group = groups ? groups[id] : null
+    if(group) {
+        if(group.Events) {
+            if(group.Events.length > 0) {
+                eventId = group.Events[0].id
+            }
+        }
+    }
+
 
 
     const qtCarrot = '<'
-    // todo: dynamic portion <button>
     // todo: UpcomingEvents
+
+    // console.log(events)
     return (
         <div>
-        <NavLink to='/groups'>{qtCarrot} Groups</NavLink>
-        <GroupDetailsHeading group={group} groupId={groupId} />
-        <Details group={group} />
+        <NavLink to='/groups' className='header-details-container'>{qtCarrot} Groups</NavLink>
+        <GroupDetailsHeading group={group} events={events} />
+        <Details group={group} events={events} />
         {/* <UpcomingEvents /> */}
         </div>
     )

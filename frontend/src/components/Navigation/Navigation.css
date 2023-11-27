@@ -8,12 +8,14 @@
     align-items: center;
     justify-content: space-between;
     list-style-type: none;
-    margin-left: -10px;
-    margin-right: -10px;
+    /* margin-left: -10px; */
+    /* margin-right: -10px; */
     margin-top: -12px;
-    padding-top: 20px;
-    padding-right: 25px;
+    padding-top: 10px;
+    padding-right: 10px;
     /* background-color: gray; */
+    border-bottom: solid 2px lightgray;
+    margin-bottom: 50px;
 }
 
 .home-logo {
@@ -28,6 +30,7 @@
 .user-info-options {
     display: flex;
     justify-content: flex-end;
+    flex-direction: row;
     /* color: #ed1c40 */
     
     /* border: solid black 20px; */
@@ -38,3 +41,15 @@
     color: lightgray;
 }
 
+.start-group-button {
+    /* fix postition at full screen */
+    display: flex;
+    justify-content: flex-end;
+    /* margin-left: 650px; */
+    margin-right: 10px
+}
+
+.nav-right {
+    display: flex;
+    flex-direction: row;
+}
