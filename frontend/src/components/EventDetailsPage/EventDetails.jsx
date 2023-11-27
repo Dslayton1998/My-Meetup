@@ -1,10 +1,12 @@
 import { NavLink, useParams } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { getAllEventsThunk, getEventByIdThunk } from '../../store/events';
+import { getEventByIdThunk } from '../../store/currentEvent';
 import Heading from './EventDetailComponents/Heading';
 import Details from './EventDetailComponents/Details';
-import { getAllGroupsThunk, getGroupByIdThunk } from '../../store/groups';
+import { getAllGroupsThunk } from '../../store/groups';
+import { getGroupByIdThunk } from '../../store/currentGroup';
+import { getAllEventsThunk } from '../../store/events';
 
 export default function EventDetails() {
     const { eventId } = useParams();
@@ -19,7 +21,11 @@ export default function EventDetails() {
     let thing;
     useEffect(() => {
         const getEventDetails = async () => {
-            await dispatch(getEventByIdThunk(id))
+           thing =  await dispatch(getEventByIdThunk(id))
+        }
+
+        const getAllEvents = async () => {
+            await dispatch(getAllEventsThunk())
         }
 
         const getGroupDetails = async () => {
@@ -27,21 +33,20 @@ export default function EventDetails() {
         }
 
         const getGroupById = async () => {
-            if(eventLookUp && eventLookUp.Group) {
             test = await dispatch(getGroupByIdThunk(eventLookUp.groupId))
-                // console.log('hi',test)
-            }
         }
-
+        
+        console.log(thing)
         getGroupById()
         getGroupDetails()
         getEventDetails()
+        getAllEvents()
     }, [ dispatch ])
 
     eventDetails = useSelector(state => state.Events)
-    console.log('here',eventDetails)
+    // console.log('here',eventDetails)
     const eventLookUp = eventDetails[eventId]
-    console.log(eventLookUp)
+    // console.log(eventLookUp)
 
     const qtCarrot = '<'
     // todo: dynamic portion <button>

@@ -26,10 +26,10 @@ export const readEventByIdAction = ( event, eventDetails ) => {
 }
 //todo: /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-export const createEventAction = ( events ) => {
+export const createEventAction = ( event ) => {
     return {
         type: CREATE_EVENT,
-        events
+        event
     }
 }
 
@@ -40,10 +40,10 @@ export const updateEventAction = ( events ) => {
     }
 }
 
-export const deleteEventAction = ( response ) => {
+export const deleteEventAction = ( eventId ) => {
     return {
         type: DELETE_EVENT,
-        response
+        eventId
     }
 }
 
@@ -64,29 +64,23 @@ export const getAllEventsThunk = () => async (dispatch, getState) => {
 
 export const getEventByIdThunk = ( eventId ) => async (dispatch, getState) => {
     const state = getState().Events;
-    // if(Object.keys(state).length === 0) {
-    //     const res = await csrfFetch(`/api/events`);
-    //     const data = await res.json();
-    //     dispatch(readAllEventsAction(data))
-    // }
-    // cons/ole.log(event)
     const res = await csrfFetch(`/api/events/${eventId}`)
     const eventDetails = await res.json();
     // console.log(eventDetails)
     // console.log('OI', state)
-    let eventInfo = state[eventId] || eventDetails
+    let event = state[eventId]
     // console.log(event)
     // console.log(data)
-    dispatch(readEventByIdAction(eventInfo, eventDetails))
-    return eventInfo
+    dispatch(readEventByIdAction(event, eventDetails))
+    return event
 }
 
 
 
-export const createEventThunk = ( newEvent ) => async (dispatch) => {
+export const createEventThunk = ( newEvent, groupId ) => async (dispatch) => {
    try {
         console.log('newEvent in Thunk:', newEvent)
-       const res = await csrfFetch(`/api/groups/${newEvent.groupId}/events`, {
+       const res = await csrfFetch(`/api/groups/${groupId}/events`, {
            method: 'POST',
            headers: { 'Content-Type': 'application/json'},
            body: JSON.stringify(newEvent)
@@ -107,9 +101,9 @@ export const createEventThunk = ( newEvent ) => async (dispatch) => {
 }
 
 
-export const deleteEventThunk = ( event ) => async (dispatch) => {
+export const deleteEventThunk = ( eventId ) => async (dispatch) => {
     // console.log(group)
-    const res = await csrfFetch(`/api/events/${event.id}`, { method: 'DELETE'} )
+    const res = await csrfFetch(`/api/events/${eventId}`, { method: 'DELETE'} )
     
     if(res.ok) {
         const data = await res.json();
@@ -176,8 +170,8 @@ const eventsReducer = (state = initial, action) => {
         case CREATE_EVENT: {
             // console.log('state', state)
             // console.log('action', action)
-            // const newGroup = action.group
-            const newState = { ...state };
+            const event = action.event
+            const newState = { ...state, [event.id]: {...state[event.id], ...event} };
             // console.log('newState', newState)
             
             return newState
@@ -190,9 +184,10 @@ const eventsReducer = (state = initial, action) => {
         case DELETE_EVENT: {
             // console.log('hello from reducer')
             // console.log('state', state)
-            // console.log('action',action)
+            console.log('action',action)
             console.log('hello from reducer')
             const newState = { ...state };
+            delete newState[action.event]
             // console.log(newState)
             return newState
         }

@@ -2,19 +2,59 @@ import { useDispatch, useSelector } from "react-redux"
 import { useEffect, useState } from "react"
 import DeleteModal from "../DeleteModal"
 // import { getGroupByIdThunk } from "../../../store/groups"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import OpenModalMenuItem from "../../Navigation/NavComponents/OpenModalMenuItem"
 
 
 export default function Details({ event }) {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { eventId } = useParams()
     // todo: needs group information
     //* Consider braking this up into smaller components
+    const fixedEventId = Number(eventId)
     const sessionUser = useSelector(state => state.session.user);
+    const currentEvent = useSelector(state => state.currentEvent[eventId])
     const groups = useSelector(state => Object.values(state.Groups))
     const group = groups.find(group => event ? group.id === event.groupId: null)
-    const eventImg = event ? event.EventImages.find(img => img.preview === true) : null
+    const eventImg = event ? event.EventImages : null
+    const groupImg = group ? group.previewImage : null
+    
+
+    const getPrice = () => {
+        if(currentEvent) {
+            return currentEvent.price
+        }
+    }
+
+
+    const getImg = () => {
+        if(event) {
+            let img;
+            if(event.previewImage) {
+                img = event.previewImage
+                console.log('event.previewImage')
+                return img
+            }
+        if(eventImg) {
+            if(eventImg.length < 1) {
+                console.log('eventImg.length')
+                img = event.EventImages[0]
+                // console.log(img)
+                return img 
+            } else {
+                console.log('else')
+                const truePreview = event.EventImages.find(event => event.preview === true)
+                console.log(truePreview)
+                img = truePreview.url
+                return img
+            }
+        }
+        }
+
+    }
+    // console.log(getImg())
+    // console.log(event)
     
     let startEventDate;
     let startEventTime;
@@ -87,13 +127,13 @@ export default function Details({ event }) {
     return (
         <>
         <div className="event-details-container">
-            <img className="event-details-image" src={eventImg ? eventImg.url : null} />
+            <img className="event-details-image" src={getImg()} />
             <div>
             <div className="group-details" onClick={onClick} style={{cursor: 'pointer'}}>
                 {/* GROUP DETAILS CARD */}
-            <img className="group-details-image" src={group ? group.previewImage: null} />
+            <img className="group-details-image" src={groupImg} />
                 <div>
-                    <h2>{event ? event.Group.name : null}</h2>
+                    <h2>{group ? group.name : null}</h2>
                     <span>{checkPrivacy()}</span>
                 </div>
             </div>
@@ -102,7 +142,7 @@ export default function Details({ event }) {
                 <div className="event-sub-info">
                 <p>START: {event ? startEventDate : null}  &#183;  {event ? startEventTime : null} </p>
                 <p>END {event ? endEventDate : null}  &#183;  {event ? endEventTime : null}</p>
-                <span>$ {event ? event.price : null}</span>
+                <span>$ {getPrice()}</span>
                 <span style={{paddingTop: 10}}>{event ? event.type : null}</span>
                 </div>
                 {/* // Still need some icons */}

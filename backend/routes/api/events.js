@@ -195,7 +195,7 @@ const pagination = {};
             }
         ],
         attributes:{
-            exclude: ["createdAt", "updatedAt", "description", "capacity", "price"]
+            exclude: ["createdAt", "updatedAt", "capacity", "price"]
         },
         ...pagination
     });

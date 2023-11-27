@@ -7,6 +7,7 @@ import './DeleteModal.css'
 export default function DeleteModal({ group, navigate }) {
     const { closeModal } = useModal();
     const dispatch = useDispatch();
+    const groupId = group.id
     // console.log(navigate)
     // const navigate = useNavigate();
 
@@ -14,11 +15,10 @@ export default function DeleteModal({ group, navigate }) {
     // console.log(open)
 
     const deleteGroup = async () => {
-        await dispatch(deleteGroupThunk(group))
-
+        await dispatch(deleteGroupThunk(groupId))
+        navigate('/groups')
         closeModal()
 
-        navigate('/groups')
     }
 
     const cancel = () => {

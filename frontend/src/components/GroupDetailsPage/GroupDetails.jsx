@@ -1,8 +1,8 @@
 import { useEffect } from 'react'
-import { getGroupByIdThunk } from '../../store/groups';
 import { NavLink, useParams } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { getAllEventsThunk, getEventByIdThunk } from '../../store/events';
+import { getAllEventsThunk } from '../../store/events';
+import { getGroupByIdThunk } from '../../store/currentGroup';
 import GroupDetailsHeading from './GroupDetailComponents/GroupDetailsHeading';
 import Details from './GroupDetailComponents/GroupDetails';
 import './GroupDetails.css'
@@ -15,6 +15,7 @@ export default function GroupDetails( ) {
     let groups;
     let events;
     let event;
+    let currentEvent;
     let eventId;
 
     useEffect(() => {
@@ -22,23 +23,30 @@ export default function GroupDetails( ) {
             events = await dispatch(getAllEventsThunk())
             // event = await dispatch(getEventByIdThunk(events.id))
         }
+    //     let getCurrentEvents;
+    //     getCurrentEvents = async () => {
+    //         console.log(event)
+    //         currentEvent = await dispatch(getEventByIdThunk(event.id))
+    // } 
 
         const getGroupDetails = async () => {
             groups = await dispatch(getGroupByIdThunk(groupId)) 
-            // console.log(groups.Events[0].id)
             // if(eventId !== undefined) {
-                event = await dispatch(getEventByIdThunk(1))
-            // }
-            // todo:  ^ FIX THIS SO ITS NOT HARDCODED
-            
-        }
+                // event = await dispatch(getEventByIdThunk(1))
+                // }
+                // todo:  ^ FIX THIS SO ITS NOT HARDCODED
+                // console.log(groups)
 
-        getGroupDetails()
+                    // console.log('groups:',groups)    
+                }
+                console.log(groups)
+                getGroupDetails()
+                // getCurrentEvents()
         getAllEventDetails()
     }, [dispatch])
 
 
-    groups = useSelector(state => state.Groups)
+    groups = useSelector(state => state.currentGroup)
     events = useSelector(state => state.Events)
     // const test = useSelector(state => console.log(state))
     // console.log('hi',events)

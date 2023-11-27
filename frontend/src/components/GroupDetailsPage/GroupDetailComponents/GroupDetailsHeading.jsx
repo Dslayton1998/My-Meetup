@@ -15,7 +15,7 @@ export default function GroupDetailsHeading({ group }) {
     const eventArr = group ? group.Events : []
     // todo: event data is a little to static could cause bugs later
     // console.log(eventArr)
-
+    console.log(group)
 
     if(group) {
         if(group.Organizer) {
@@ -80,7 +80,7 @@ export default function GroupDetailsHeading({ group }) {
         }
     }
 
-    console.log(group)
+    // console.log(group)
     const isPrivate = () => {
         if(group) {
             if(group.isPrivate === true) {
@@ -91,12 +91,15 @@ export default function GroupDetailsHeading({ group }) {
         }
     }
 
+   const groupImageArr = group ? group.GroupImages : null
+    const groupImage = groupImageArr ? groupImageArr.find(img => img.preview === true) : null
+   console.log(groupImage)
 
 
 // todo: Need events by groupId and ## events needs double digits
     return (
         <div className='header-details-container'>
-            <img className='details-image' src={group ? group.previewImage: null} /> 
+            <img className='details-image' src={group ? groupImage.url: null} /> 
             <div>
                 <h1>{group ? group.name: null}</h1>
                 <p>{group ? group.city: null}, {group ? group.state: null}</p>

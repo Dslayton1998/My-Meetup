@@ -1,24 +1,25 @@
 import { useDispatch, useSelector } from "react-redux"
-import { NavLink } from "react-router-dom";
-import { getGroupByIdThunk } from "../../../store/groups";
+import { NavLink, useParams } from "react-router-dom";
+import { getGroupByIdThunk } from "../../../store/currentGroup";
 import { useEffect } from "react";
 import '../EventDetails.css'
 
 export default function Heading({ event }) {
     // console.log(event)
+    const { eventId } = useParams() 
     const dispatch = useDispatch();
-    const groupId = event ? event.groupId : 1
-    const organizer = useSelector(state => state.Groups[groupId] ? state.Groups[groupId].Organizer : null)
-    // console.log('HEY',OrganizerInfo)
-    if(groupId) {
-        useEffect(() => {
+    const groupId = event ? event.groupId : eventId
+    const organizer = useSelector(state => state.currentGroup[groupId] ? state.currentGroup[groupId].Organizer : undefined)
+    // console.log(groupId)
+    // console.log('HEY', organizer)
+
+    useEffect(() => {
             const getGroupById = async () => {
                 await dispatch(getGroupByIdThunk(groupId))
             }
-
+            
             getGroupById()
         }, [dispatch])
-    }
 
     const qtCarrot = '<'
     return (

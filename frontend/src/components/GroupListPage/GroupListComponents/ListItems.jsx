@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { getGroupByIdThunk } from '../../../store/groups';
+import { getGroupByIdThunk } from '../../../store/currentGroup';
 import '../GroupList.css'
 
 export default function ListItems({ group }) {
@@ -32,7 +32,7 @@ export default function ListItems({ group }) {
             return 'Public'
         }
     }
-
+    console.log(group)
     const numEvents = () => {
         const eventArr = group.Events
         if(eventArr) {

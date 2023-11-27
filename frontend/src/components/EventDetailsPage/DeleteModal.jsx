@@ -2,10 +2,13 @@ import { useDispatch } from "react-redux";
 import { deleteEventThunk } from "../../store/events";
 import { useModal } from "../../context/Modal";
 import './DeleteModal.css'
+import { useParams } from "react-router-dom";
 
 export default function DeleteModal({ event, navigate }) {
     const { closeModal } = useModal();
     const dispatch = useDispatch();
+    const eventId = event.id
+    const groupId = event ? event.Group.id: null
     // console.log(navigate)
     // const navigate = useNavigate();
 
@@ -13,11 +16,10 @@ export default function DeleteModal({ event, navigate }) {
     // console.log(open)
 
     const deleteGroup = async () => {
-        await dispatch(deleteEventThunk(event))
-
+        
+        await dispatch(deleteEventThunk(eventId))
+        navigate(`/groups/${groupId}`)
         closeModal()
-
-        navigate('/events')
     }
 
     const cancel = () => {

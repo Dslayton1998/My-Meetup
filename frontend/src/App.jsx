@@ -12,6 +12,9 @@ import EventList from './components/EventListPage/EventList';
 import EventDetails from './components/EventDetailsPage/EventDetails';
 import CreateEventForm from './components/GroupDetailsPage/GroupDetailComponents/CreateEventForm';
 
+import Testing from './components/Testing';
+import Testing2 from './components/Testing2';
+
 // const groups = useSelector(state => Object.values(state.Groups))
 
 function Layout() {
@@ -68,6 +71,14 @@ const router = createBrowserRouter([
       {
         path: '/events/:eventId',
         element: <EventDetails />
+      },
+      {
+        path: '/test',
+        element: <Testing />
+      },
+      {
+        path: '/testing',
+        element: <Testing2 />
       },
       {
         path: '*',

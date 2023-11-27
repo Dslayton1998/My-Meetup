@@ -46,7 +46,7 @@ export default function ListItems({ event }) {
         }
     }
     // console.log(checkPrivacy())
-
+    console.log(event)
     return (
         <>
         <div className='event-list-items-container' onClick={onClick} style={{cursor: 'pointer'}}>

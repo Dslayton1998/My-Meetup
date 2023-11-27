@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux";
 import { createGroupThunk, getAllGroupsThunk } from "../../store/groups";
 import { useNavigate } from "react-router-dom";
+import { csrfFetch } from "../../store/csrf";
 import './CreateGroup.css'
 
 
@@ -77,16 +78,20 @@ export default function CreateGroupForm() {
             isPrivate
         };
         // console.log('NEW_GROUP', newGroup)
-        await dispatch(createGroupThunk(newGroup, img));
-
-        reset();
+        const newGroupData = await dispatch(createGroupThunk(newGroup));
+        const newGroupId = newGroupData.id
+        await csrfFetch(`/api/groups/${newGroupId}/images`, {
+            method: 'POST',
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(img)
+        })
         // console.log(groups)
+        reset();
+        navigate(`/groups/${newGroupId}`) 
         // const groupId = groups ? groups[groups.length].id : null
-        // // console.log('groupId',groupId)
-        // navigate(`/groups/${groupId}`) 
-    // todo: figure out how to redirect to the new page \\
+        // todo: figure out how to redirect to the new page \\
     }
-
+    
     const reset = () => {
         setName('');
         setLocation('');

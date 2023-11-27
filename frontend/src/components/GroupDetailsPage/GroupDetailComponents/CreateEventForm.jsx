@@ -1,8 +1,9 @@
-import { useSelector, useDispatch } from "react-redux"
-import { useEffect, useState } from "react"
-import { getAllGroupsThunk } from "../../../store/groups"
-import { useNavigate, useParams } from "react-router-dom"
+import { useSelector, useDispatch } from "react-redux";
+import { useEffect, useState } from "react";
+import { getAllGroupsThunk } from "../../../store/groups";
+import { useNavigate, useParams } from "react-router-dom";
 import { createEventThunk } from "../../../store/events";
+import { csrfFetch } from "../../../store/csrf";
 
 
 export default function CreateEventForm() {
@@ -67,7 +68,7 @@ export default function CreateEventForm() {
         }
 
         setValidations(validations)
-    }, [ dispatch, name, type, isPrivate, price, startDate, endDate, description ])
+    }, [ dispatch, name, type, isPrivate, price, startDate, endDate, description, url])
 
 
     const reset = () => {
@@ -87,8 +88,12 @@ export default function CreateEventForm() {
         e.preventDefault();
         setHasSubmitted(true)
 
+        const img = {
+            url,
+            preview: true
+        }
+
         const newEvent = {
-            groupId,
             venueId: 1,
             name,
             type,
@@ -99,10 +104,16 @@ export default function CreateEventForm() {
             endDate
         }
 
-        await dispatch(createEventThunk(newEvent))
+        const newEventData = await dispatch(createEventThunk(newEvent, groupId))
+        const newEventId = newEventData.id
+        await csrfFetch(`/api/events/${newEventId}/images`, {
+            method: 'POST',
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(img)
+        })
         reset();
+        navigate(`/events/${newEventId}`)
         // todo: navigate to currentEvent details
-        // navigate(`/events/${}`)
     }
 
 

@@ -4,7 +4,7 @@ import { csrfFetch } from './csrf';
 //todo: edit types and actions
 const READ_ALL_GROUPS = 'groups/READ_ALL_GROUPS'
 // const EVENTS_GROUP_ID = 'groups/EVENTS_GROUP_ID'
-const READ_GROUP_ID = 'groups/READ_GROUP_ID'
+// const READ_GROUP_ID = 'groups/READ_GROUP_ID'
 const CREATE_GROUP = 'groups/CREATE_GROUP'
 const UPDATE_GROUP = 'groups/UPDATE_GROUP'
 const DELETE_GROUP = 'groups/DELETE_GROUP'
@@ -19,14 +19,14 @@ export const readAllGroupsAction = ( group ) => {
     }
 }
 
-export const readGroupByIdAction = ( group, events, groupDetails ) => {
-    return {
-        type: READ_GROUP_ID,
-        group,
-        events,
-        groupDetails
-    }
-}
+// export const readGroupByIdAction = ( group, events, groupDetails ) => {
+//     return {
+//         type: READ_GROUP_ID,
+//         group,
+//         events,
+//         groupDetails
+//     }
+// }
 
 // export const readEventsByGroupIdAction = ( events ) => {
 //     return {
@@ -35,11 +35,10 @@ export const readGroupByIdAction = ( group, events, groupDetails ) => {
 //     }
 // }
 
-export const createGroupAction = ( group, img ) => {
+export const createGroupAction = ( group ) => {
     return {
         type: CREATE_GROUP,
         group,
-        img
     }
 }
 
@@ -50,10 +49,10 @@ export const updateGroupAction = ( group ) => {
     }
 }
 
-export const deleteGroupAction = ( response ) => {
+export const deleteGroupAction = ( groupId ) => {
     return {
         type: DELETE_GROUP,
-        response
+        groupId
     }
 }
 
@@ -72,37 +71,22 @@ export const getAllGroupsThunk = () => async (dispatch, getState) => {
 }
 
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-export const getGroupByIdThunk = ( groupId ) => async (dispatch, getState) => {
-    const state = getState().Groups
-    if(Object.keys(state).length === 0) {
-        const res = await fetch(`/api/groups`)
-        const groups = await res.json();
-        await dispatch(readAllGroupsAction(groups))
-    }
+// export const getGroupByIdThunk = ( groupId ) => async (dispatch) => {
 
-    const groupRes = await csrfFetch(`/api/groups/${groupId}`)
-    const groupDetails = await groupRes.json();
-    const eventRes = await fetch(`/api/groups/${groupId}/events`)
-    const eventDetails = await eventRes.json();
-    let group = state[groupId] || groupDetails;
-    dispatch(readGroupByIdAction(group, eventDetails, groupDetails))
-}
+//     const groupRes = await csrfFetch(`/api/groups/${groupId}`)
+//     const groupDetails = await groupRes.json();
+//     const eventRes = await fetch(`/api/groups/${groupId}/events`)
+//     const eventDetails = await eventRes.json();
+//     let group = groupDetails
+//     dispatch(readGroupByIdAction(group, eventDetails, groupDetails))
 
+//     return group
+// }
 
-
-// export const getEventByGroupIdThunk = ( groupId ) => async (dispatch, getState) => {
-//     const state = getState().Groups
-//     // if(Object.keys(state).length === 0) {
-//         const res = await fetch(`/api/groups/${groupId}/events`)
-//         const data = await res.json()
-//         await dispatch(readEventsByGroupIdAction(data))
-//     // }
-
-//  }
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
-export const createGroupThunk = ( groupData, imgData ) => async (dispatch) => {
+export const createGroupThunk = ( groupData ) => async (dispatch) => {
 //    try {
     // console.log('groupData:',groupData)
        const groupRes = await csrfFetch('/api/groups', {
@@ -114,13 +98,6 @@ export const createGroupThunk = ( groupData, imgData ) => async (dispatch) => {
        
        if(groupRes.ok) {
            const group = await groupRes.json();
-        //    const groupId  = group.id
-        //    const imgRes = await csrfFetch(`/api/groups/${groupId}`, {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json'},
-        //     body: JSON.stringify(imgData)
-        //    })
-        //    const img = await imgRes.json()
         dispatch(createGroupAction(group))
         return group
     } 
@@ -134,18 +111,15 @@ export const createGroupThunk = ( groupData, imgData ) => async (dispatch) => {
 }
 
 
-export const deleteGroupThunk = ( group ) => async (dispatch) => {
+export const deleteGroupThunk = ( groupId ) => async (dispatch) => {
     // console.log(group)
-    const res = await csrfFetch(`/api/groups/${group.id}`, { method: 'DELETE'} )
+    const res = await csrfFetch(`/api/groups/${groupId}`, { method: 'DELETE'} )
     
     if(res.ok) {
         const data = await res.json();
         // console.log('here', data)
-        dispatch(deleteGroupAction(data))
-    } else {
-        const err = await res.json()
-        // console.log(err)
-    }
+        dispatch(deleteGroupAction(groupId))
+    } 
 }
 
 
@@ -161,6 +135,7 @@ export const updateGroupThunk = ( updates ) => async (dispatch) => {
             const data = await res.json();
             console.log('res',data)
             dispatch(updateGroupAction(data))
+            return data
         }
     // } catch(err) {
     //     const errors = await err.json()
@@ -190,19 +165,19 @@ const groupsReducer = (state = initial, action) => {
             return newState
         }
 
-        case READ_GROUP_ID: {
-            // console.log('state!',state)
-            // console.log('action!',action.groupDetails)
-            const group = action.group
-            const events = action.events;
-            const details = action.groupDetails
-            const GroupImages = details.GroupImages
-            const Organizer = details.Organizer
-            const Venues = details.Venues
-            const newState = { ...state, [group.id]: {...state[group.id], ...group, ...events, GroupImages, Organizer, Venues} };
-            // console.log('newState',newState)
-            return newState
-        }
+        // case READ_GROUP_ID: {
+        //     // console.log('state!',state)
+        //     // console.log('action!',action.groupDetails)
+        //     const group = action.group
+        //     const events = action.events;
+        //     const details = action.groupDetails
+        //     const GroupImages = details.GroupImages
+        //     const Organizer = details.Organizer
+        //     const Venues = details.Venues
+        //     const newState = { ...state, [group.id]: {...state[group.id], ...group, ...events, GroupImages, Organizer, Venues} };
+        //     // console.log('newState',newState)
+        //     return newState
+        // }
 
 
         // case EVENTS_GROUP_ID: {
@@ -235,14 +210,17 @@ const groupsReducer = (state = initial, action) => {
         case CREATE_GROUP: {
             // console.log('state', state)
             // console.log('action', action)
-            const newState = { ...state, ...action.group.Groups };
+            const group = action.group;
+            const newState = { ...state, [group.id]: {...state[group.id], ...group} };
             // console.log('newState', newState)
             
             return newState
         }
 
         case UPDATE_GROUP: {
-            return state
+            const group = action.group;
+            const newState = {...state, [group.id]: {...state[group.id], ...group}}
+            return newState
         }
 
         case DELETE_GROUP: {
@@ -251,6 +229,7 @@ const groupsReducer = (state = initial, action) => {
             // console.log('action',action)
             console.log('hello from reducer')
             const newState = { ...state };
+            delete newState[action.groupId]
             // console.log(newState)
             return newState
         }
