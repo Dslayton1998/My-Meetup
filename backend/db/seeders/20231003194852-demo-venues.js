@@ -69,7 +69,16 @@ module.exports = {
       state: 'Themyscira',
       lat: 23.32,
       lng: 67.76
-    }
+    },
+    // {
+    //   groupId: 4,
+    //   address: "Bary's Place",
+    //   city: 'SomeCity',
+    //   state: 'SomeState',
+    //   lat: 24.42,
+    //   lng: 52.25
+    // }
+
    ], options, {validate: true}) //! add this too!
   },
 

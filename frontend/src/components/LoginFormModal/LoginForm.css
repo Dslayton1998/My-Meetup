@@ -1,22 +1,36 @@
 /* todo: fill out some styles */
 .login-modal {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
     padding: 5px 10px 10px 10px;
-    background-color: #f5424b;
+    /* background-color: #f5424b; */
+    width: 400px
 }
 
 .modal-form {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-    justify-content: space-evenly;
-    margin-left: 20px
+    align-items: flex-start;
+    width: 350px;
+    margin-left: 40px;
+    /* justify-content: space-evenly; */
+    /* margin-left: 20px */
 }
 
 .submit-button {
     margin-top: 10px;
-    margin-right: 50px;
+    margin-left: 5px;
+    margin-bottom: 20px;
+    height: 50px;
+    width: 300px
+}
+
+.demo-user {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    width: 300px;
 }

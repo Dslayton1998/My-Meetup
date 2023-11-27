@@ -1,10 +1,21 @@
 import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import * as sessionActions from './store/session';
 import Navigation from './components/Navigation/Navigation';
 import LandingPage from './components/LandingPage/LandingPage';
 import GroupList from './components/GroupListPage/GroupList';
+import GroupDetails from './components/GroupDetailsPage/GroupDetails';
+import CreateGroupForm from './components/CreateGroupForm/CreateGroupForm'
+import UpdateGroupForm from './components/GroupDetailsPage/GroupDetailComponents/UpdateGroupForm';
+import EventList from './components/EventListPage/EventList';
+import EventDetails from './components/EventDetailsPage/EventDetails';
+import CreateEventForm from './components/GroupDetailsPage/GroupDetailComponents/CreateEventForm';
+
+import Testing from './components/Testing';
+import Testing2 from './components/Testing2';
+
+// const groups = useSelector(state => Object.values(state.Groups))
 
 function Layout() {
   const dispatch = useDispatch();
@@ -36,6 +47,42 @@ const router = createBrowserRouter([
       {
         path: '/groups',
         element: <GroupList />
+      },
+      {
+        path: '/groups/:groupId',
+        element: <GroupDetails />
+      },
+      {
+        path: '/groups/new',
+        element: <CreateGroupForm />
+      }, 
+      {
+        path: '/groups/:groupId/edit',
+        element: <UpdateGroupForm />
+      },
+      {
+        path: '/groups/:groupId/events/new',
+        element: <CreateEventForm/>
+      },
+      {
+        path: '/events',
+        element: <EventList />
+      },
+      {
+        path: '/events/:eventId',
+        element: <EventDetails />
+      },
+      {
+        path: '/test',
+        element: <Testing />
+      },
+      {
+        path: '/testing',
+        element: <Testing2 />
+      },
+      {
+        path: '*',
+        element: <h1>404 Page not found</h1>
       }
     ]
   }

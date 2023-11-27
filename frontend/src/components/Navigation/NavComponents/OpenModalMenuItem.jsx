@@ -1,5 +1,5 @@
 // import React from 'react';
-import { useModal } from '../../context/Modal';
+import { useModal } from '../../../context/Modal';
 
 function OpenModalMenuItem({
   modalComponent, // component to render inside the modal
@@ -16,7 +16,7 @@ function OpenModalMenuItem({
   };
 
   return (
-    <li onClick={onClick}>{itemText}</li>
+    <li style={{cursor: 'pointer'}} onClick={onClick}>{itemText}</li>
   );
 }
 

@@ -15,41 +15,54 @@ function LoginFormModal() {
     e.preventDefault();
     setErrors({});
     return dispatch(sessionActions.login({ credential, password }))
-      .then(closeModal)
-      .catch(async (res) => {
-        const data = await res.json();
-        if (data && data.errors) {
-          setErrors(data.errors);
-        }
-      });
+    .then(closeModal)
+    .catch(async (res) => {
+      const data = await res.json();
+      // console.log('oi',data.message)
+      if (data ) {
+        setErrors(data);
+      }
+    });
   };
 
+  const DemoUser = () => {
+    return dispatch(sessionActions.login({
+      credential: 'Demo-lition',
+      password: 'password'
+    }))
+    .then(closeModal)
+  }
+
+  console.log('here',errors)
   return (
     <div className='login-modal'>
       <h1>Log In</h1>
       <form  className='modal-form' onSubmit={handleSubmit}>
+          <span style={{color: '#ff0000'}}>{errors.message && ` * The provided credentials were invalid`}</span>
+          <span style={{marginTop: 10}}>Username or Email:</span> 
         <label>
-          Username or Email: 
           <input
             type="text"
             value={credential}
             onChange={(e) => setCredential(e.target.value)}
             required
+            style={{width: 300, marginTop: 10, marginBottom: 20}}
           />
         </label>
+        <span>Password:</span>
         <label>
-          Password: 
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            style={{width: 300, marginTop: 10}}
           />
         </label>
-        {errors.credential && (
-          <p>{errors.credential}</p>
-        )}
-        <button className='submit-button' type="submit">Log In</button>
+        <div>
+        <button className='submit-button' disabled={credential.length < 4 || password.length < 6} type="submit">Log In</button>
+        </div>
+        <button className='demo-user' onClick={DemoUser} style={{cursor: 'pointer'}}>Log in as Demo User</button>
       </form>
     </div>
   );

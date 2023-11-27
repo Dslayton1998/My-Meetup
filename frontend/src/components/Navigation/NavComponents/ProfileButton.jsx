@@ -1,13 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
 import { useDispatch } from 'react-redux';
-import * as sessionActions from '../../store/session';
+import { useNavigate } from 'react-router-dom';
+import * as sessionActions from '../../../store/session';
 import OpenModalMenuItem from './OpenModalMenuItem';
-import LoginFormModal from '../LoginFormModal/LoginFormModal';
-import SignupFormModal from '../SignupFormModal/SignupFormModal';
-import './Navigation.css';
+import LoginFormModal from '../../LoginFormModal/LoginFormModal';
+import SignupFormModal from '../../SignupFormModal/SignupFormModal';
+import '../Navigation.css';
 
 function ProfileButton({ user }) {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [showMenu, setShowMenu] = useState(false);
   const ulRef = useRef();
 
@@ -36,7 +38,18 @@ function ProfileButton({ user }) {
     e.preventDefault();
     dispatch(sessionActions.logout());
     closeMenu();
+    navigate('/')
   };
+
+  const viewGroups = (e) => {
+    e.preventDefault();
+    navigate('/groups')
+  }
+
+  const viewEvents = (e) => {
+    e.preventDefault();
+    navigate('/events')
+  }
 
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
 // todo: add button to logged users option list "View groups"
@@ -48,10 +61,17 @@ function ProfileButton({ user }) {
       <ul className={ulClassName} ref={ulRef}>
         {user ? (
           <>
+            <li>Hello {user.firstName}</li>
             <li>{user.username}</li>
             <li>{user.firstName} {user.lastName}</li>
             <li>{user.email}</li>
             {/* View groups (here) */}
+            <li>
+              <button onClick={viewGroups}>View groups</button>
+            </li>
+            <li>
+              <button onClick={viewEvents}>View Events</button>
+            </li>
             <li>
               <button onClick={logout}>Log Out</button>
             </li>

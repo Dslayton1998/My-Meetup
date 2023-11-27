@@ -1,4 +1,33 @@
 /* todo: add styles */
+.sign-up-heading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
 .sign-up-modal {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-between; */
+    /* align-items: ; */
     padding: 50px;
+    width: 300px
+
+}
+
+.sign-up-inputs {
+    width: 300px;
+    margin-bottom: 15px;
+}
+
+.sign-up-button {
+    height: 50px;
+
+}
+
+.error-messages {
+    display: flex;
+    justify-content: center;
+    color: red
 }

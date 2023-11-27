@@ -23,63 +23,63 @@ module.exports = {
    await EventImage.bulkCreate([
     {
       eventId: 1,
-      url: 'SuchAFakeUrl.com',
+      url: 'https://cdn.europosters.eu/image/750/posters/batman-comic-stalker-i21386.jpg',
       preview: true
     },
     {
       eventId: 1,
-      url: 'anotherFakeUrl.com',
+      url: 'https://i.ebayimg.com/images/g/FbEAAOSw9FlfvMZf/s-l1600.jpg',
       preview: false
     },
     {
       eventId: 2,
-      url: 'anotherFakeUrl.com',
-      preview: false
+      url: 'https://insidethemagic.net/wp-content/uploads/2022/12/Superman-c-3-e1672800031905.jpg',
+      preview: true
     },
     {
       eventId: 2,
-      url: 'anotherFakeUrl.com',
-      preview: true
-    },
-    {
-      eventId: 3,
-      url: 'anotherFakeUrl.com',
+      url: 'https://i.ebayimg.com/images/g/FbEAAOSw9FlfvMZf/s-l1600.jpg',
       preview: false
     },
     {
       eventId: 3,
-      url: 'anotherFakeUrl.com',
+      url: 'https://www.writeups.org/wp-content/uploads/Black-Canary-DC-Comics-Batman-alley-crime-h1.jpg',
       preview: true
     },
     {
-      eventId: 4,
-      url: 'anotherFakeUrl.com',
+      eventId: 3,
+      url: 'https://i.ebayimg.com/images/g/FbEAAOSw9FlfvMZf/s-l1600.jpg',
       preview: false
     },
     {
       eventId: 4,
-      url: 'anotherFakeUrl.com',
+      url: 'https://i.pinimg.com/736x/7a/ba/f9/7abaf9267db022a5fc61b159692dbedd.jpg',
       preview: true
     },
     {
-      eventId: 5,
-      url: 'anotherFakeUrl.com',
+      eventId: 4,
+      url: 'https://i.ebayimg.com/images/g/FbEAAOSw9FlfvMZf/s-l1600.jpg',
       preview: false
     },
     {
       eventId: 5,
-      url: 'anotherFakeUrl.com',
+      url: 'https://comicvine.gamespot.com/a/uploads/original/11126/111264841/5156426-3714132043-2013N.jpg',
       preview: true
     },
     {
-      eventId: 6,
-      url: 'anotherFakeUrl.com',
+      eventId: 5,
+      url: 'https://i.ebayimg.com/images/g/FbEAAOSw9FlfvMZf/s-l1600.jpg',
       preview: false
     },
     {
       eventId: 6,
-      url: 'anotherFakeUrl.com',
+      url: 'https://cdn.vox-cdn.com/thumbor/xQoIiH5KarTUigwef_xLtNoNHoU=/1400x788/filters:format(png)/cdn.vox-cdn.com/uploads/chorus_asset/file/22948654/Screenshot_2021_10_22_at_5.09.54_PM.png',
       preview: true
+    },
+    {
+      eventId: 6,
+      url: 'https://i.ebayimg.com/images/g/FbEAAOSw9FlfvMZf/s-l1600.jpg',
+      preview: false
     },
    ], options, {validate: true})
   },
