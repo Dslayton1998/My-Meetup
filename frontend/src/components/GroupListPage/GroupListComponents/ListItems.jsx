@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useEffect } from 'react';
 import { getGroupByIdThunk } from '../../../store/currentGroup';
 import '../GroupList.css'
@@ -16,7 +16,7 @@ export default function ListItems({ group }) {
         }
 
         getGroupDetails()
-    }, [])
+    }, [dispatch, id])
 
 
 

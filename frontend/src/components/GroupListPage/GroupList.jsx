@@ -17,7 +17,7 @@ export default function GroupList() {
         
 
         getGroups()
-    }, [ ])
+    }, [dispatch])
 
     // todo: just passed the group info to ListItems !still need to format! and finish listItems
     return (

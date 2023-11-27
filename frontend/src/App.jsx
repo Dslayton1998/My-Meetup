@@ -73,14 +73,6 @@ const router = createBrowserRouter([
         element: <EventDetails />
       },
       {
-        path: '/test',
-        element: <Testing />
-      },
-      {
-        path: '/testing',
-        element: <Testing2 />
-      },
-      {
         path: '*',
         element: <h1>404 Page not found</h1>
       }
