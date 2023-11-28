@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch} from 'react-redux';
 import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 import * as sessionActions from './store/session';
 import Navigation from './components/Navigation/Navigation';
@@ -11,9 +11,6 @@ import UpdateGroupForm from './components/GroupDetailsPage/GroupDetailComponents
 import EventList from './components/EventListPage/EventList';
 import EventDetails from './components/EventDetailsPage/EventDetails';
 import CreateEventForm from './components/GroupDetailsPage/GroupDetailComponents/CreateEventForm';
-
-import Testing from './components/Testing';
-import Testing2 from './components/Testing2';
 
 // const groups = useSelector(state => Object.values(state.Groups))
 

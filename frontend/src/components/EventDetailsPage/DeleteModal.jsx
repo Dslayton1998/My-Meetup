@@ -2,7 +2,6 @@ import { useDispatch } from "react-redux";
 import { deleteEventThunk } from "../../store/events";
 import { useModal } from "../../context/Modal";
 import './DeleteModal.css'
-import { useParams } from "react-router-dom";
 
 export default function DeleteModal({ event, navigate }) {
     const { closeModal } = useModal();

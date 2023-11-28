@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { createGroupThunk, getAllGroupsThunk } from "../../store/groups";
 import { useNavigate } from "react-router-dom";
 import { csrfFetch } from "../../store/csrf";
@@ -21,7 +21,7 @@ export default function CreateGroupForm() {
     // console.log('type:', type)
     // console.log('private:', isPrivate)
 
-    const groups = useSelector(state => Object.values(state.Groups))
+    // const groups = useSelector(state => Object.values(state.Groups))
     // console.log(groups, 'GROUPS')
     useEffect(() => {
         dispatch(getAllGroupsThunk())
