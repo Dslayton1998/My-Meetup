@@ -28,8 +28,11 @@ export default function ListItems({ event }) {
 
 
     useEffect(() => {
-        dispatch(getEventByIdThunk(event.id))
+        const getEvents = async () => {
+            await dispatch(getEventByIdThunk(event.id))
 
+        }
+        getEvents()
     }, [dispatch])
 
 
@@ -45,12 +48,31 @@ export default function ListItems({ event }) {
             return 'Public'
         }
     }
+
+    const getImage = () => {
+        if(event) {
+            if(event.previewImage) {
+                return event.previewImage
+            }
+        }
+
+        if(event) {
+            if(event.EventImages) {
+                if(event.EventImages.length) {
+                    const arr = event.EventImages
+                    const img = arr.find(img => img.preview === true)
+                    return img.url
+                }
+            }
+        }
+    }
+    
     // console.log(checkPrivacy())
     console.log(event)
     return (
         <>
         <div className='event-list-items-container' onClick={onClick} style={{cursor: 'pointer'}}>
-            <img className='preview-image' src={event.previewImage} />
+            <img className='preview-image' src={getImage()} />
             <div className='event-list-items'>
                 {/* Somehow check private status */}
                 <span>{EventDate}  &#183;  {EventTime}</span> {/* {event.endDate} */}

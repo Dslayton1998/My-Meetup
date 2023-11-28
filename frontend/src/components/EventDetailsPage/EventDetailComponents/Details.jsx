@@ -9,16 +9,20 @@ export default function Details({ event }) {
     // const dispatch = useDispatch();
     const navigate = useNavigate();
     const { eventId } = useParams()
+    const fixId = Number(eventId)
     // todo: needs group information
     //* Consider braking this up into smaller components
     // const fixedEventId = Number(eventId)
     const sessionUser = useSelector(state => state.session.user);
     const currentEvent = useSelector(state => state.currentEvent[eventId])
+    const currentGroups = useSelector(state => state.currentGroup)
     const groups = useSelector(state => Object.values(state.Groups))
     const group = groups.find(group => event ? group.id === event.groupId: null)
     const organizerId = sessionUser? sessionUser.id : null
     const eventImg = event ? event.EventImages : null
     const groupImg = group ? group.previewImage : null
+    const currentGroup = currentGroups[group.id]
+    console.log(currentGroup)
     
 
     const getPrice = () => {
@@ -52,6 +56,25 @@ export default function Details({ event }) {
         }
         }
 
+    }
+
+    const checkGroup = () => {
+        if(group) {
+            if(group.previewImage) {
+                // console.log('previewImage',group.previewImage)
+                return group.previewImage
+            }
+        }
+
+        if(currentGroup) {
+            if(currentGroup.GroupImages) {
+                if(currentGroup.GroupImages.length) {
+                    const img = currentGroup.GroupImages.find(img => img.preview === true)
+                    // console.log(img.url)
+                    return img.url
+                }
+            }
+        }
     }
     // console.log(getImg())
     // console.log(event)
@@ -131,7 +154,7 @@ export default function Details({ event }) {
             <div>
             <div className="group-details" onClick={onClick} style={{cursor: 'pointer'}}>
                 {/* GROUP DETAILS CARD */}
-            <img className="group-details-image" src={groupImg} />
+            <img className="group-details-image" src={checkGroup()} />
                 <div>
                     <h2>{group ? group.name : null}</h2>
                     <span>{checkPrivacy()}</span>
