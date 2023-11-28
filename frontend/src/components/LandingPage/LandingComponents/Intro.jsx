@@ -2,13 +2,13 @@
 import '../LandingPage.css'
 
 export default function Intro() {
-        // todo: Think of some better things to say about your website dumby
+
     return (
         <div className='intro'>
-        <h3>The people platform-</h3>
-        <h3>Where interests </h3>
-        <h3>become friendships</h3>
-        <p>This is gonna be a description about all the reasons you should want to use this website. </p> 
+        <h1 style={{marginBottom: 5}}>The people platform-</h1>
+        <h1 style={{marginBottom: 5}}>Where interests </h1>
+        <h1 style={{marginBottom: 5}}>become friendships</h1>
+        <p style={{width: 500}}>Whatever your interest, from hiking and reading to networking and skill sharing, there are thousands of people who share it on Meetup. Events are happening every day—sign up to join the fun. </p> 
         </ div>
     )
 }

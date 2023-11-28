@@ -1,25 +1,32 @@
-import { useSelector } from "react-redux"
+import { useSelector, useDispatch } from "react-redux"
 import DeleteModal from "../DeleteModal"
+import { useEffect } from 'react'
 // import { getGroupByIdThunk } from "../../../store/groups"
 import { useNavigate, useParams } from "react-router-dom"
 import OpenModalMenuItem from "../../Navigation/NavComponents/OpenModalMenuItem"
+import { getAllGroupsThunk } from '../../../store/groups';
+import { getGroupByIdThunk } from '../../../store/currentGroup';
+import { getAllEventsThunk } from '../../../store/events';
+import { getEventByIdThunk } from '../../../store/currentEvent';
 
 
 export default function Details({ event }) {
-    // const dispatch = useDispatch();
+    const dispatch = useDispatch();
     const navigate = useNavigate();
     const { eventId } = useParams()
+    const fixId = Number(eventId)
     // todo: needs group information
     //* Consider braking this up into smaller components
     // const fixedEventId = Number(eventId)
     const sessionUser = useSelector(state => state.session.user);
     const currentEvent = useSelector(state => state.currentEvent[eventId])
+    const currentGroups = useSelector(state => state.currentGroup)
     const groups = useSelector(state => Object.values(state.Groups))
     const group = groups.find(group => event ? group.id === event.groupId: null)
     const organizerId = sessionUser? sessionUser.id : null
     const eventImg = event ? event.EventImages : null
     const groupImg = group ? group.previewImage : null
-    
+    const currentGroup = group ? currentGroups[ group.id ] : null
 
     const getPrice = () => {
         if(currentEvent) {
@@ -53,8 +60,26 @@ export default function Details({ event }) {
         }
 
     }
-    // console.log(getImg())
-    // console.log(event)
+
+    const checkGroup = () => {
+        if(group) {
+            if(group.previewImage) {
+                // console.log('previewImage',group.previewImage)
+                return group.previewImage
+            }
+        }
+
+        if(currentGroup) {
+            if(currentGroup.GroupImages) {
+                if(currentGroup.GroupImages.length) {
+                    const img = currentGroup.GroupImages.find(img => img.preview === true)
+                    // console.log(img.url)
+                    return img.url
+                }
+            }
+        }
+    }
+
     
     let startEventDate;
     let startEventTime;
@@ -100,6 +125,7 @@ export default function Details({ event }) {
     const onClick = () => {
         navigate(`/groups/${event.Group.id}`)
     }
+
     const update = () => {
         if(sessionUser) {
             if(sessionUser.id === organizerId) {
@@ -131,7 +157,7 @@ export default function Details({ event }) {
             <div>
             <div className="group-details" onClick={onClick} style={{cursor: 'pointer'}}>
                 {/* GROUP DETAILS CARD */}
-            <img className="group-details-image" src={groupImg} />
+            <img className="group-details-image" src={checkGroup()} />
                 <div>
                     <h2>{group ? group.name : null}</h2>
                     <span>{checkPrivacy()}</span>
@@ -140,10 +166,21 @@ export default function Details({ event }) {
             <div className="event-sub-container">
                 {/* EVENT DATES/PRICE/TYPE */}
                 <div className="event-sub-info">
-                <p>START: {event ? startEventDate : null}  &#183;  {event ? startEventTime : null} </p>
-                <p>END {event ? endEventDate : null}  &#183;  {event ? endEventTime : null}</p>
-                <span>$ {getPrice()}</span>
-                <span style={{paddingTop: 10}}>{event ? event.type : null}</span>
+                    <div style={{display: 'flex', flexDirection: 'row', alignItems: 'center'}}>
+                    <i className="fa-regular fa-clock fa-lg"></i>
+                    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginLeft: 10}}>
+                    <p style={{marginBottom: 0}}>START: {event ? startEventDate : null}  &#183;  {event ? startEventTime : null} </p>
+                    <p style={{marginTop: 5}}>END {event ? endEventDate : null}  &#183;  {event ? endEventTime : null}</p>
+                    </div>
+                    </div>
+                    <div style={{marginTop: 10}}>
+                    <i class="fa-solid fa-sack-dollar fa-lg"></i>
+                    <span style={{marginLeft: 10}}>$ {getPrice()}</span>
+                    </div>
+                    <div style={{marginTop: 30}}>
+                    <i class="fa-solid fa-map-pin fa-lg"></i>
+                    <span style={{marginLeft: 10}}>{event ? event.type : null}</span>
+                    </div>
                 </div>
                 {/* // Still need some icons */}
                 {/* {checkAuth()} */}

@@ -32,16 +32,22 @@
 
 .event-image {
     height: 200px;
+    width: 220px
 }
 
 .event-card {
     display: flex;
     flex-direction: row;
+    align-items: center;
     height: 250px;
-    width: 550px;
+    width: 600px;
     background-color: white;
     padding: 20px;
     border-radius: 20px;
+}
+
+.event-card-info {
+    padding-left: 20px;
 }
 
 

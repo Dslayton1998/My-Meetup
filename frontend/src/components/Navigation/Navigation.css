@@ -37,7 +37,7 @@
 }
 
 .isDisabled {
-    cursor: not-allowed;
+    cursor: default;
     color: lightgray;
 }
 
