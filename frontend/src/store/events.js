@@ -110,7 +110,7 @@ export const deleteEventThunk = ( eventId ) => async (dispatch) => {
         // console.log('here', data)
         dispatch(deleteEventAction(data))
     } else {
-        const err = await res.json()
+        // const err = await res.json()
         // console.log(err)
     }
 }

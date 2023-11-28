@@ -1,4 +1,4 @@
-import { NavLink, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { getEventByIdThunk } from '../../store/currentEvent';
@@ -16,12 +16,14 @@ export default function EventDetails() {
     const event = events.find(event => eventId == event.id)
     // console.log(events)
     const id = Number(eventId)
-    let test;
     let eventDetails;
-    let thing;
+    eventDetails = useSelector(state => state.Events)
+    // console.log('here',eventDetails)
+    const eventLookUp = eventDetails[eventId]
+
     useEffect(() => {
         const getEventDetails = async () => {
-           thing =  await dispatch(getEventByIdThunk(id))
+            await dispatch(getEventByIdThunk(id))
         }
 
         const getAllEvents = async () => {
@@ -33,22 +35,19 @@ export default function EventDetails() {
         }
 
         const getGroupById = async () => {
-            test = await dispatch(getGroupByIdThunk(eventLookUp.groupId))
+            await dispatch(getGroupByIdThunk(eventLookUp.groupId))
         }
-        
-        console.log(thing)
+
+        // console.log(thing)
         getGroupById()
         getGroupDetails()
         getEventDetails()
         getAllEvents()
     }, [ dispatch ])
 
-    eventDetails = useSelector(state => state.Events)
-    // console.log('here',eventDetails)
-    const eventLookUp = eventDetails[eventId]
+
     // console.log(eventLookUp)
 
-    const qtCarrot = '<'
     // todo: dynamic portion <button>
     // todo: UpcomingEvents
     return (

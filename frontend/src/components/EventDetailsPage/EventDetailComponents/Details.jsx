@@ -1,5 +1,4 @@
-import { useDispatch, useSelector } from "react-redux"
-import { useEffect, useState } from "react"
+import { useSelector } from "react-redux"
 import DeleteModal from "../DeleteModal"
 // import { getGroupByIdThunk } from "../../../store/groups"
 import { useNavigate, useParams } from "react-router-dom"
@@ -7,16 +6,17 @@ import OpenModalMenuItem from "../../Navigation/NavComponents/OpenModalMenuItem"
 
 
 export default function Details({ event }) {
-    const dispatch = useDispatch();
+    // const dispatch = useDispatch();
     const navigate = useNavigate();
     const { eventId } = useParams()
     // todo: needs group information
     //* Consider braking this up into smaller components
-    const fixedEventId = Number(eventId)
+    // const fixedEventId = Number(eventId)
     const sessionUser = useSelector(state => state.session.user);
     const currentEvent = useSelector(state => state.currentEvent[eventId])
     const groups = useSelector(state => Object.values(state.Groups))
     const group = groups.find(group => event ? group.id === event.groupId: null)
+    const organizerId = sessionUser? sessionUser.id : null
     const eventImg = event ? event.EventImages : null
     const groupImg = group ? group.previewImage : null
     
@@ -33,7 +33,7 @@ export default function Details({ event }) {
             let img;
             if(event.previewImage) {
                 img = event.previewImage
-                console.log('event.previewImage')
+                // console.log('event.previewImage')
                 return img
             }
         if(eventImg) {

@@ -19,7 +19,7 @@ export default function Heading({ event }) {
             }
             
             getGroupById()
-        }, [dispatch])
+        }, [dispatch, groupId])
 
     const qtCarrot = '<'
     return (
