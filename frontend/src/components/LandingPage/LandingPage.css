@@ -19,6 +19,7 @@
     align-items: flex-start;
     padding-left: 50px;
     padding-top: -20px;
+    /* width: ; */
 }
 
 .section1-img {
@@ -33,13 +34,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    justify-content: center;
     margin-top: 20px;
 }
 
 .nav-container {
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: center;
+    /* align-content: center; */
     align-items: center;
     margin-top: 20px;
 }
@@ -48,7 +51,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 80px;
+    margin-top: 60px;
+    margin-left: 15px;
 }
 
 .join-button {
@@ -80,6 +84,8 @@
     justify-content: center;
     align-items: center;
     margin-right: 10px;
+    /* padding-bottom: ; */
+    width: 350px;
 }
 
 .find-events {
@@ -97,4 +103,9 @@
 .isDisabled {
     cursor: 'default';
     color: lightgray;
+}
+
+.groups-icon {
+    width: 100px;
+    height: 200px;
 }

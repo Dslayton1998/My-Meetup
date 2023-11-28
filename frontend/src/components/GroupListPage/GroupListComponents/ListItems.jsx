@@ -54,14 +54,16 @@ export default function ListItems({ group }) {
     }
 
     const numEvents = () => {
-        const eventArr = group.Events
-        if(eventArr) {
-            if(eventArr.length < 10) {
-                return <span>{`0${eventArr.length} event(s)`}</span>
-            }
-    
-            if(eventArr.length > 10 ) {
-                return <span>{`${eventArr.length} event(s)`}</span>
+        if(currentGroupEvents) {
+            const eventArr = currentGroupEvents.Events
+            if(eventArr) {
+                if(eventArr.length < 10) {
+                    return <span>{`0${eventArr.length} event(s)`}</span>
+                }
+        
+                if(eventArr.length > 10 ) {
+                    return <span>{`${eventArr.length} event(s)`}</span>
+                }
             }
         }
     }
@@ -72,7 +74,7 @@ export default function ListItems({ group }) {
             <img className='preview-image' src={checkGroup()} />
             <div className='list-items'>
                 {/* Somehow check private status */}
-                <h2 style={{marginBottom: 5}}>{group.name}</h2>
+                <h2 style={{marginBottom: 5, marginTop: 5}}>{group.name}</h2>
                 <span className='misc'>{group.city}, {group.state}</span>
                 <span style={{paddingBottom: 5}}>{group.about}</span>
                 {/* <span>## events (dot) {checkPrivacy()} </span> */}

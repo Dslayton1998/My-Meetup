@@ -22,21 +22,22 @@ export default function LandingLinks() {
         <div className='nav-container'>
 
             <div className='see-groups'>
-                <img className='see-groups-img' src='https://www.meetup.com/blog/wp-content/uploads/2020/08/holding-hands.jpg'/>
+                {/* <img className='see-groups-img' src='https://www.meetup.com/blog/wp-content/uploads/2020/08/holding-hands.jpg'/> */}
+                <i className="fa-solid fa-people-group fa-4x" style={{color: "#ed1c40", paddingBottom: 10}}></i>
                 <NavLink to='/groups'>See all groups</NavLink> 
                 <p>Look through existing groups, to find the right one for you!</p>
             </div>
 
 
             <div className='find-events'>
-                <span icon="fa-solid fa-people-group"/> 
+                <i class="fa-solid fa-calendar-week fa-4x" style={{color: "#ed1c40", paddingBottom: 10}}></i>
                 <NavLink to='/events'>Find an event</NavLink>
                 <p>Plenty of events to be apart of, far away or in your area! </p>
             </div>
 
 
             <div className='start-groups'>
-                <img/>
+                <i class="fa-solid fa-users-rays fa-4x" style={{color: "#ed1c40", paddingBottom: 10}}></i>
                 <NavLink to='/groups/new' className={checkUser} onClick={handleClick}>Start a new group</NavLink>
                 <p>Wanting to organize an event in your area? Create a group for like minded people!</p>
             </div>

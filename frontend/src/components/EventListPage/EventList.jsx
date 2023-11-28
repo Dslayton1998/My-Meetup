@@ -1,14 +1,16 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react'
-import { getAllEventsThunk, getEventByIdThunk } from '../../store/events';
+import { getAllEventsThunk } from '../../store/events';
 import ListHeading from './EventListComponents/ListHeading';
 import ListItems from './EventListComponents/ListItems';
 import './EventList.css'
 
 export default function EventList() {
-    //! BUG : if you refresh on EventDetails page and try to come back the data is not there
+    //! Need to figure out how to order by date
     const dispatch = useDispatch();
     const events = useSelector(state => Object.values(state.Events));
+    // const ordered = events.sort()
+    // console.log(ordered)
     // console.log(events)
 
     useEffect(() => {
@@ -17,7 +19,7 @@ export default function EventList() {
         // dispatch(getEventByIdThunk(events[0]))
     }, [ dispatch ])
 
-    // todo: just passed the group info to ListItems !still need to format! and finish listItems
+
     return (
         <div className='event-list-container'>
             <div className='event-list-headings'>

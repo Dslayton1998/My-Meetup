@@ -1,6 +1,8 @@
 .list-container {
-    margin-left: 150px ;
-    margin-right: 150px ;
+    width: auto;
+    justify-content: center;
+    margin-left: 50px;
+    margin-right: 20px;
 }
 
 
@@ -39,6 +41,7 @@
     border-top: solid lightgray 2px;
     border-bottom: solid lightgray 2px;
     padding: 10px;
+    width: 800px;
 }
 
 .list-items {
