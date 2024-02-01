@@ -28,12 +28,32 @@
 
 
 .user-info-options {
+    position: relative;
+    display: inline-block;
+    padding: 5px 20px 5px 20px;
+    box-shadow: 1px 1px 3px 3px white;
+    border-radius: 10px;
+  
+    &:hover{
+      cursor: pointer;
+      color: black;
+      box-shadow: 2px 2px;
+      transition: all .8s ease-in-out; 
+  }
+}
+
+.profile-dropdown {
     display: flex;
-    justify-content: flex-end;
-    flex-direction: row;
-    /* color: #ed1c40 */
-    
-    /* border: solid black 20px; */
+    flex-direction: column;
+    background-color: #ed1c40;
+    /* color: white; */
+    border: 2px black solid;
+    justify-content: end;
+    position: absolute;
+    border-radius: 5px;
+    padding: 10px;
+    right: 20px;
+    top: 80px;
 }
 
 .isDisabled {

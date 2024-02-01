@@ -12,7 +12,7 @@ export default function GroupPastEventCards({ event, group }) {
         let pastEventDate;
         let pastEventTime;
     
-        pastEventDate = `${year}-${Number(month) < 10 ? `0${month + 1}`: `${mm + 1}`} -${day < 10 ? `0${day}`: `${day}`}`
+        pastEventDate = `${year}-${Number(month) < 10 ? `0${month + 1}`: `${month + 1}`} -${day < 10 ? `0${day}`: `${day}`}`
         pastEventTime = `${hours < 10 ? `0${hours}` : `${hours}`}:${min < 10 ? `0${min}` : `${min}`}`;
     
     

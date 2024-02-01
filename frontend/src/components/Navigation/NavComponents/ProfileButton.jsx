@@ -56,25 +56,26 @@ function ProfileButton({ user }) {
   return (
     <>
       <button className='user-info-options' onClick={toggleMenu}>
-        <i className="fas fa-user-circle" /> {user ? user.username : null}
+        <i className="fas fa-user-circle" /> 
       </button>
-      <ul className={ulClassName} ref={ulRef}>
+      {showMenu && (
+        <ul className={"profile-dropdown"} ref={ulRef}>
         {user ? (
           <>
-            <li>Hello {user.firstName}</li>
-            <li>{user.username}</li>
-            <li>{user.firstName} {user.lastName}</li>
-            <li>{user.email}</li>
+            <div>Hello {user.firstName}</div>
+            <div>{user.username}</div>
+            <div>{user.firstName} {user.lastName}</div>
+            <div>{user.email}</div>
             {/* View groups (here) */}
-            <li>
+            <div>
               <button onClick={viewGroups}>View groups</button>
-            </li>
-            <li>
+            </div>
+            <div>
               <button onClick={viewEvents}>View Events</button>
-            </li>
-            <li>
+            </div>
+            <div>
               <button onClick={logout}>Log Out</button>
-            </li>
+            </div>
           </>
         ) : (
           <>
@@ -93,6 +94,7 @@ function ProfileButton({ user }) {
           </>
         )}
       </ul>
+      )}
     </>
   );
 }

@@ -40,9 +40,9 @@ function Navigation({ isLoaded }) {
         {toggleButton()}
       </li>
       {isLoaded && (
-        <li className='user-info-options'>
+        <div>
           <ProfileButton user={sessionUser} />
-        </li>
+        </div>
       )}
       </div>
     </ul>

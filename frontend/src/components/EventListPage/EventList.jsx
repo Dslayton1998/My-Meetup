@@ -21,20 +21,22 @@ export default function EventList() {
 
 
     return (
-        <div className='event-list-container'>
-            <div className='event-list-headings'>
-            <ListHeading />
+        <div className='container'>
+            <div className='event-list-container'>
+                <div className='event-list-headings'>
+                <ListHeading />
+                </div>
+                <h5 className='list-sub-heading'>Events in Meetup</h5>
+                <ul>
+                    {/* {.map trough groups state and create listItem (nav-links) for every group} */}
+                    {events.map(event => (
+                        <div key={event.id} to={`/events/${event.id}`}>
+                            <ListItems key={event.id} event={event} />
+                        </div>
+                        
+                    ))}
+                </ul>
             </div>
-            <h5 className='list-sub-heading'>Events in Meetup</h5>
-            <ul>
-                {/* {.map trough groups state and create listItem (nav-links) for every group} */}
-                {events.map(event => (
-                    <div key={event.id} to={`/events/${event.id}`}>
-                        <ListItems key={event.id} event={event} />
-                    </div>
-                    
-                ))}
-            </ul>
         </div>
     )
 }
