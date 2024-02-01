@@ -170,7 +170,7 @@ export default function Details({ event }) {
                     <i className="fa-regular fa-clock fa-lg"></i>
                     <div style={{display: 'flex', flexDirection: 'column', alignItems: 'flex-start', marginLeft: 10}}>
                     <p style={{marginBottom: 0}}>START: {event ? startEventDate : null}  &#183;  {event ? startEventTime : null} </p>
-                    <p style={{marginTop: 5}}>END {event ? endEventDate : null}  &#183;  {event ? endEventTime : null}</p>
+                    <p style={{marginTop: 5}}>END: {event ? endEventDate : null}  &#183;  {event ? endEventTime : null}</p>
                     </div>
                     </div>
                     <div style={{marginTop: 10}}>

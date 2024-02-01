@@ -15,7 +15,7 @@ export default function GroupDetailsHeading({ group }) {
     const eventArr = group ? group.Events : []
     // todo: event data is a little to static could cause bugs later
     // console.log(eventArr)
-    console.log(group)
+    // console.log(group)
 
     if(group) {
         if(group.Organizer) {
@@ -93,7 +93,7 @@ export default function GroupDetailsHeading({ group }) {
 
    const groupImageArr = group ? group.GroupImages : null
     const groupImage = groupImageArr ? groupImageArr.find(img => img.preview === true) : null
-   console.log(groupImage)
+//    console.log(groupImage)
 
 
 // todo: Need events by groupId and ## events needs double digits

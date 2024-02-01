@@ -29,7 +29,7 @@ module.exports = {
       type: 'In person',
       capacity: 20,
       price: 25,
-      startDate: "06-05-2023 23:59:00",
+      startDate: "06-05-2023 12:59:00",
       endDate:  "06-06-2023 07:34:00"
     },
     {
@@ -108,7 +108,7 @@ module.exports = {
       capacity: 40,
       price: 0,
       startDate: "12-12-2023 01:00:00" ,
-      endDate:  "12-12-2023 23:00:00"
+      endDate:  "12-13-2023 23:00:00"
     },
     {
       venueId: 3,

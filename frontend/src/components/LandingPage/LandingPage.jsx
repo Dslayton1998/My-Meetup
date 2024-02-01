@@ -22,6 +22,7 @@ export default function LandingPage()  {
         <div className='nav-container'> <LandingLinks />
         </div> {/* section 3 (3 columns with icons, underlined links and a caption) */}
 
+
         <div className='join-button-container'> <JoinButton />
         </div> {/* section 4 (Join Meetup button) */}
         </div>
