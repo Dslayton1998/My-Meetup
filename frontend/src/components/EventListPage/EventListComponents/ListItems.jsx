@@ -23,7 +23,7 @@ export default function ListItems({ event }) {
     } else {
         EventTime = `${hours < 10 ? `0${hours}` : `${hours}`}:${min < 10 ? `0${min}` : `${min}`} A.M.`;
     }
-    const EventDate = `${year}-${Number(month) < 10 ? `0${month + 1}`: `${month + 1}`} -${day < 10 ? `0${day}`: `${day}`}`
+    const EventDate = `${year}-${Number(month) < 10 ? `0${month + 1}`: `${month + 1}`}-${day < 10 ? `0${day}`: `${day}`}`
 
 
     useEffect(() => {

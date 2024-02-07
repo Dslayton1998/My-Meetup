@@ -11,7 +11,7 @@ export default function EventList() {
 
     const sortedEvents = events.sort((a, b) => {
         return new Date(a.startDate) - new Date(b.startDate)
-    })
+    }).reverse()
 
     useEffect(() => {
         dispatch(getAllEventsThunk())
