@@ -24,7 +24,7 @@ export const readEventByIdAction = ( event, eventDetails ) => {
         eventDetails
     }
 }
-//todo: /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 export const createEventAction = ( event ) => {
     return {
@@ -66,11 +66,7 @@ export const getEventByIdThunk = ( eventId ) => async (dispatch, getState) => {
     const state = getState().Events;
     const res = await csrfFetch(`/api/events/${eventId}`)
     const eventDetails = await res.json();
-    // console.log(eventDetails)
-    // console.log('OI', state)
     let event = state[eventId]
-    // console.log(event)
-    // console.log(data)
     dispatch(readEventByIdAction(event, eventDetails))
     return event
 }
@@ -85,29 +81,25 @@ export const createEventThunk = ( newEvent, groupId ) => async (dispatch) => {
            headers: { 'Content-Type': 'application/json'},
            body: JSON.stringify(newEvent)
        })
-    //    console.log('res:', await res.json())
        if(res.ok) {
         const data = await res.json();
         dispatch(createEventAction(data))
         return data
     } 
    } catch (err) {
-       // todo: handle errors
-               console.log('err here', err)
+            //    console.log('err here', err)
                const error = await err.json()
-               console.log('err here', error)
+            //    console.log('err here', error)
    }
 
 }
 
 
 export const deleteEventThunk = ( eventId ) => async (dispatch) => {
-    // console.log(group)
     const res = await csrfFetch(`/api/events/${eventId}`, { method: 'DELETE'} )
     
     if(res.ok) {
         const data = await res.json();
-        // console.log('here', data)
         dispatch(deleteEventAction(data))
     } else {
         // const err = await res.json()

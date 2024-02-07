@@ -21,20 +21,22 @@ export default function GroupList() {
 
     // todo: just passed the group info to ListItems !still need to format! and finish listItems
     return (
-        <div className='list-container'>
-            <div className='list-headings'>
-            <ListHeading />
+        <div className='container'>
+            <div className='list-container'>
+                <div className='list-headings'>
+                <ListHeading />
+                </div>
+                <h5 className='list-sub-heading'>Groups in Meetup</h5>
+                <ul>
+                    {/* {.map trough groups state and create listItem (nav-links) for every group} */}
+                    {groups.map(group => (
+                        <div key={group.id} to={`/groups/${group.id}`}>
+                            <ListItems key={group.id} group={group} />
+                        </div>
+                        
+                    ))}
+                </ul>
             </div>
-            <h5 className='list-sub-heading'>Groups in Meetup</h5>
-            <ul>
-                {/* {.map trough groups state and create listItem (nav-links) for every group} */}
-                {groups.map(group => (
-                    <div key={group.id} to={`/groups/${group.id}`}>
-                        <ListItems key={group.id} group={group} />
-                    </div>
-                    
-                ))}
-            </ul>
         </div>
     )
 }
