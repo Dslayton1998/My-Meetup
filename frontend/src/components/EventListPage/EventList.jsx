@@ -6,24 +6,16 @@ import ListItems from './EventListComponents/ListItems';
 import './EventList.css'
 
 export default function EventList() {
-    //! Need to figure out how to order by date
     const dispatch = useDispatch();
     const events = useSelector(state => Object.values(state.Events));
-    // const ordered = events.sort()
-    // console.log(ordered)
-    // console.log(events)
-    if(events) {
-        console.log(events[0])
-    }
 
     const sortedEvents = events.sort((a, b) => {
         return new Date(a.startDate) - new Date(b.startDate)
     })
-    console.log(sortedEvents)
+
     useEffect(() => {
         dispatch(getAllEventsThunk())
 
-        // dispatch(getEventByIdThunk(events[0]))
     }, [ dispatch ])
 
 
@@ -35,7 +27,6 @@ export default function EventList() {
                 </div>
                 <h5 className='list-sub-heading'>Events in Meetup</h5>
                 <ul>
-                    {/* {.map trough groups state and create listItem (nav-links) for every group} */}
                     {sortedEvents.map(event => (
                         <div key={event.id} to={`/events/${event.id}`}>
                             <ListItems key={event.id} event={event} />

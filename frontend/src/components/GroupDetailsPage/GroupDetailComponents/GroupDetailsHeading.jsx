@@ -26,7 +26,7 @@ export default function GroupDetailsHeading({ group }) {
     }
     
     const pluralEvents = () => {
-        if(!eventArr) return;
+        if(!eventArr) return 'No recorded events';
 
         if(eventArr.length < 10) {
             if(eventArr.length === 1) {

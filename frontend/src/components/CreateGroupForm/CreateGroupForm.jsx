@@ -29,7 +29,7 @@ export default function CreateGroupForm() {
             validations.location = 'Location is required'
         }
 
-        if(!location.includes(', ')) {
+        if(location && !location.includes(',')) {
             validations.location = 'Location values must be separated by a comma.'
         }
 
