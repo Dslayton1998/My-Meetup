@@ -145,7 +145,6 @@ export default function UpdateGroupForm( props ) {
                 {hasSubmitted && validations.location && `*${validations.location}`}
                     </div>
             </div>
-                {/* Validation err's go here */}
             <div className="update-form-info-containers">
                 <h2>What will your group&apos;s name be?</h2>
                 <p>Choose a name that will give people a clear idea of what the group is about. </p>
@@ -171,7 +170,6 @@ export default function UpdateGroupForm( props ) {
                 </ol>
                 <div className="input-and-validation">
                 <textarea
-                    // type="textarea"
                     onChange={(e) => setDescription(e.target.value)}
                     value={description}
                     placeholder={group ? group.about: null}

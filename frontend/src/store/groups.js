@@ -1,7 +1,6 @@
 import { csrfFetch } from './csrf';
 
 // TYPES
-//todo: edit types and actions
 const READ_ALL_GROUPS = 'groups/READ_ALL_GROUPS'
 // const EVENTS_GROUP_ID = 'groups/EVENTS_GROUP_ID'
 // const READ_GROUP_ID = 'groups/READ_GROUP_ID'
@@ -11,7 +10,6 @@ const DELETE_GROUP = 'groups/DELETE_GROUP'
 
 
 // ACTIONS
-// todo: Full CRUD   READ - CREATE - UPDATE - DELETE 
 export const readAllGroupsAction = ( group ) => {
     return {
         type: READ_ALL_GROUPS,
@@ -87,8 +85,6 @@ export const getAllGroupsThunk = () => async (dispatch, getState) => {
 
 
 export const createGroupThunk = ( groupData ) => async (dispatch) => {
-//    try {
-    // console.log('groupData:',groupData)
        const groupRes = await csrfFetch('/api/groups', {
            method: 'POST',
            headers: { 'Content-Type': 'application/json'},
@@ -101,23 +97,14 @@ export const createGroupThunk = ( groupData ) => async (dispatch) => {
         dispatch(createGroupAction(group))
         return group
     } 
-//    } catch (err) {
-//        // todo: handle errors
-//             //    console.log('err here', err)
-//                const error = await err.json()
-//                console.log('err here', error)
-//    }
 
 }
 
 
 export const deleteGroupThunk = ( groupId ) => async (dispatch) => {
-    // console.log(group)
     const res = await csrfFetch(`/api/groups/${groupId}`, { method: 'DELETE'} )
     
     if(res.ok) {
-        // const data = await res.json();
-        // console.log('here', data)
         dispatch(deleteGroupAction(groupId))
     } 
 }
@@ -125,23 +112,19 @@ export const deleteGroupThunk = ( groupId ) => async (dispatch) => {
 
 export const updateGroupThunk = ( updates ) => async (dispatch) => {
     console.log('updatedData',updates)
-    // try {
         const res = await csrfFetch(`/api/groups/${updates.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json'},
             body: JSON.stringify(updates)
         })
+        
         if(res.ok) {
             const data = await res.json();
             console.log('res',data)
             dispatch(updateGroupAction(data))
             return data
         }
-    // } catch(err) {
-    //     const errors = await err.json()
-    //     console.log('err',errors)
 
-    // }
 }
 
 
