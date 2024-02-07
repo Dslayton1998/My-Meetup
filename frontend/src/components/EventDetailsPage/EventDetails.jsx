@@ -12,13 +12,11 @@ export default function EventDetails() {
     const { eventId } = useParams();
     const dispatch = useDispatch();
     const events = useSelector(state => Object.values(state.Events) )
-    // todo: cannot read property of null reading events
     const event = events.find(event => eventId == event.id)
-    // console.log(events)
     const id = Number(eventId)
-    let eventDetails;
-    eventDetails = useSelector(state => state.Events)
-    // console.log('here',eventDetails)
+    const eventDetails = useSelector(state => state.Events)
+
+
     const eventLookUp = eventDetails[eventId]
 
     useEffect(() => {

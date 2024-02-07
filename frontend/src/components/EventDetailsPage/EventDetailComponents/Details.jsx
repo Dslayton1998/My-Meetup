@@ -1,23 +1,13 @@
 import { useSelector, useDispatch } from "react-redux"
 import DeleteModal from "../DeleteModal"
-import { useEffect } from 'react'
-// import { getGroupByIdThunk } from "../../../store/groups"
 import { useNavigate, useParams } from "react-router-dom"
 import OpenModalMenuItem from "../../Navigation/NavComponents/OpenModalMenuItem"
-import { getAllGroupsThunk } from '../../../store/groups';
-import { getGroupByIdThunk } from '../../../store/currentGroup';
-import { getAllEventsThunk } from '../../../store/events';
-import { getEventByIdThunk } from '../../../store/currentEvent';
 
 
 export default function Details({ event }) {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const { eventId } = useParams()
-    const fixId = Number(eventId)
-    // todo: needs group information
-    //* Consider braking this up into smaller components
-    // const fixedEventId = Number(eventId)
+
     const sessionUser = useSelector(state => state.session.user);
     const currentEvent = useSelector(state => state.currentEvent[eventId])
     const currentGroups = useSelector(state => state.currentGroup)
@@ -25,11 +15,13 @@ export default function Details({ event }) {
     const group = groups.find(group => event ? group.id === event.groupId: null)
     const organizerId = sessionUser? sessionUser.id : null
     const eventImg = event ? event.EventImages : null
-    const groupImg = group ? group.previewImage : null
     const currentGroup = group ? currentGroups[ group.id ] : null
 
     const getPrice = () => {
         if(currentEvent) {
+            if(currentEvent.price == 0) {
+                return 'FREE'
+            }
             return currentEvent.price
         }
     }

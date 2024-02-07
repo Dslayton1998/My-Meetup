@@ -6,49 +6,73 @@ import '../GroupDetails.css'
 
 
 export default function UpdateGroupForm( props ) {
-    // console.log('data', props)
-    const [name, setName] = useState('');
-    const [location, setLocation] = useState('');
-    const [description, setDescription] = useState('');
-    const [type, setType] = useState('')          
-    const [isPrivate, setPrivate] = useState('');     
-    const [validations, setValidations] = useState({})
-    const [hasSubmitted, setHasSubmitted] = useState(false)
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const { groupId } = useParams();
-    
-
-    // console.log('type:', type)
-    // console.log('private:', isPrivate)
-
-    // console.log(location)
-    // console.log(name)
-    // console.log(type)
-
     const groups = useSelector(state => Object.values(state.Groups))
+    
     let group;
     if(groups) {
         group =  groups.find(group => group.id == groupId)
+    };
 
-    }
-    // console.log('currentGroup', group)
-    // console.log(groups, 'GROUPS')
+    let combined;
+    if(group) {
+      combined = group.city + ', ' + group.state
+    };
+
+    const [name, setName] = useState(group ? group.name : '');
+    const [location, setLocation] = useState(group ? combined : '');
+    const [description, setDescription] = useState(group ? group.about : '');
+    const [type, setType] = useState(group ? group.type : '')          
+    const [isPrivate, setPrivate] = useState(group ? group.isPrivate : '');     
+    const [validations, setValidations] = useState({})
+    const [hasSubmitted, setHasSubmitted] = useState(false)
+
+
     useEffect(() => {
-        dispatch(getAllGroupsThunk())
+        const getGroups = async () => {
+            const groups = await dispatch(getAllGroupsThunk());
+            console.log(groups)
+            const allGroups = Object.values(groups)
+            let group;
+            let combined;
+            if(allGroups) {
+                group =  allGroups.find(group => group.id == groupId)
+            };
 
+            if(group) {
+              combined = group.city + ', ' + group.state
+            };
+            
+            if(group) {
+                setName(group.name)
+                setLocation(combined)
+                setDescription(group.about)
+                setType(group.type)
+                setPrivate(group.isPrivate)
+            }
+        }
+        getGroups();
+    }, [dispatch, groupId])
+
+    useEffect(() => {
         const validations = {};
 
         if(!location) {
             validations.location = 'Location is required'
         }
 
+        if(location && !location.includes(',')) {
+            validations.location = 'Location values must be separated by a comma.'
+        }
+
         if(!name) {
             validations.name = 'Name is required'
         }
 
-        if(description.length < 30) {
-            validations.description = 'Description must be at least 30 characters long'
+        if(description.length < 50) {
+            validations.description = 'Description must be at least 50 characters long'
         }
 
         if(!type) {
@@ -78,16 +102,10 @@ export default function UpdateGroupForm( props ) {
             type: type,
             isPrivate: isPrivate
         };
-        // console.log('newGroup',newGroup)
-        // console.log('NEW_GROUP', newGroup)
         await dispatch(updateGroupThunk(newGroup));
 
         reset();
-        // console.log(groups)
-        // const groupId = groups[groups.length].id
-        // console.log('groupId',groupId)
         navigate(`/groups/${groupId}`) 
-    // todo: figure out how to redirect to the new page \\
     }
 
     const reset = () => {
@@ -100,10 +118,6 @@ export default function UpdateGroupForm( props ) {
         setValidations({})
       };
 
-      let combined;
-      if(group) {
-        combined = group.city + ', ' + group.state
-      }
 
       let privacy;
       if(!isPrivate) {
@@ -114,9 +128,6 @@ export default function UpdateGroupForm( props ) {
 
     return (
         <div className="update-group-form-container">
-            {/* <title>Start a New Group</title>
-        <p>BECOME AN ORGANIZER</p>
-        <h1>We&apos;ll walk you through a few steps to build your local community</h1> */}
         <h1 style={{borderBottom: '2px solid #808080', marginBottom: 0, paddingBottom: 2, width: 800}}>Update your group</h1>
         <form className="update-group-form" onSubmit={handleSubmit}>
             <div className="update-form-info-containers">
@@ -184,14 +195,12 @@ export default function UpdateGroupForm( props ) {
                 <p>Is this group private or public?</p>
                 <div className="input-and-validation-select">
                 <select onChange={(e) => setPrivate(e.target.value)}>
-                    <option defaultValue="" selected disabled hidden>{privacy}</option>
+                    <option defaultValue={isPrivate} selected disabled hidden>{privacy}</option>
                     <option value={true} >Private</option>
                     <option value={false} >Public</option>
                 </select>
                 {hasSubmitted && validations.isPrivate && `*${validations.isPrivate}`}
                 </div>
-                {/* <p>Please add an image url for your group below:</p>
-                <input placeholder={group ? group.previewImage: null}/>  */}
             </div>
             <button style={{marginTop: 10}} type="submit">Update group</button>
         </form>

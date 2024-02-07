@@ -84,8 +84,8 @@ module.exports = {
       type: 'In person',
       capacity: 40,
       price: 40,
-      startDate: "01-12-2020 07:00:00" ,
-      endDate:  "01-22-2020 08:00:00"
+      startDate: "01-12-2024 07:00:00" ,
+      endDate:  "01-22-2024 08:00:00"
     },
     //************************************************* */
     {
@@ -96,8 +96,8 @@ module.exports = {
       type: 'In person',
       capacity: 2,
       price: 25,
-      startDate: "12-05-2023 12:05:00",
-      endDate:  "12-06-2023 12:05:00"
+      startDate: "12-05-2030 12:05:00",
+      endDate:  "12-06-2030 12:05:00"
     },
     {
       venueId: 2,
@@ -107,8 +107,8 @@ module.exports = {
       type: 'Online',
       capacity: 40,
       price: 0,
-      startDate: "12-12-2023 01:00:00" ,
-      endDate:  "12-13-2023 23:00:00"
+      startDate: "12-12-2030 01:00:00" ,
+      endDate:  "12-13-2030 23:00:00"
     },
     {
       venueId: 3,
@@ -118,8 +118,8 @@ module.exports = {
       type: 'In person',
       capacity: 20,
       price: 15,
-      startDate: "12-14-2023 18:30:00 " ,
-      endDate:  "12-15-2023 05:00:00"
+      startDate: "12-14-2030 18:30:00 " ,
+      endDate:  "12-15-2030 05:00:00"
     },
     {
       venueId: 4,
@@ -129,8 +129,8 @@ module.exports = {
       type: 'In person',
       capacity: 14,
       price: 50,
-      startDate: "12-12-2023 16:30:00" ,
-      endDate:  "12-13-2023 04:00:00"
+      startDate: "12-12-2030 16:30:00" ,
+      endDate:  "12-13-2030 04:00:00"
     },
     {
       venueId: 5,
@@ -140,8 +140,8 @@ module.exports = {
       type: 'In person',
       capacity: 25,
       price: 10,
-      startDate: "12-21-2023" ,
-      endDate:  "12-22-2023"
+      startDate: "12-21-2030" ,
+      endDate:  "12-22-2030"
     },
     {
       venueId: 6,
@@ -151,8 +151,8 @@ module.exports = {
       type: 'In person',
       capacity: 40,
       price: 40,
-      startDate: "12-12-2023 07:00:00" ,
-      endDate:  "12-22-2023 08:00:00"
+      startDate: "12-12-2030 07:00:00" ,
+      endDate:  "12-22-2030 08:00:00"
     },
    ], options, {validator: true})
   },

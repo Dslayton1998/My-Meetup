@@ -37,7 +37,6 @@ export default function ListItems({ group }) {
     const checkGroup = () => {
         if(group) {
             if(group.previewImage) {
-                // console.log('previewImage',group.previewImage)
                 return group.previewImage
             }
         }
@@ -64,6 +63,8 @@ export default function ListItems({ group }) {
                 if(eventArr.length > 10 ) {
                     return <span>{`${eventArr.length} event(s)`}</span>
                 }
+            } else {
+                return 'No recorded events'
             }
         }
     }
