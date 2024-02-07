@@ -29,7 +29,7 @@ module.exports = {
     {
       eventId: 7,
       url: 'https://i.pinimg.com/736x/07/4f/76/074f76f26569aa3d4b27e5db0ab07a47.jpg',
-      preview: false
+      preview: true
     },
     {
       eventId: 2,
@@ -39,7 +39,7 @@ module.exports = {
     {
       eventId: 8,
       url: 'https://static1.cbrimages.com/wordpress/wp-content/uploads/2022/07/Superman-is-Sad-.jpg',
-      preview: false
+      preview: true
     },
     {
       eventId: 3,
@@ -49,7 +49,7 @@ module.exports = {
     {
       eventId: 9,
       url: 'https://media.audubon.org/social-media-photo/article/f_represent_01_page_2.jpg',
-      preview: false
+      preview: true
     },
     {
       eventId: 4,
@@ -59,7 +59,7 @@ module.exports = {
     {
       eventId: 10,
       url: 'https://i.pinimg.com/736x/7a/ba/f9/7abaf9267db022a5fc61b159692dbedd.jpg',
-      preview: false
+      preview: true
     },
     {
       eventId: 5,
@@ -69,7 +69,7 @@ module.exports = {
     {
       eventId: 11,
       url: 'https://comicvine.gamespot.com/a/uploads/original/11126/111264841/5156426-3714132043-2013N.jpg',
-      preview: false
+      preview: true
     },
     {
       eventId: 6,
@@ -79,7 +79,7 @@ module.exports = {
     {
       eventId: 12,
       url: 'https://media.wired.com/photos/59375829bef1fc4e58f94a0e/master/pass/GalleryComics_1920x1080_20170531_WW-Annual-1_5903bbd4d223b6.50778583.jpg',
-      preview: false
+      preview: true
     },
    ], options, {validate: true})
   },
