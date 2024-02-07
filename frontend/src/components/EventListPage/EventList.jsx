@@ -12,7 +12,14 @@ export default function EventList() {
     // const ordered = events.sort()
     // console.log(ordered)
     // console.log(events)
+    if(events) {
+        console.log(events[0])
+    }
 
+    const sortedEvents = events.sort((a, b) => {
+        return new Date(a.startDate) - new Date(b.startDate)
+    })
+    console.log(sortedEvents)
     useEffect(() => {
         dispatch(getAllEventsThunk())
 
@@ -29,7 +36,7 @@ export default function EventList() {
                 <h5 className='list-sub-heading'>Events in Meetup</h5>
                 <ul>
                     {/* {.map trough groups state and create listItem (nav-links) for every group} */}
-                    {events.map(event => (
+                    {sortedEvents.map(event => (
                         <div key={event.id} to={`/events/${event.id}`}>
                             <ListItems key={event.id} event={event} />
                         </div>

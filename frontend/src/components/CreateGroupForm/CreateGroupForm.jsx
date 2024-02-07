@@ -10,19 +10,14 @@ export default function CreateGroupForm() {
     const [name, setName] = useState('');
     const [location, setLocation] = useState('');
     const [description, setDescription] = useState('');
-    const [type, setType] = useState('')          
+    const [type, setType] = useState('');          
     const [isPrivate, setPrivate] = useState('');    
-    const [ url, setUrl ] = useState('') 
+    const [ url, setUrl ] = useState(''); 
     const [validations, setValidations] = useState({})
     const [hasSubmitted, setHasSubmitted] = useState(false)
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    // console.log('type:', type)
-    // console.log('private:', isPrivate)
-
-    // const groups = useSelector(state => Object.values(state.Groups))
-    // console.log(groups, 'GROUPS')
     useEffect(() => {
         dispatch(getAllGroupsThunk())
         const urlArr = url.split('.')
@@ -32,6 +27,10 @@ export default function CreateGroupForm() {
 
         if(!location) {
             validations.location = 'Location is required'
+        }
+
+        if(!location.includes(', ')) {
+            validations.location = 'Location values must be separated by a comma.'
         }
 
         if(!name) {
@@ -63,7 +62,8 @@ export default function CreateGroupForm() {
         e.preventDefault();
         setHasSubmitted(true)
         const locationArr = location.split(', ')
-        // todo: find a way to add an image to new group
+
+
         const img = {
             url,
             preview: true
@@ -77,7 +77,7 @@ export default function CreateGroupForm() {
             type,
             isPrivate
         };
-        // console.log('NEW_GROUP', newGroup)
+
         const newGroupData = await dispatch(createGroupThunk(newGroup));
         const newGroupId = newGroupData.id
         await csrfFetch(`/api/groups/${newGroupId}/images`, {
@@ -85,11 +85,8 @@ export default function CreateGroupForm() {
             headers: {"Content-Type": "application/json"},
             body: JSON.stringify(img)
         })
-        // console.log(groups)
         reset();
         navigate(`/groups/${newGroupId}`) 
-        // const groupId = groups ? groups[groups.length].id : null
-        // todo: figure out how to redirect to the new page \\
     }
     
     const reset = () => {
@@ -107,7 +104,6 @@ export default function CreateGroupForm() {
 
     return (
         <div className="create-group-form-container">
-            {/* <title>Start a New Group</title> */}
         <h1 style={{borderBottom: '2px solid #808080', marginBottom: 0, paddingBottom: 2, width: 1000}}>Start a New Group</h1>
         <form className="create-group-form" onSubmit={handleSubmit}>
             <div className="form-info-containers">
@@ -151,7 +147,6 @@ export default function CreateGroupForm() {
                 </ol>
                 <div className="input-and-validation">
                 <textarea
-                    // type="textarea"
                     onChange={(e) => setDescription(e.target.value)}
                     value={description}
                     placeholder="Please write at least 30 characters"

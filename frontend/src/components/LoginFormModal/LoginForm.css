@@ -5,8 +5,8 @@
     align-items: center;
     justify-content: space-evenly;
     padding: 5px 10px 10px 10px;
-    /* background-color: #f5424b; */
-    width: 400px
+    width: 400px;
+    border-radius: 20px;
 }
 
 .modal-form {
@@ -20,11 +20,13 @@
 }
 
 .submit-button {
-    margin-top: 10px;
-    margin-left: 5px;
-    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 15px 0px;
     height: 50px;
-    width: 300px
+    width: 300px;
+    cursor: pointer;
 }
 
 .demo-user {
@@ -33,4 +35,10 @@
     justify-content: center;
     height: 50px;
     width: 300px;
+    margin-bottom: 10px;
+}
+
+.login-error-container {
+    height: max(20px);
+    margin-left: 20px;
 }

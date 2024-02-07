@@ -21,6 +21,8 @@ function Navigation({ isLoaded }) {
       const checkUser = () => {
         if(sessionUser === null) {
             return 'isDisabled'
+        } else {
+          return 'nav-new-group'
         }
       }
       const component = <li> <NavLink className={checkUser} onClick={handleClick} to='/groups/new' > Start a new group </NavLink> </li>

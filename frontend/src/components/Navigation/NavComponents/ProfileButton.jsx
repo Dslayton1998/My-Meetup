@@ -52,7 +52,7 @@ function ProfileButton({ user }) {
   }
 
   const ulClassName = "profile-dropdown" + (showMenu ? "" : " hidden");
-// todo: add button to logged users option list "View groups"
+
   return (
     <>
       <button className='user-info-options' onClick={toggleMenu}>

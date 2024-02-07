@@ -17,10 +17,10 @@ export default function ListItems({ event }) {
     const date = new Date(modTime)
     const year = date.getFullYear()
     const month = date.getMonth()
-    const day = date.getDay()
+    const day = date.getDate()
     const hours = date.getHours()
     const min = date.getMinutes()
-    const EventDate = `${year}-${Number(month) < 10 ? `0${month + 1}`: `${min + 1}`} -${day < 10 ? `0${day}`: `${day}`}`
+    const EventDate = `${year}-${Number(month) < 10 ? `0${month + 1}`: `${month + 1}`} -${day < 10 ? `0${day}`: `${day}`}`
     const EventTime = `${hours < 10 ? `0${hours}` : `${hours}`}:${min < 10 ? `0${min}` : `${min}`}`;
     // console.log(date)
     // console.log(modTime)
@@ -68,7 +68,7 @@ export default function ListItems({ event }) {
     }
     
     // console.log(checkPrivacy())
-    console.log(event)
+    // console.log(event)
     return (
         <>
         <div className='event-list-items-container' onClick={onClick} style={{cursor: 'pointer'}}>
