@@ -48,7 +48,7 @@ module.exports = {
     },
     {
       eventId: 9,
-      url: 'https://media.audubon.org/social-media-photo/article/f_represent_01_page_2.jpg',
+      url: 'https://www.writeups.org/wp-content/uploads/Black-Canary-DC-Comics-Batman-alley-crime-h1.jpg',
       preview: true
     },
     {
@@ -78,7 +78,7 @@ module.exports = {
     },
     {
       eventId: 12,
-      url: 'https://media.wired.com/photos/59375829bef1fc4e58f94a0e/master/pass/GalleryComics_1920x1080_20170531_WW-Annual-1_5903bbd4d223b6.50778583.jpg',
+      url: 'https://cdn.vox-cdn.com/thumbor/xQoIiH5KarTUigwef_xLtNoNHoU=/1400x788/filters:format(png)/cdn.vox-cdn.com/uploads/chorus_asset/file/22948654/Screenshot_2021_10_22_at_5.09.54_PM.png',
       preview: true
     },
    ], options, {validate: true})
